@@ -13,7 +13,6 @@ function findArr2(){
   var n1,n2,n3,n4,n5,n6,n7,n8,n9;
   var i=0;
   var arr2=[];
-  // return;
   for(n1=1;n1<=9;n1++){
     for(n2=1;n2<=9;n2++){
       for(n3=1;n3<=9;n3++){
@@ -50,11 +49,12 @@ function findArr2(){
       }
     }
   }
-  // if(n9===10){console.log('房顺心');console.log(i);} //i=387420489
-  console.log(arr2.length);
-  console.log(JSON.stringify(arr2));  //[[2,7,6,9,5,1,4,3,8],[2,9,4,7,5,3,6,1,8],[4,3,8,9,5,1,2,7,6],[4,9,2,3,5,7,8,1,6],[6,1,8,7,5,3,2,9,4],[6,7,2,1,5,9,8,3,4],[8,1,6,3,5,7,4,9,2],[8,3,4,1,5,9,6,7,2]]
   return arr2;
 };
+// console.time("shiwu");  //shiwu: 257112.83ms
+// var arrAllPossibility=findArr2();
+// console.timeEnd("shiwu");
+
 var arrAllPossibility=[[2,7,6,9,5,1,4,3,8],[2,9,4,7,5,3,6,1,8],[4,3,8,9,5,1,2,7,6],[4,9,2,3,5,7,8,1,6],[6,1,8,7,5,3,2,9,4],[6,7,2,1,5,9,8,3,4],[8,1,6,3,5,7,4,9,2],[8,3,4,1,5,9,6,7,2]];
 //view
 $(function(){
@@ -67,8 +67,6 @@ $(function(){
     strTmp='<div class="wrap">'+arrTmp.join('')+'</div>';
     return strTmp;
   });
-  console.log(arrWrap);
-  // console.log(arrWrap.length);
   $('#container').html(arrWrap.join(''));
 });
 
