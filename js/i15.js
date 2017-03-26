@@ -50,7 +50,7 @@ function findArr2(){
     }
   }
   return arr2;
-};
+}
 // console.time("shiwu");  //shiwu: 257112.83ms
 // var arrAllPossibility=findArr2();
 // console.timeEnd("shiwu");

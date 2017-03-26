@@ -8,7 +8,7 @@ Array.prototype.hasSameElement = function() { //数组重复
     objKeyFormArrayValue[this[i]] = 1;
   }
   return bYes;
-}
+};
 
 function lookForX() { //計算x值
   var arrResult2D = []; //二維數組
@@ -78,10 +78,25 @@ function lookForX() { //計算x值
   }
   return arrResult2D;
 }
-console.time("shiwu");
+// console.time("shiwu");
 var cs = 0;
 var arrResult2D = lookForX();
-console.log('执行完毕' + cs);
-console.log(arrResult2D);
-console.log(JSON.stringify(arrResult2D));
-console.timeEnd("shiwu");
+// console.log('执行完毕' + cs);
+// console.log(arrResult2D);
+// console.log(JSON.stringify(arrResult2D));
+// console.timeEnd("shiwu");
+
+
+//view
+$(function(){
+  var arrWrap=$.map(arrResult2D,function(v1){
+    var strTmp;
+    var arrTmp=$.map(v1,function(v2,k2){
+      var tmp2='<span class="i'+(k2+1)+'">'+v2+'</span>';
+      return tmp2;
+    });
+    strTmp='<div class="wrap">'+arrTmp.join('')+'</div>';
+    return strTmp;
+  });
+  $('#container').html(arrWrap.join(''));
+});
