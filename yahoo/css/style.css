@@ -1,0 +1,106 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:arial;
+}
+body{
+  background:#FFF;
+}
+
+.clearfix:after{
+  content:"Thilina";
+  clear:both;
+  visibility:hidden;
+  display:block;
+  height:0;
+}
+
+a#logo{
+  display:block;
+  width:142px;
+  height:37px;
+  margin:90px auto 0;
+  background:url(../img/yahoo.png) no-repeat 0 0;
+  text-indent:-969em;
+}
+
+.search{
+  margin:30px auto 0;
+  width:550px;
+}
+.search__input_entry{
+  border:1px solid #a0a6fe;
+  height:50px;
+  line-height:50px;
+  float:left;
+  width:460px;
+  padding:0 10px;
+}
+.search__input_entry:focus{
+  box-shadow:0 0 1px 1px rgba(1,16,237,0.2);
+}
+.search__input_submit{
+  height:50px;
+  width:90px;
+  background:#525dfe url(../img/search_submit.svg) no-repeat center center;
+  border:none;
+  background-size:39px;
+  cursor:pointer;
+  float:left;
+  border-radius:0 5px 5px 0;
+}
+
+.about-yahoo{
+  width:460px;
+  margin:40px auto 0;
+}
+.about-yahoo__p_about{
+  font-size:13px;
+}
+
+.weather-and-datetime{
+  width:460px;
+  margin:30px auto;
+}
+.weather-and-datetime__weather{
+  float:left;
+  width:130px;
+  border-right:1px solid #AAA;
+}
+.weather-and-datetime__p_weather{
+  margin-top:10px;
+  font-size:20px;
+}
+.weather-and-datetime__datetime{
+  float:right;
+  height:55px;
+  line-height:55px;
+}
+.weather-and-datetime__small_week{
+  color:#555;
+}
+
+.footer{
+  position:absolute;
+  bottom:0;
+  left:0;
+  width:100%;
+}
+.footer__ul_help{
+  text-align:center;
+  padding:20px 0 30px;
+}
+.footer__ul_help li{
+  list-style:none;
+  display:inline;
+  margin:0 10px;
+}
+.footer__ul_help li a{
+  font-size:11px;
+  color:#010b9f;
+  text-decoration:none;
+}
+.footer__ul_help li a:hover{
+  text-decoration:underline;
+}
