@@ -1,7 +1,11 @@
 window.onload=function(){
   var eleDatetime=document.querySelector('.weather-and-datetime__span_datetime');
+  var eleWeek=document.querySelector('.weather-and-datetime__small_week');
+  eleDatetime.innerHTML=getFormat().datetime;
+  eleWeek.innerHTML=getFormat().week;
+
   window.setInterval(function(){
-    eleDatetime.innerHTML=getFormat();
+    eleDatetime.innerHTML=getFormat().datetime;
   },1000);
 
 
@@ -19,8 +23,9 @@ function add0(num){
 }
 
 function getFormat(){
-  var result='';
+  var result={};
 
+  var arrWeek=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   var today=new Date();
 
   var YYYY=today.getFullYear();
@@ -32,7 +37,11 @@ function getFormat(){
   var s=(today.getMilliseconds()/1000+'').substring(1);
   var TZD='+08:00';
 
-  result=''+YYYY+'-'+MM+'-'+DD+'T'+hh+':'+mm+':'+ss+s+TZD;
-  return result;
+  var week=arrWeek[today.getDay()];
+
+  result.datetime=''+YYYY+'-'+MM+'-'+DD+'T'+hh+':'+mm+':'+ss+s+TZD;
+  result.week=week;
   //YYYY-MM-DDThh:mm:ss.sTZD (eg 1997-07-16T19:20:30.45+01:00)
+
+  return result;
 }
