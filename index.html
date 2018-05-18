@@ -16,21 +16,37 @@
 <!-- <script src="js/i15.js" charset="utf-8"></script> -->
 <!-- <script src="js/i15youhua.js" charset="utf-8"></script> -->
 <script>
-// var re=/mmm/ig;
-// var str='mmmkkklll';
-// var result=re.exec(str);
-// var result2=re.exec(str);
-// console.log(result);
-// console.log(result2);
+'use strict';
 
-var re=/mmm/ig
-var str='mmmkkklll';
-var result=str.match(re);
-console.log(re.lastIndex);
-var result2=str.match(re);
-console.log(re.lastIndex);
-console.log(result);
-console.log(result2);
+var x=1;
+function a(){
+  console.log(x);
+  var x=2;
+  x++;
+  console.log(x);
+}
+function b(){
+  console.log(x);
+  x++;
+  console.log(x);
+}
+
+// console.log(0<100<0);
+
+if(0<100<0){  //false
+  a();
+}else{
+  b();
+  //1,2
+}
+
+// console.log(0<100<(0+4));
+if(0<100<(0+4)){  //true
+  a();
+  //undefined,3
+}else{
+  b();
+}
 </script>
 </body>
 </html>
