@@ -10,12 +10,27 @@
 <link rel="stylesheet" href="css/master.css">
 </head>
 <body>
-<div id="container" style="background:">
-<!-- <div class="wrap">
-</div> -->
+<div id="container" style="background:lavender;min-height: 660px;">
 </div>
 <script src="js/jquery.js" charset="utf-8"></script>
 <!-- <script src="js/i15.js" charset="utf-8"></script> -->
-<script src="js/i15youhua.js" charset="utf-8"></script>
+<!-- <script src="js/i15youhua.js" charset="utf-8"></script> -->
+<script>
+// var re=/mmm/ig;
+// var str='mmmkkklll';
+// var result=re.exec(str);
+// var result2=re.exec(str);
+// console.log(result);
+// console.log(result2);
+
+var re=/mmm/ig
+var str='mmmkkklll';
+var result=str.match(re);
+console.log(re.lastIndex);
+var result2=str.match(re);
+console.log(re.lastIndex);
+console.log(result);
+console.log(result2);
+</script>
 </body>
 </html>
