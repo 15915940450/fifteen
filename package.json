@@ -1,0 +1,23 @@
+{
+  "name": "fifteen",
+  "version": "0.9.0",
+  "description": "1to9equalto15",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "gulp": "^3.9.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/15915940450/fifteen.git"
+  },
+  "author": "Thilina",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/15915940450/fifteen/issues"
+  },
+  "homepage": "https://github.com/15915940450/fifteen#readme"
+}
