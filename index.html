@@ -15,12 +15,19 @@
 <script src="js/jquery.js" charset="utf-8"></script>
 <!-- <script src="js/i15.js" charset="utf-8"></script> -->
 <!-- <script src="js/i15youhua.js" charset="utf-8"></script> -->
-<script src="http://localhost/agc/static/lodash.ili.js"></script>
+<script src="http://119.23.133.72/static/lodash.ili.js?v=1.9_1100_0.4214223179610106"></script>
 <script>
 // 'use strict';
 
-var x='1589686';
-console.log(_.toK(x));
+var myFirstPromise=new Promise((res,rej) => {
+	window.setTimeout(function(){
+		res('okay.');
+	},900);
+});
+
+myFirstPromise.then((data) => {
+	console.log(data+'0969');
+});
 </script>
 </body>
 </html>
