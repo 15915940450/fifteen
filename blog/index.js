@@ -3,11 +3,11 @@ var express=require('express');
 var app=express();
 // console.log(express);
 
-app.get('/',function(rqs,rps){
-	rps.send('hello express.');
-});
-app.get('/users/:name/',function(rqs,rps){
-	rps.send('hello, '+rqs.params.name);
-});
+var indexRouter=require('./routes/index.js');
+var usersRouter=require('./routes/users.js');
+
+app.use('/',indexRouter);
+app.use('/users/',usersRouter);
 
 app.listen(3300);
+console.log('__________EXPRESS___listen port 3300.___EXPRESS__________');
