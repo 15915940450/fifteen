@@ -7,26 +7,58 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
 <meta name="author" content="Thilina Fong" />
 <meta name="description" content="" />
-<link rel="stylesheet" href="css/master.css">
+<style>
+li,*{
+  font-family: -apple-system,BlinkMacSystemFont,Avenir,"Avenir Next","Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
+  /*font-size: 13px;*/
+  font-size: 15px;
+}
+</style>
 </head>
 <body>
-<div id="container" style="background:lavender;min-height: 660px;">
+<div id="container">
+  <h1>'use strict';</h1>
+  <select name="branch" id="branch" m-model="currentBranch" m-on:change="fetchCommits()">
+    <option value="{{branch}}" m-for="branch in branches">{{branch}}</option>
+  </select>
+
+  <div>
+    <ul m-for="commit in commits">
+      <li>sha: {{commit.sha}}</li>
+      <li>{{commit.commit.author.name}} - {{commit.commit.message}}</li>
+      <li>{{commit.commit.author.date}}</li>
+    </ul>
+  </div>
 </div>
 <script src="js/jquery.js" charset="utf-8"></script>
-<!-- <script src="js/i15.js" charset="utf-8"></script> -->
-<!-- <script src="js/i15youhua.js" charset="utf-8"></script> -->
 <script src="http://119.23.133.72/static/lodash.ili.js?v=1.9_1100_0.4214223179610106"></script>
+<script src="https://kbrsh.github.io/moon/dist/moon.js"></script>
+<script src="https://unpkg.com/axios@0.18.0/dist/axios.min.js"></script>
 <script>
-// 'use strict';
+var api='https://api.github.com/repos/ImmotorSW/wechat-mini-program/commits?per_page=3&sha=';
 
-var myFirstPromise=new Promise((res,rej) => {
-	window.setTimeout(function(){
-		res('okay.');
-	},900);
-});
-
-myFirstPromise.then((data) => {
-	console.log(data+'0969');
+var app=new Moon({
+  el:'#container',
+  data:{
+    branches:['master','Joe','Sam'],
+    currentBranch:'master',
+    commits:[]
+  },
+  methods:{
+    fetchCommits:function(){
+      var mThis=this;
+      axios.get(api+mThis.get('currentBranch')).then(function(rps){
+        // console.log(rps);
+        mThis.set('commits',rps.data);
+      });
+    }
+  },
+  hooks:{
+    //init,mounted...destroyed
+    init:function(){
+      this.callMethod('fetchCommits',[]);
+    }
+  }
 });
 </script>
 </body>
