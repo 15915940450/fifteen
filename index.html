@@ -21,7 +21,7 @@ html,body,*{
 </head>
 <body>
 <div id="container">
-  <p>vim tip: How to undo and redo changes</p>
+  fifteen
 </div>  <!--container-->
 <script src="js/jquery.js" charset="utf-8"></script>
 <script src="http://119.23.133.72/static/lodash.ili.js?v=1.9_1100_0.4214223179610106"></script>
@@ -29,30 +29,17 @@ html,body,*{
 <script src="https://unpkg.com/axios@0.18.0/dist/axios.min.js"></script>
 <script src="https://cdn.bootcss.com/three.js/92/three.js"></script>
 <script>
-  var sence=new THREE.Scene();
-  var camera=new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,0.1,1000);
-  var renderer=new THREE.WebGLRenderer();
-
-  renderer.setSize(window.innerWidth/2,window.innerHeight/2);
-  document.body.appendChild(renderer.domElement);
-
-  var geometry=new THREE.BoxGeometry(1,1,1);
-  var material=new THREE.MeshBasicMaterial({
-    color:0x00EE00
-  });
-  var cube=new THREE.Mesh(geometry,material);
-  sence.add(cube);
-
-  camera.position.z=5;
-
-  function animate(){
-    window.requestAnimationFrame(animate);
-    cube.rotation.x+=0.1;
-    cube.rotation.y+=0.1;
-    
-    renderer.render(sence,camera);
-  }
-  animate();
+</script>
+<script>
+  var x='{"name":"thilina","new":86,"love":"myWife"}';
+  var result=JSON.parse(x,function(k,v){
+    //reviver
+    if(k==='new'){
+      return (v.toFixed(2));
+    }
+    return v;
+  })
+  _.logErr(result);
 </script>
 </body>
 </html>
