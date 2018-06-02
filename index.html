@@ -31,15 +31,51 @@ html,body,*{
 <script>
 </script>
 <script>
-  var x='{"name":"thilina","new":86,"love":"myWife"}';
-  var result=JSON.parse(x,function(k,v){
-    //reviver
-    if(k==='new'){
-      return (v.toFixed(2));
-    }
-    return v;
-  })
-  _.logErr(result);
+var obj={
+  a:'ili',
+  b:6,
+  c:NaN,
+  d:Number.MAX_VALUE,
+  e:undefined,
+  f:null,
+  g:true,
+  h:[1,5,9],
+  i:function(){
+    console.log(69);
+  },
+  j:{
+    jj:'jj lin',
+    jjj:'meizu'
+  },
+  k:/kkk/gi,
+  kk:new RegExp('k_k','gi'),
+  l:window.location,
+  z:Math.random()
+};
+
+var result={};
+
+//Object.assign()
+Object.assign(result,obj);
+
+//_.assign()
+// _.assign(result,obj);
+
+//_.cloneDeep()
+// result=_.cloneDeep(obj);
+
+result.i=function(){
+  console.log(6);
+};
+
+
+obj.j.jj='ioi';
+
+console.log(obj);
+console.log(result);
+
+obj.i();
+result.i();
 </script>
 </body>
 </html>
