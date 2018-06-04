@@ -31,56 +31,12 @@ html,body,*{
 <script>
 </script>
 <script>
-var obj={
-  a:'ili',
-  b:6,
-  c:NaN,
-  d:Number.MAX_VALUE,
-  e:undefined,
-  f:null,
-  g:true,
-  h:[1,5,9],
-  i:function(){
-    console.log('source');
-  },
-  j:{
-    jj:'jj lin',
-    jjj:'meizu'
-  },
-  k:/kkk/gi,
-  kk:new RegExp('k_k','gi'),
-  l:window.location,
-  z:Math.random()
-};
+var a;
 
-var result={
-  a:'default',
-  i:function(){
-    console.log('default');
-  }
-};
-
-//Object.assign()
-Object.assign(result,obj);
-
-//_.assign()
-// _.assign(result,obj);
-
-//_.cloneDeep()
-// result=_.cloneDeep(obj);
-
-obj.i=function(){
-  console.log(6);
-};
-
-
-obj.j.jj='ioi';
-
-console.log(obj);
-console.log(result);
-
-obj.i();
-result.i();
+console.log(a);
+console.log(typeof b);
+// console.log(b); //ReferenceError: b is not defined
+console.log(c); //ReferenceError: c is not defined
 </script>
 </body>
 </html>
