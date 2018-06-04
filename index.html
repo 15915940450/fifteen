@@ -29,9 +29,9 @@ html,body,*{
 <script src="https://unpkg.com/axios@0.18.0/dist/axios.min.js"></script>
 <script src="https://cdn.bootcss.com/three.js/92/three.js"></script> -->
 <script>
-var x  ='28999999999999999999994';
-var y='9834309800089325675433678';
-     //9863309800089325675433672
+var x= '628999999999999999999996';
+var y='9634309800089325675433679';
+    //10263309800089325675433675
 
 function add2BigInt(x,y){
   var result='';
@@ -39,7 +39,7 @@ function add2BigInt(x,y){
   var arrXReverse=(''+x).split('').reverse();
   var arrYReverse=(''+y).split('').reverse();
 
-  var maxLength=(x.length>y.length)?x.length:y.length;
+  var maxLength=Math.max(arrXReverse.length,arrYReverse.length);
 
   var arrResult=[];
   var carry=0;
@@ -61,8 +61,12 @@ function add2BigInt(x,y){
     if(carry>0){
       arrResult[i]=arrResult[i]%10;
     }
-  }
+  } //for
 
+
+  if(carry){
+    arrResult.push(carry);
+  }
 
   result=arrResult.reverse().join('');
 
