@@ -14,9 +14,10 @@ app.set('view engine','ejs');
 app.use('/',indexRouter);
 app.use('/users/',usersRouter);
 
-app.listen(3300);
-console.log('__________EXPRESS___listen port 3300.====___EXPRESS__________');
+var port=80;
+app.listen(port);
+console.log('__________EXPRESS___listen port '+port+'.====___EXPRESS__________');
 /*==urls
-localhost:3300/
-localhost:3300/users/:name/
+localhost/
+localhost/users/:name/
 */
