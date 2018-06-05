@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
 <meta name="author" content="Thilina Fong" />
 <meta name="description" content="" />
+<link rel="stylesheet" href="https://cdn.bootcss.com/paginationjs/2.1.2/pagination.css" />
 <style>
 html,body,*{
   font-family: -apple-system,BlinkMacSystemFont,Avenir,"Avenir Next","Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
@@ -21,60 +22,24 @@ html,body,*{
 </head>
 <body>
 <div id="container">
-  fifteen
+  <!-- fifteen -->
 </div>  <!--container-->
-<!-- <script src="js/jquery.js" charset="utf-8"></script>
+<script src="js/jquery.js" charset="utf-8"></script>
+<script src="https://cdn.bootcss.com/paginationjs/2.1.2/pagination.js"></script>
+<!-- 
 <script src="http://119.23.133.72/static/lodash.ili.js?v=1.9_1100_0.4214223179610106"></script>
 <script src="https://kbrsh.github.io/moon/dist/moon.js"></script>
 <script src="https://unpkg.com/axios@0.18.0/dist/axios.min.js"></script>
 <script src="https://cdn.bootcss.com/three.js/92/three.js"></script> -->
 <script>
-var x= '628999999999999999999996';
-var y='9634309800089325675433679';
-    //10263309800089325675433675
-
-function add2BigInt(x,y){
-  var result='';
-
-  var arrXReverse=(''+x).split('').reverse();
-  var arrYReverse=(''+y).split('').reverse();
-
-  var maxLength=Math.max(arrXReverse.length,arrYReverse.length);
-
-  var arrResult=[];
-  var carry=0;
-
-  for(var i=0;i<maxLength;i++){
-    if(arrXReverse[i]===undefined){
-      arrXReverse[i]=0;
-    }else{
-      arrXReverse[i]=+arrXReverse[i];
-    }
-    if(arrYReverse[i]===undefined){
-      arrYReverse[i]=0;
-    }else{
-      arrYReverse[i]=+arrYReverse[i];
-    }
-    arrResult[i]=arrXReverse[i]+arrYReverse[i]+carry;
-    carry=Math.floor(arrResult[i]/10);
-    // if(arrResult[i]>9){ //carry>0
-    if(carry>0){
-      arrResult[i]=arrResult[i]%10;
-    }
-  } //for
-
-
-  if(carry){
-    arrResult.push(carry);
+$('#container').pagination({
+  dataSource:[1,2,3,4,5,6,7,8],
+  triggerPagingOnInit :false,
+  hideWhenLessThanOnePage:true,
+  callback:function(data,pagination){
+    console.log(data,pagination);
   }
-
-  result=arrResult.reverse().join('');
-
-  return result;
-}
-
-var z=add2BigInt(x,y);
-console.log(z);     //9,863,309,800,089,325,675,433,672
+});
 </script>
 </body>
 </html>
