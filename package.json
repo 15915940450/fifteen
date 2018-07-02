@@ -1,8 +1,8 @@
 {
   "name": "fifteen",
-  "version": "0.9.0",
+  "version": "1.5.9",
   "description": "1to9equalto15",
-  "main": "gulpfile.js",
+  "main": "index.html",
   "dependencies": {
     "ejs": "^2.6.1",
     "express": "^4.16.3",

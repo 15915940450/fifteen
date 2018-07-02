@@ -2,6 +2,3 @@
 *.css.map
 
 *.sublime-workspace
-
-node_modules
-gulpdest
