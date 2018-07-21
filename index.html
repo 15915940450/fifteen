@@ -16,25 +16,38 @@
 
 <script src="http://localhost/agc/dist/static/lodash.ili.js"></script>
 <script type="text/javascript">
-var arr=[1,5,9,0,4,0,5];
-console.log(arr);
+//1.準備數組arr[shuffle 0 ~ 10000]
+var arr=[];
+for(var i=0;i<1e4;i++){
+  arr.push(i);
+  arr=_.shuffle(arr);
+}
+_.logErr(arr);
+
+//2.quickSort(developed by Tony Hoare in 1959 and published in 1961)
+//https://www.nczonline.net/blog/2012/11/27/computer-science-in-javascript-quicksort/
+//Quicksort is generally considered to be efficient and fast and so is used by V8 as the implementation for Array.prototype.sort() on arrays with more than 23 items. For less than 23 items, V8 uses insertion sort. Merge sort is a competitor of quicksort as it is also efficient and fast but has the added benefit of being stable. This is why Mozilla and Safari use it for their implementation of Array.prototype.sort().
 function quickSort(arr){
-  if(arr.length<2){
-    return arr;
+  //当待排序序列长度分割到一定大小后(23)，使用插入排序。遞歸函數開頭位置總是包含 return 最小單元情況的條件語句
+  if(arr.length<23){
+    return iSort(arr);
   }
-  var oio=arr[0];
+  //中軸pivot,隨機選取
+  var pivot=arr[Math.floor(Math.random()*arr.length)];
+
   var arrL=[];
   var arrR=[];
   var arrE=[];
   arr.forEach(function(v){
-    if(v<oio){
+    if(v<pivot){
       arrL.push(v);
-    }else if(v===oio){
+    }else if(v===pivot){
       arrE.push(v);
     }else{
       arrR.push(v);
     }
   });
+  //遞歸調用
   return quickSort(arrL).concat(arrE,quickSort(arrR));
 }
 function iSort(arr){
@@ -50,8 +63,13 @@ function iSort(arr){
   }
   return arr;
 }
-var arrSorted=iSort(arr);
-console.log(arrSorted);
+console.time('quick');
+var arrSorted=quickSort(arr);
+console.timeEnd('quick');
+_.logErr(arrSorted);
+//今生无悔
+//https://cnbtkitty.xyz/
+//https://cntorrentkitty.com/
 </script>
 </body>
 </html>
