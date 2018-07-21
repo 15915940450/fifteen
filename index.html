@@ -14,11 +14,44 @@
   algorithm
 </div>  <!--container-->
 
-<script src="http://119.23.133.72/static/lodash.ili.js"></script>
-<script src="https://unpkg.com/axios@0.18.0/dist/axios.min.js"></script>
-
+<script src="http://localhost/agc/dist/static/lodash.ili.js"></script>
 <script type="text/javascript">
-
+var arr=[1,5,9,0,4,0,5];
+console.log(arr);
+function quickSort(arr){
+  if(arr.length<2){
+    return arr;
+  }
+  var oio=arr[0];
+  var arrL=[];
+  var arrR=[];
+  var arrE=[];
+  arr.forEach(function(v){
+    if(v<oio){
+      arrL.push(v);
+    }else if(v===oio){
+      arrE.push(v);
+    }else{
+      arrR.push(v);
+    }
+  });
+  return quickSort(arrL).concat(arrE,quickSort(arrR));
+}
+function iSort(arr){
+  for(var i=1;i<arr.length;i++){
+    var tmp=arr[i];
+    for(var j=i;j>0;j--){
+      if(tmp>arr[j-1]){
+        break;
+      }
+      arr[j]=arr[j-1];
+    }
+    arr[j]=tmp;
+  }
+  return arr;
+}
+var arrSorted=iSort(arr);
+console.log(arrSorted);
 </script>
 </body>
 </html>
