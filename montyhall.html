@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>algorithm</title>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<meta name="author" content="Thilina Fong" />
+<meta name="description" content="" />
+</head>
+<body>
+
+<div id="container">
+  algorithm
+</div>  <!--container-->
+
+<script src="http://localhost/agc/dist/static/lodash.ili.js"></script>
+<script type="text/javascript">
+const results={
+  wonGames:0,
+  lostGames:0
+};
+const chooseDoor=(m)=>{
+  return (Math.floor(Math.random()*m));
+};
+const run=(n)=>{
+  for(var i=0;i<n;i++){
+    let initialChoiceDoor=chooseDoor(3);
+    let winnerDoor=chooseDoor(3);
+    let remainingDoors=[0,1,2].filter((d)=>(d!==initialChoiceDoor));
+    if(remainingDoors[0]===winnerDoor){
+      remainingDoors.pop();
+    }else if(remainingDoors[1]===winnerDoor){
+      remainingDoors.shift();
+    }else{
+      //應該隨機
+      remainingDoors.splice(Math.floor(Math.random()*2),1);
+    }
+
+    if(remainingDoors[0]===winnerDoor){
+      results.wonGames++;
+    }else{
+      results.lostGames++;
+    }
+  }
+};
+var n=1e6;
+run(n);
+console.log(results);
+console.log(results.wonGames/n);
+</script>
+</body>
+</html>
