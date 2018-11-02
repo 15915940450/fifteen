@@ -1,12 +1,16 @@
 class Shudu{
   constructor(){
+    //arr2d:宮
     this.arr2d=[
       [],[],[],
       [],[],[],
       [],[],[]
     ];
+    //arrRC:行列
+    this.arrRC=[[],[],[],[],[],[],[],[],[]];
     this.arr1_9=[1,2,3,4,5,6,7,8,9];
   }
+  //宮159
   first159(){
     var es6This=this;
     for(var i=0;i<9;i++){
@@ -19,11 +23,10 @@ class Shudu{
     es6This.arr2d[8]=_.shuffle(es6This.arr1_9);
     return es6This;
   }
-
-  html(){
+  //變更arrRC使與arr2d相對應
+  arrRCfromarr2d(){
     var es6This=this;
-    var arrHTML=[[],[],[],[],[],[],[],[],[]];
-    arrHTML[0]=[
+    es6This.arrRC[0]=[
       es6This.arr2d[0][0],
       es6This.arr2d[0][1],
       es6This.arr2d[0][2],
@@ -34,7 +37,7 @@ class Shudu{
       es6This.arr2d[2][1],
       es6This.arr2d[2][2]
     ];
-    arrHTML[1]=[
+    es6This.arrRC[1]=[
       es6This.arr2d[0][3],
       es6This.arr2d[0][4],
       es6This.arr2d[0][5],
@@ -45,7 +48,7 @@ class Shudu{
       es6This.arr2d[2][4],
       es6This.arr2d[2][5]
     ];
-    arrHTML[2]=[
+    es6This.arrRC[2]=[
       es6This.arr2d[0][6],
       es6This.arr2d[0][7],
       es6This.arr2d[0][8],
@@ -56,7 +59,7 @@ class Shudu{
       es6This.arr2d[2][7],
       es6This.arr2d[2][8]
     ];
-    arrHTML[3]=[
+    es6This.arrRC[3]=[
       es6This.arr2d[3][0],
       es6This.arr2d[3][1],
       es6This.arr2d[3][2],
@@ -67,7 +70,7 @@ class Shudu{
       es6This.arr2d[5][1],
       es6This.arr2d[5][2]
     ];
-    arrHTML[4]=[
+    es6This.arrRC[4]=[
       es6This.arr2d[3][3],
       es6This.arr2d[3][4],
       es6This.arr2d[3][5],
@@ -78,7 +81,7 @@ class Shudu{
       es6This.arr2d[5][4],
       es6This.arr2d[5][5]
     ];
-    arrHTML[5]=[
+    es6This.arrRC[5]=[
       es6This.arr2d[3][6],
       es6This.arr2d[3][7],
       es6This.arr2d[3][8],
@@ -89,7 +92,7 @@ class Shudu{
       es6This.arr2d[5][7],
       es6This.arr2d[5][8]
     ];
-    arrHTML[6]=[
+    es6This.arrRC[6]=[
       es6This.arr2d[6][0],
       es6This.arr2d[6][1],
       es6This.arr2d[6][2],
@@ -100,7 +103,7 @@ class Shudu{
       es6This.arr2d[8][1],
       es6This.arr2d[8][2]
     ];
-    arrHTML[7]=[
+    es6This.arrRC[7]=[
       es6This.arr2d[6][3],
       es6This.arr2d[6][4],
       es6This.arr2d[6][5],
@@ -111,7 +114,7 @@ class Shudu{
       es6This.arr2d[8][4],
       es6This.arr2d[8][5]
     ];
-    arrHTML[8]=[
+    es6This.arrRC[8]=[
       es6This.arr2d[6][6],
       es6This.arr2d[6][7],
       es6This.arr2d[6][8],
@@ -122,14 +125,21 @@ class Shudu{
       es6This.arr2d[8][7],
       es6This.arr2d[8][8]
     ];
+    return es6This;
+  }
 
+  html(){
+    var es6This=this;
+    //更新arrRC
+    es6This.arrRCfromarr2d();
 
-    var strHTML=es6This.TemplateHTML(arrHTML).join('');
+    var strHTML=es6This.TemplateHTML().join('');
     document.getElementById('container').innerHTML=strHTML;
     return es6This;
   }
-  TemplateHTML(arrHTML){
-    var arr=arrHTML.map(function(v1,i1){
+  //字符串模板
+  TemplateHTML(){
+    var arr=this.arrRC.map(function(v1,i1){
       // console.log(v1);
       var strSpan=v1.map(function(v2){
         return `<span>${v2}</span>`;
