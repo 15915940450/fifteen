@@ -145,3 +145,14 @@ class Shudu{
 var obj=new Shudu();
 obj.first159().html();
 // console.log(obj.arr2d);
+
+// fori:
+// for(var i=0;i<3;i++){
+//   forj:
+//   for(var j=0;j<5;j++){
+//     console.log(i+'-'+j);
+//     if(j===1){
+//       break fori;
+//     }
+//   }
+// }
