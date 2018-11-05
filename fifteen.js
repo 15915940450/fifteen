@@ -1,6 +1,7 @@
 class Fifteen{
   constructor(){
     this.arr=new Array(9).fill(0);
+    this.i=0;
   }
 
   //解決方案
@@ -8,10 +9,12 @@ class Fifteen{
     this.fillCell(0);
   }
   fillCell(cell){
+    this.i++;
     if(cell>8){
       //結束條件：cell>8
       console.log(this.arr);
-      return true;
+      //廣度優先還是深度優先
+      // return true;
     }
 
     //逐個數填寫
@@ -36,6 +39,10 @@ class Fifteen{
 
   checkNum(cell,num){
     var currentArr=[...this.arr];
+    // cell是否大於8
+    if(cell>8){
+      return false;
+    }
     //1.是否已經重複
     if(currentArr.includes(num)){
       return false;
@@ -55,7 +62,7 @@ class Fifteen{
     if(cell===8 && num+currentArr[0]+currentArr[4]!==15){
       return false;
     }
-    
+
     return true;
   }
 
@@ -63,4 +70,5 @@ class Fifteen{
 
 var fifteen=new Fifteen();
 fifteen.solve();
+console.log(fifteen.i);
 // console.log(fifteen.arr);
