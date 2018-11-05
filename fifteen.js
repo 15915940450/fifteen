@@ -7,6 +7,7 @@ class Fifteen{
   //解決方案
   solve(){
     this.fillCell(0);
+    console.log(fifteen.i);
   }
   fillCell(cell){
     this.i++;
@@ -52,7 +53,7 @@ class Fifteen{
       return false;
     }
     //3.所在列！==15
-    if(cell>6 && num+currentArr[cell-3]+currentArr[cell-6]!==15){
+    if(cell>=6 && num+currentArr[cell-3]+currentArr[cell-6]!==15){
       return false;
     }
     //4.兩對角綫 !==15
@@ -70,5 +71,3 @@ class Fifteen{
 
 var fifteen=new Fifteen();
 fifteen.solve();
-console.log(fifteen.i);
-// console.log(fifteen.arr);
