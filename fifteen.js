@@ -10,6 +10,7 @@ class Fifteen{
   fillCell(cell){
     if(cell>8){
       //結束條件：cell>8
+      console.log(this.arr);
       return true;
     }
 
@@ -28,12 +29,33 @@ class Fifteen{
       }
       return true;
     }
-    
+
     //備注1：1到9都沒有符合，説明填寫失敗
     return false;
   }
 
-  checkNum(){
+  checkNum(cell,num){
+    var currentArr=[...this.arr];
+    //1.是否已經重複
+    if(currentArr.includes(num)){
+      return false;
+    }
+    //2.所在行橫綫！==15 && cell%3==2
+    if(cell%3===2 && num+currentArr[cell-1]+currentArr[cell-2]!==15){
+      return false;
+    }
+    //3.所在列！==15
+    if(cell>6 && num+currentArr[cell-3]+currentArr[cell-6]!==15){
+      return false;
+    }
+    //4.兩對角綫 !==15
+    if(cell===6 && num+currentArr[2]+currentArr[4]!==15){
+      return false;
+    }
+    if(cell===8 && num+currentArr[0]+currentArr[4]!==15){
+      return false;
+    }
+    
     return true;
   }
 
@@ -41,4 +63,4 @@ class Fifteen{
 
 var fifteen=new Fifteen();
 fifteen.solve();
-console.log(fifteen.arr);
+// console.log(fifteen.arr);
