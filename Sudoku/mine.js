@@ -21,6 +21,17 @@ class Shudu{
     es6This.arr2d[0]=_.shuffle(es6This.arr1_9);
     es6This.arr2d[4]=_.shuffle(es6This.arr1_9);
     es6This.arr2d[8]=_.shuffle(es6This.arr1_9);
+    es6This.arr2d=[ 
+      [ 8, 1, 2, 7, 5, 3, 6, 4, 9 ],
+      [ 9, 4, 3, 6, 8, 2, 1, 7, 5 ],
+      [ 6, 7, 5, 4, 9, 1, 2, 8, 3 ],
+      [ 1, 5, 4, 2, 3, 7, 8, 9, 6 ],
+      [ 3, 6, 9, 8, 4, 5, 7, 2, 1 ],
+      [ 2, 8, 7, 1, 6, 9, 5, 3, 4 ],
+      [ 5, 2, 1, 9, 7, 4, 3, 6, 8 ],
+      [ 4, 3, 8, 5, 2, 6, 9, 1, 7 ],
+      [ 7, 9, 6, 3, 1, 8, 4, 5, 2 ] 
+    ]
     return es6This;
   }
   //變更arrRC使與arr2d相對應
@@ -166,3 +177,50 @@ obj.first159().html();
 //     }
 //   }
 // }
+
+// fori:
+// for(var i=0;i<3;i++){
+//   forj:
+//   for(var j=0;j<5;j++){
+
+//     if(j===1 || j===3){
+//       continue;
+//     }
+
+//     console.log(i+'-'+j);
+    
+//   }
+// }
+
+
+// function test(){
+//   var test=Math.random();
+//   if(test>0.5){
+//     return true;
+//   }else{
+//     console.log(test);
+//     return false;
+//   }
+// }
+// while(test()){
+//   // console.log(9);
+// }
+
+  var total=0;  
+function queen(a,cur){
+    if(cur==a.length){
+      total++;
+      // console.log(a);
+      return
+    };
+    for(var i=0;i<a.length;i++){
+        a[cur]=i;flag=true;
+        for(var j=0;j<cur;j++){
+            var ab=i-a[j];
+            if(a[j]==i||(ab>0?ab:-ab)==cur-j){flag=false;break};
+        };
+        if(flag){queen(a,cur+1)};
+    };
+};
+queen([1,1,1,1,1,1,1,1],0)
+console.log(total);
