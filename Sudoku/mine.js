@@ -9,6 +9,8 @@ class Shudu{
     //arrRC:行列
     this.arrRC=[[],[],[],[],[],[],[],[],[]];
     this.arr1_9=[1,2,3,4,5,6,7,8,9];
+    this.for=0;
+    this.okay=true;
   }
 
   solve(){
@@ -20,16 +22,26 @@ class Shudu{
       if(gung===4){
         continue;
       }
-      es6This.fillCell(gung,0)
+      var fillCellSuccess=es6This.fillCell(gung,0);
+      if(!fillCellSuccess){
+        es6This.okay=false;
+        break;
+      }
     }
-    return es6This;
+    if(!es6This.okay){
+      // es6This.fillGung();
+    }
+
+    return es6This; //return true;
   }
   fillCell(gung,cell){
     if(cell===9){
       return true;
     }
     for(var num=1;num<=9;num++){
-      if(!this.checkCanFill()){
+      // console.log("for");
+      this.for++;
+      if(!this.checkCanFill(gung,cell,num)){
         continue;
       }
       this.arr2d[gung][cell]=num;
@@ -38,12 +50,17 @@ class Shudu{
         this.arr2d[gung][cell]=0;
         continue;
       }
-      // console.log("x"); //54個1填寫成功(9*[1,2,3,5,6,7].length)
+      console.log("for return"); //54個1填寫成功(9*[1,2,3,5,6,7].length)
       return true;
     }
     return false;
   }
-  checkCanFill(){
+  //檢查當前位置（gung,cell）是否可以填寫數字num(num)
+  checkCanFill(gung,cell,num){
+    // console.log(JSON.stringify(this.arr2d));
+    if(this.arr2d[gung][cell]===0){
+      return false;
+    }
     return true;
   }
   //宮159
@@ -182,6 +199,8 @@ class Shudu{
 
     var strHTML=es6This.TemplateHTML().join('');
     document.getElementById('container').innerHTML=strHTML;
+    console.log(this.for);
+    console.log(this.okay);
     return es6This;
   }
   //字符串模板
