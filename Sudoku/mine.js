@@ -10,6 +10,42 @@ class Shudu{
     this.arrRC=[[],[],[],[],[],[],[],[],[]];
     this.arr1_9=[1,2,3,4,5,6,7,8,9];
   }
+
+  solve(){
+    this.first159().fillGung().html();
+  }
+  fillGung(){
+    var es6This=this;
+    for(var gung=1;gung<=7;gung++){
+      if(gung===4){
+        continue;
+      }
+      es6This.fillCell(gung,0)
+    }
+    return es6This;
+  }
+  fillCell(gung,cell){
+    if(cell===9){
+      return true;
+    }
+    for(var num=1;num<=9;num++){
+      if(!this.checkCanFill()){
+        continue;
+      }
+      this.arr2d[gung][cell]=num;
+      var nextCellCanFill=this.fillCell(gung,cell+1);
+      if(!nextCellCanFill){
+        this.arr2d[gung][cell]=0;
+        continue;
+      }
+      // console.log("x"); //54個1填寫成功(9*[1,2,3,5,6,7].length)
+      return true;
+    }
+    return false;
+  }
+  checkCanFill(){
+    return true;
+  }
   //宮159
   first159(){
     var es6This=this;
@@ -21,17 +57,6 @@ class Shudu{
     es6This.arr2d[0]=_.shuffle(es6This.arr1_9);
     es6This.arr2d[4]=_.shuffle(es6This.arr1_9);
     es6This.arr2d[8]=_.shuffle(es6This.arr1_9);
-    es6This.arr2d=[ 
-      [ 8, 1, 2, 7, 5, 3, 6, 4, 9 ],
-      [ 9, 4, 3, 6, 8, 2, 1, 7, 5 ],
-      [ 6, 7, 5, 4, 9, 1, 2, 8, 3 ],
-      [ 1, 5, 4, 2, 3, 7, 8, 9, 6 ],
-      [ 3, 6, 9, 8, 4, 5, 7, 2, 1 ],
-      [ 2, 8, 7, 1, 6, 9, 5, 3, 4 ],
-      [ 5, 2, 1, 9, 7, 4, 3, 6, 8 ],
-      [ 4, 3, 8, 5, 2, 6, 9, 1, 7 ],
-      [ 7, 9, 6, 3, 1, 8, 4, 5, 2 ] 
-    ]
     return es6This;
   }
   //變更arrRC使與arr2d相對應
@@ -136,6 +161,17 @@ class Shudu{
       es6This.arr2d[8][7],
       es6This.arr2d[8][8]
     ];
+    // es6This.arrRC=[ 
+    //   [ 8, 1, 2, 7, 5, 3, 6, 4, 9 ],
+    //   [ 9, 4, 3, 6, 8, 2, 1, 7, 5 ],
+    //   [ 6, 7, 5, 4, 9, 1, 2, 8, 3 ],
+    //   [ 1, 5, 4, 2, 3, 7, 8, 9, 6 ],
+    //   [ 3, 6, 9, 8, 4, 5, 7, 2, 1 ],
+    //   [ 2, 8, 7, 1, 6, 9, 5, 3, 4 ],
+    //   [ 5, 2, 1, 9, 7, 4, 3, 6, 8 ],
+    //   [ 4, 3, 8, 5, 2, 6, 9, 1, 7 ],
+    //   [ 7, 9, 6, 3, 1, 8, 4, 5, 2 ] 
+    // ];
     return es6This;
   }
 
@@ -164,7 +200,7 @@ class Shudu{
 } //class
 
 var obj=new Shudu();
-obj.first159().html();
+obj.solve();
 // console.log(obj.arr2d);
 
 // fori:
@@ -205,22 +241,3 @@ obj.first159().html();
 // while(test()){
 //   // console.log(9);
 // }
-
-  var total=0;  
-function queen(a,cur){
-    if(cur==a.length){
-      total++;
-      // console.log(a);
-      return
-    };
-    for(var i=0;i<a.length;i++){
-        a[cur]=i;flag=true;
-        for(var j=0;j<cur;j++){
-            var ab=i-a[j];
-            if(a[j]==i||(ab>0?ab:-ab)==cur-j){flag=false;break};
-        };
-        if(flag){queen(a,cur+1)};
-    };
-};
-queen([1,1,1,1,1,1,1,1],0)
-console.log(total);
