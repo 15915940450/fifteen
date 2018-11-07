@@ -15,10 +15,28 @@ class Shudu{
   }
 
   solve(){
-    this.first159().fillGung().html();
+    this.fillGung().html();
+  }
+  //宮159,以及重置初始值arrGung,arrRow,arrCol,for,okay
+  first159(){
+    var es6This=this;
+    for(var i=0;i<9;i++){
+      for(var j=0;j<9;j++){
+        es6This.arrGung[i][j]=0;
+        es6This.arrRow[i][j]=0;
+        es6This.arrCol[i][j]=0;
+      }
+    }
+    es6This.for=0;
+    es6This.okay=true;
+    es6This.arrGung[0]=_.shuffle(es6This.arr1_9);
+    es6This.arrGung[4]=_.shuffle(es6This.arr1_9);
+    es6This.arrGung[8]=_.shuffle(es6This.arr1_9);
+    return es6This;
   }
   fillGung(){
     var es6This=this;
+    es6This.first159();
     for(var gung=1;gung<=7;gung++){
       if(gung===4){
         continue;
@@ -30,7 +48,7 @@ class Shudu{
       }
     }
     if(!es6This.okay){
-      // es6This.fillGung();
+      es6This.fillGung();
     }
 
     return es6This; //return true;
@@ -89,19 +107,7 @@ class Shudu{
 
     return (can && can2 && can3);
   }
-  //宮159
-  first159(){
-    var es6This=this;
-    for(var i=0;i<9;i++){
-      for(var j=0;j<9;j++){
-        es6This.arrGung[i][j]=0;
-      }
-    }
-    es6This.arrGung[0]=_.shuffle(es6This.arr1_9);
-    es6This.arrGung[4]=_.shuffle(es6This.arr1_9);
-    es6This.arrGung[8]=_.shuffle(es6This.arr1_9);
-    return es6This;
-  }
+  
   //變更arrRow使與arrGung相對應
   arrRowfromarrGung(){
     var es6This=this;
