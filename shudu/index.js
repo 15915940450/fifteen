@@ -85,7 +85,7 @@ class Shudu{
       this.arrGung[gung][cell]=num;
 
       //檢查當前單元格是否可以填上num，如果返回false，重置單元格數據為0（保險的做法），並繼續嘗試下一個數字num+1
-      if(!this.checkCan()){
+      if(!this.checkCan(gung,cell)){
         this.arrGung[gung][cell]=0;
         continue;
       }
@@ -105,22 +105,26 @@ class Shudu{
   }
 
   //當前位置填上數字之後，檢查this.arrGung，this.arrRow，this.arrCol是否有效
-  checkCan(){
-    var canGung=this.checkByType(this.arrGung);
+  checkCan(gung,cell){
+
+    var canGung=this.checkByType(this.arrGung,gung);
     //如果宮數據失敗，及時返回，終止往下檢查
     if(!canGung){
       return false;
     }
 
+    //計算出行列
+    var rowcol=this.turnGungCell2rowcol(gung,cell);
+
     //由宮數據生成行數據，並檢查
     this.arrRowfromarrGung();
-    var canRow=this.checkByType(this.arrRow);
+    var canRow=this.checkByType(this.arrRow,rowcol.row);
     if(!canRow){
       return false;
     }
 
     this.arrColfromarrRow();
-    var canCol=this.checkByType(this.arrCol);
+    var canCol=this.checkByType(this.arrCol,rowcol.col);
     if(!canCol){
       return false;
     }
@@ -129,20 +133,29 @@ class Shudu{
     return true;
   }
   //方法：檢查方式宮，行，列
-  checkByType(typeData){
+  checkByType(typeData,currentIndex){
+    var es6This=this;
     var canType=true;
 
-    //所有宮(或行或列)都不重複就爲真
-    canType=typeData.every(function(v){
-      //先把0去掉
-      v=_.compact(v);
-      //去重
-      var vUniq=_.uniq(v);
-      //去重之後如果和原來的數組長度沒變化，則沒有重複，可以填寫。否則不能填寫
-      return (v.length===vUniq.length);
-    });
-
+    //傳入當前宮（或行或列）(注意有可能為0)，檢查此宮（或行或列），否則檢查全盤
+    if(currentIndex!==undefined){
+      canType=this.checkIsNOTrepeat(typeData[currentIndex]);
+    }else{
+      //所有宮(或行或列)都不重複就爲真
+      canType=typeData.every(function(arr){
+        es6This.checkIsNOTrepeat(arr);
+      });
+    }
+    
     return canType;
+  }
+  checkIsNOTrepeat(arr){
+    //先把0去掉
+    arr=_.compact(arr);
+    //去重
+    var arrUniq=_.uniq(arr);
+    //去重之後如果和原來的數組長度沒變化，則沒有重複，可以填寫。否則不能填寫
+    return (arr.length===arrUniq.length);
   }
 
   //變更arrRow使與arrGung相對應
@@ -150,21 +163,29 @@ class Shudu{
     var es6This=this;
     for(var gungIndex=0;gungIndex<9;gungIndex++){
       for(var cellIndex=0;cellIndex<9;cellIndex++){
-        //gung[5][3]=row[4][6]
-        var shangGung=Math.floor(gungIndex/3);  //商
-        var yuGung=gungIndex%3; //余
-        var shangCell=Math.floor(cellIndex/3);
-        var yuCell=cellIndex%3;
-
-        var x=shangGung*3+shangCell;
-        var y=yuGung*3+yuCell;
-        es6This.arrRow[gungIndex][cellIndex]=es6This.arrGung[x][y];
+        var rowcol=es6This.turnGungCell2rowcol(gungIndex,cellIndex);
+        es6This.arrRow[gungIndex][cellIndex]=es6This.arrGung[rowcol.row][rowcol.col];
       }
     }
     return es6This;
   }
+  turnGungCell2rowcol(gungIndex,cellIndex){
+    //gung[5][3]=row[4][6]
+    var shangGung=Math.floor(gungIndex/3);  //商(1)
+    var yuGung=gungIndex%3; //余(2)
+    var shangCell=Math.floor(cellIndex/3);  //商(1)
+    var yuCell=cellIndex%3; //余(0)
+
+    var x=shangGung*3+shangCell;  //1*3+1
+    var y=yuGung*3+yuCell;  //2*3+0
+
+    return ({
+      row:x,
+      col:y
+    });
+  }
   
-  //變更arrRow使與arrRow相對應
+  //變更arrCol使與arrRow相對應
   arrColfromarrRow(){
     var es6This=this;
     es6This.arrRow.forEach(function(vRow,rowIndex){
