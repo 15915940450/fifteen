@@ -8,16 +8,48 @@ class Shudu{
     ];
     //arrRow:行
     this.arrRow=[[],[],[],[],[],[],[],[],[]];
+    //arrCol列
     this.arrCol=[[],[],[],[],[],[],[],[],[]];
+
     this.arr1_9=[1,2,3,4,5,6,7,8,9];
+    //for程序嘗試縂次數
     this.for=0;
+    //okay是否生成成功
     this.okay=true;
   }
 
+  //解決方案
   solve(){
-    this.fillGung().html();
+    this.tryGung().html();
   }
-  //宮159,以及重置初始值arrGung,arrRow,arrCol,for,okay
+  
+  tryGung(){
+    var es6This=this;
+    //首先生成1，5，9這三個宮，索引是0，4，8
+    es6This.first159();
+
+    //依次生成索引為1，2，3，5，6，7的宮數據
+    for(var gung=1;gung<=7;gung++){
+      if(gung===4){
+        continue;
+      }
+      var tryCellSuccess=es6This.tryCell(gung,0);
+      if(!tryCellSuccess){
+        es6This.okay=false;
+        //生成失敗之後終止往下嘗試宮
+        break;
+      }
+    }
+
+    //生成失敗重新再來一遍，知道成功爲止
+    if(!es6This.okay){
+      es6This.tryGung();
+    }
+
+    return es6This; //return true;
+  }
+
+  //重置初始值arrGung,arrRow,arrCol,okay==>宮159
   first159(){
     var es6This=this;
     for(var i=0;i<9;i++){
@@ -27,85 +59,90 @@ class Shudu{
         es6This.arrCol[i][j]=0;
       }
     }
-    es6This.for=0;
-    es6This.okay=true;
     es6This.arrGung[0]=_.shuffle(es6This.arr1_9);
     es6This.arrGung[4]=_.shuffle(es6This.arr1_9);
     es6This.arrGung[8]=_.shuffle(es6This.arr1_9);
+
+    // es6This.for=0;
+    //默認值：假定是可以生成成功的
+    es6This.okay=true;
+    
     return es6This;
   }
-  fillGung(){
-    var es6This=this;
-    es6This.first159();
-    for(var gung=1;gung<=7;gung++){
-      if(gung===4){
-        continue;
-      }
-      var fillCellSuccess=es6This.fillCell(gung,0);
-      if(!fillCellSuccess){
-        es6This.okay=false;
-        break;
-      }
-    }
-    if(!es6This.okay){
-      es6This.fillGung();
-    }
 
-    return es6This; //return true;
-  }
-  fillCell(gung,cell){
+  //填寫單元格
+  tryCell(gung,cell){
+    //共有9個格子
     if(cell===9){
       return true;
     }
     for(var num=1;num<=9;num++){
       // console.log("for");
+      //統計所有循環次數，此變量代表性能
       this.for++;
+
+      //先把數字num往格子裏填上
       this.arrGung[gung][cell]=num;
-      if(!this.checkCanFill(gung,cell,num)){
+
+      //檢查當前單元格是否可以填上num，如果返回false，重置單元格數據為0（保險的做法），並繼續嘗試下一個數字num+1
+      if(!this.checkCan()){
         this.arrGung[gung][cell]=0;
         continue;
       }
-      var nextCellCanFill=this.fillCell(gung,cell+1);
-      if(!nextCellCanFill){
+
+      //回溯：下一個單元格如果嘗試所有數字都不能生成解決方案，則代表當前單元格的此數字num不可以填寫，繼續下一個數num+1
+      var nextCellCan=this.tryCell(gung,cell+1);
+      if(!nextCellCan){
         this.arrGung[gung][cell]=0;
         continue;
       }
-      // console.log("for return"); //54個1填寫成功(9*[1,2,3,5,6,7].length)
+
+      // console.log("for return");
       return true;
-    }
+    } //end for
+
     return false;
   }
-  //檢查當前位置（gung,cell）是否可以填寫數字num(num)
-  checkCanFill(gung,cell,num){
-    // console.log(JSON.stringify(this.arrGung));
-    // if(this.arrGung[gung][cell]===0){
-    //   return false;
-    // }
-    var can=true;
-    //行數據不能重複
-    can=this.arrGung.every(function(v){
-      //所有行都不重複就爲真
-      v=_.compact(v);
-      var vUniq=_.uniq(v);
-      return v.length===vUniq.length;
-    });
+
+  //當前位置填上數字之後，檢查this.arrGung，this.arrRow，this.arrCol是否有效
+  checkCan(){
+    var canGung=this.checkByType(this.arrGung);
+    //如果宮數據失敗，及時返回，終止往下檢查
+    if(!canGung){
+      return false;
+    }
+
+    //由宮數據生成行數據，並檢查
     this.arrRowfromarrGung();
-    var can2=this.arrRow.every(function(v){
-      //所有行都不重複就爲真
-      v=_.compact(v);
-      var vUniq=_.uniq(v);
-      return v.length===vUniq.length;
-    });
-    // console.log(can2);
+    var canRow=this.checkByType(this.arrRow);
+    if(!canRow){
+      return false;
+    }
+
     this.arrColfromarrRow();
-    var can3=this.arrCol.every(function(v){
-      //所有列都不重複就爲真
+    var canCol=this.checkByType(this.arrCol);
+    if(!canCol){
+      return false;
+    }
+
+    //沒有異常。宮，行，列檢查都okay，檢查成功
+    return true;
+  }
+  //方法：檢查方式宮，行，列
+  checkByType(typeData){
+    var canType=true;
+
+    //所有宮(或行或列)都不重複就爲真
+    canType=typeData.every(function(v){
+      //先把0去掉
       v=_.compact(v);
+      //去重
       var vUniq=_.uniq(v);
-      return v.length===vUniq.length;
+      //去重之後如果和原來的數組長度沒變化，則沒有重複，可以填寫。否則不能填寫
+      return (v.length===vUniq.length);
     });
 
-    return (can && can2 && can3);
+    return canType;
   }
   
   //變更arrRow使與arrGung相對應
@@ -210,17 +247,6 @@ class Shudu{
       es6This.arrGung[8][7],
       es6This.arrGung[8][8]
     ];
-    // es6This.arrRow=[ 
-    //   [ 8, 1, 2, 7, 5, 3, 6, 4, 9 ],
-    //   [ 9, 4, 3, 6, 8, 2, 1, 7, 5 ],
-    //   [ 6, 7, 5, 4, 9, 1, 2, 8, 3 ],
-    //   [ 1, 5, 4, 2, 3, 7, 8, 9, 6 ],
-    //   [ 3, 6, 9, 8, 4, 5, 7, 2, 1 ],
-    //   [ 2, 8, 7, 1, 6, 9, 5, 3, 4 ],
-    //   [ 5, 2, 1, 9, 7, 4, 3, 6, 8 ],
-    //   [ 4, 3, 8, 5, 2, 6, 9, 1, 7 ],
-    //   [ 7, 9, 6, 3, 1, 8, 4, 5, 2 ] 
-    // ];
     return es6This;
   }
   //變更arrRow使與arrRow相對應
@@ -236,17 +262,15 @@ class Shudu{
 
   html(){
     var es6This=this;
-    //更新arrRow
-    es6This.arrRowfromarrGung();
-
     var strHTML=es6This.TemplateHTML().join('');
     document.getElementById('container').innerHTML=strHTML;
     console.log(this.for);
     console.log(this.okay);
     return es6This;
   }
-  //字符串模板
+  //字符串模板，使用行數據
   TemplateHTML(){
+    // console.log(this.arrRow);
     var arr=this.arrRow.map(function(v1,i1){
       // console.log(v1);
       var strSpan=v1.map(function(v2){
@@ -264,6 +288,10 @@ var obj=new Shudu();
 obj.solve();
 // console.log(obj.arrGung);
 
+
+
+
+//=========================
 // fori:
 // for(var i=0;i<3;i++){
 //   forj:
