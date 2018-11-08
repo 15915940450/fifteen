@@ -144,111 +144,26 @@ class Shudu{
 
     return canType;
   }
-  
+
   //變更arrRow使與arrGung相對應
   arrRowfromarrGung(){
     var es6This=this;
-    es6This.arrRow[0]=[
-      es6This.arrGung[0][0],
-      es6This.arrGung[0][1],
-      es6This.arrGung[0][2],
-      es6This.arrGung[1][0],
-      es6This.arrGung[1][1],
-      es6This.arrGung[1][2],
-      es6This.arrGung[2][0],
-      es6This.arrGung[2][1],
-      es6This.arrGung[2][2]
-    ];
-    es6This.arrRow[1]=[
-      es6This.arrGung[0][3],
-      es6This.arrGung[0][4],
-      es6This.arrGung[0][5],
-      es6This.arrGung[1][3],
-      es6This.arrGung[1][4],
-      es6This.arrGung[1][5],
-      es6This.arrGung[2][3],
-      es6This.arrGung[2][4],
-      es6This.arrGung[2][5]
-    ];
-    es6This.arrRow[2]=[
-      es6This.arrGung[0][6],
-      es6This.arrGung[0][7],
-      es6This.arrGung[0][8],
-      es6This.arrGung[1][6],
-      es6This.arrGung[1][7],
-      es6This.arrGung[1][8],
-      es6This.arrGung[2][6],
-      es6This.arrGung[2][7],
-      es6This.arrGung[2][8]
-    ];
-    es6This.arrRow[3]=[
-      es6This.arrGung[3][0],
-      es6This.arrGung[3][1],
-      es6This.arrGung[3][2],
-      es6This.arrGung[4][0],
-      es6This.arrGung[4][1],
-      es6This.arrGung[4][2],
-      es6This.arrGung[5][0],
-      es6This.arrGung[5][1],
-      es6This.arrGung[5][2]
-    ];
-    es6This.arrRow[4]=[
-      es6This.arrGung[3][3],
-      es6This.arrGung[3][4],
-      es6This.arrGung[3][5],
-      es6This.arrGung[4][3],
-      es6This.arrGung[4][4],
-      es6This.arrGung[4][5],
-      es6This.arrGung[5][3],
-      es6This.arrGung[5][4],
-      es6This.arrGung[5][5]
-    ];
-    es6This.arrRow[5]=[
-      es6This.arrGung[3][6],
-      es6This.arrGung[3][7],
-      es6This.arrGung[3][8],
-      es6This.arrGung[4][6],
-      es6This.arrGung[4][7],
-      es6This.arrGung[4][8],
-      es6This.arrGung[5][6],
-      es6This.arrGung[5][7],
-      es6This.arrGung[5][8]
-    ];
-    es6This.arrRow[6]=[
-      es6This.arrGung[6][0],
-      es6This.arrGung[6][1],
-      es6This.arrGung[6][2],
-      es6This.arrGung[7][0],
-      es6This.arrGung[7][1],
-      es6This.arrGung[7][2],
-      es6This.arrGung[8][0],
-      es6This.arrGung[8][1],
-      es6This.arrGung[8][2]
-    ];
-    es6This.arrRow[7]=[
-      es6This.arrGung[6][3],
-      es6This.arrGung[6][4],
-      es6This.arrGung[6][5],
-      es6This.arrGung[7][3],
-      es6This.arrGung[7][4],
-      es6This.arrGung[7][5],
-      es6This.arrGung[8][3],
-      es6This.arrGung[8][4],
-      es6This.arrGung[8][5]
-    ];
-    es6This.arrRow[8]=[
-      es6This.arrGung[6][6],
-      es6This.arrGung[6][7],
-      es6This.arrGung[6][8],
-      es6This.arrGung[7][6],
-      es6This.arrGung[7][7],
-      es6This.arrGung[7][8],
-      es6This.arrGung[8][6],
-      es6This.arrGung[8][7],
-      es6This.arrGung[8][8]
-    ];
+    for(var gungIndex=0;gungIndex<9;gungIndex++){
+      for(var cellIndex=0;cellIndex<9;cellIndex++){
+        //gung[5][3]=row[4][6]
+        var shangGung=Math.floor(gungIndex/3);  //商
+        var yuGung=gungIndex%3; //余
+        var shangCell=Math.floor(cellIndex/3);
+        var yuCell=cellIndex%3;
+
+        var x=shangGung*3+shangCell;
+        var y=yuGung*3+yuCell;
+        es6This.arrRow[gungIndex][cellIndex]=es6This.arrGung[x][y];
+      }
+    }
     return es6This;
   }
+  
   //變更arrRow使與arrRow相對應
   arrColfromarrRow(){
     var es6This=this;
