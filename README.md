@@ -78,7 +78,7 @@ var fifteen=new Fifteen();
 fifteen.solve();
 ```
 
-*** 數獨
+#### 數獨
 
 ```
 class Shudu{
