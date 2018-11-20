@@ -1,112 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>algorithm</title>
+<title>Fibonacci</title>
 <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
 <meta name="author" content="Thilina Fong" />
 <meta name="description" content="" />
 <style>
-  canvas{
-      width: 600px;
-      height:480px;
-      background: #000;
-    }
+*{
+  margin: 0;
+  padding: 0;
+}
+canvas{
+  background: #333;
+}
 </style>
 </head>
 <body>
 <canvas></canvas>
-<div id="container">
-  algorithm4
-</div>  <!--container-->
 <script>
-  var canvas = document.querySelector('canvas');
-
-  canvas.width = 600;
-  canvas.height = 480;
-
-  var coor = {
-    x: 300,
-    y: 240,
-  };
-
-  var ctx = canvas.getContext('2d');
-
-  function draw(r, n ,prevR) {
-     if(n>2) {
-       switch(n%4) {
-        case 0 :
-          coor.y = coor.y - 5 * prevR;
-          coor.y = coor.y + 5 * r;
-
-          break;
-        case 1 :
-          coor.x = coor.x + 5 * prevR;
-          coor.x = coor.x - 5 * r;
-          break;
-        case 2 :
-          coor.y = coor.y + 5 * prevR;
-          coor.y = coor.y - 5 * r;
-          break;
-        case 3 :
-          coor.x = coor.x - 5 * prevR;
-          coor.x = coor.x + 5 * r;
-          break;
-      }
-    }
-    ctx.beginPath();
-    ctx.arc(coor.x,coor.y,5*r,Math.PI*0.5*(n),Math.PI*0.5*(n-1),true);
-    if(n>1) {
-       switch(n%4) {
-        case 0 :
-          ctx.moveTo(coor.x - 5*r,coor.y);
-
-          break;
-        case 1 :
-          ctx.moveTo(coor.x,coor.y + 5*r);
-          break;
-        case 2 :
-         ctx.moveTo(coor.x + 5*r,coor.y);
-          break;
-        case 3 :
-          ctx.moveTo(coor.x,coor.y-5*r);
-          break;
-      }
-    }
-    
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = '#fff';
-    ctx.stroke();
+class Fibonacci{
+  constructor(){
+    this.clientW=document.documentElement.clientWidth || document.body.clientWidth;
+    this.clientH=document.documentElement.clientHeight || document.body.clientHeight;
+    this.eleCanvas=document.querySelector('canvas');
+    this.eleCanvas.width=this.clientW;
+    this.eleCanvas.height=this.clientH-4;
   }
 
-
-
-  function getFibonacci(n) {
-    var fibarr = [];
-    var i = 0;
-    while(i<n) {
-      if(i<=1) {
-        fibarr.push(i);
-      }else{
-        fibarr.push(fibarr[i-1] + fibarr[i-2])
-      }
-      i++;
+  //index:0,1,2,3  F0=1,F1=1,F2=2,,,,Fn=F(n-1)+F(n-2)
+  fibonacciNum(index){
+    var num=1;
+    if(index===0 || index===1){
+      return 1;
     }
-    
-    return fibarr;
+    num=this.fibonacciNum(index-1)+this.fibonacciNum(index-2);
+    return num;
   }
-  var data = getFibonacci(10);
+}
 
-  for(var i = 0,l=data.length;i<l;i++) {
-    if(data[i]!=0) {
-      draw(data[i],i,data[i-1]);
-      
-    }
-  }
-
-
-
+var obj=new Fibonacci();
+console.log(obj.fibonacciNum(2));
 </script>
 </body>
 </html>
