@@ -7,7 +7,8 @@ class Fibonacci{
     this.eleCanvas.height=this.clientH-4;
     this.sxw2d=this.eleCanvas.getContext('2d'); //上下文：2d
 
-    this.initStartPoint=[430,270]; //this.clientW/2,(this.clientH-4)/2  斐波那契曲綫起點
+    // this.initStartPoint=[430,270]; //this.clientW/2,(this.clientH-4)/2  斐波那契曲綫起點
+    this.initStartPoint=[this.clientW/2,(this.clientH-4)/2];
   }
 
   //斐波那契数(索引)
@@ -23,7 +24,7 @@ class Fibonacci{
 
   //邊長
   px10(i){
-    return (10*this.fibonacciNum(i));
+    return (3*this.fibonacciNum(i));
   }
 
   //左上點以及圓弧中心點
@@ -132,7 +133,7 @@ class Fibonacci{
   //   return es6This;
   // }
   // 繪製第i段弧綫
-  drawArc(i){
+  drawArc(i,isDrawRect){
     var es6This=this;
 
     es6This.sxw2d.beginPath();
@@ -142,11 +143,19 @@ class Fibonacci{
     var radius=sideLen;
     var startAngle=(-Math.PI/2)*((i+1)%4);
     var endAngle=(-Math.PI/2)*((i+2)%4);
+
+    if(isDrawRect){
+      //繪製矩形
+      es6This.sxw2d.strokeStyle='#83d0f2';
+      es6This.sxw2d.lineWidth=1;
+      es6This.sxw2d.strokeRect(ltPoint.x,ltPoint.y,sideLen,sideLen);
+    }
+
     // arc(x, y, radius, startAngle, endAngle, anticlockwise)
     es6This.sxw2d.arc(ltPoint.arcX,ltPoint.arcY,radius,startAngle,endAngle,true);
+    es6This.sxw2d.strokeStyle='#000';
+    es6This.sxw2d.lineWidth=3;
     es6This.sxw2d.stroke();
-    //繪製矩形
-    es6This.sxw2d.strokeRect(ltPoint.x,ltPoint.y,sideLen,sideLen);
 
     return es6This;
   }
@@ -154,7 +163,7 @@ class Fibonacci{
   forI(I){
     for(var i=0;i<I;i++){
       // this.drawRect(i);
-      this.drawArc(i);
+      this.drawArc(i,true);
     }
   }
 
