@@ -26,11 +26,10 @@ class Fibonacci{
     return (10*this.fibonacciNum(i));
   }
 
-  //左上點
+  //左上點以及圓弧中心點
   ltPoint(i,sideLen){
     //初始化變量
-    var x=0;
-    var y=0;
+    var x,y,arcX,arcY;
 
     //方向0：3->1,1:0->2,2:1->3,3:3->0
     var direction=i%4;
@@ -41,33 +40,43 @@ class Fibonacci{
       case 0:
       x=startPoint.x-sideLen;
       y=startPoint.y;
+      arcX=startPoint.x;
+      arcY=startPoint.y+sideLen;
       break;
       case 1:
       x=startPoint.x;
       y=startPoint.y;
+      arcX=startPoint.x+sideLen;
+      arcY=startPoint.y;
       break;
       case 2:  //向右1--》3
       x=startPoint.x;
       y=startPoint.y-sideLen;
+      arcX=startPoint.x;
+      arcY=startPoint.y-sideLen;
       break;
       case 3:
       x=startPoint.x-sideLen;
       y=startPoint.y-sideLen;
+      arcX=startPoint.x-sideLen;
+      arcY=startPoint.y;
       break;
       default:
       console.log('impossible');
     }
 
     return ({
+      arcX:arcX,
+      arcY:arcY,
       x:x,
       y:y
     });
   }
+
   //弧綫起始點坐標算法
   startPoint(i){
     // 初始化變量
-    var x=0;
-    var y=0;
+    var x,y;
 
     //遞歸出口
     if(i===0){
@@ -107,17 +116,36 @@ class Fibonacci{
     });
   }
 
-  //繪製第i個正方形
-  draw(i){
+  // 繪製第i個正方形
+  // drawRect(i){
+  //   var es6This=this;
+
+  //   //正方形
+  //   /*
+  //   要素：起始點，邊長
+  //   */
+  //   var sideLen=es6This.px10(i);
+  //   var ltPoint=es6This.ltPoint(i,sideLen);
+  //   // console.log(ltPoint);
+  //   es6This.sxw2d.strokeRect(ltPoint.x,ltPoint.y,sideLen,sideLen);
+
+  //   return es6This;
+  // }
+  // 繪製第i段弧綫
+  drawArc(i){
     var es6This=this;
 
-    //正方形
-    /*
-    要素：起始點，邊長
-    */
+    es6This.sxw2d.beginPath();
+
     var sideLen=es6This.px10(i);
     var ltPoint=es6This.ltPoint(i,sideLen);
-    // console.log(ltPoint);
+    var radius=sideLen;
+    var startAngle=(-Math.PI/2)*((i+1)%4);
+    var endAngle=(-Math.PI/2)*((i+2)%4);
+    // arc(x, y, radius, startAngle, endAngle, anticlockwise)
+    es6This.sxw2d.arc(ltPoint.arcX,ltPoint.arcY,radius,startAngle,endAngle,true);
+    es6This.sxw2d.stroke();
+    //繪製矩形
     es6This.sxw2d.strokeRect(ltPoint.x,ltPoint.y,sideLen,sideLen);
 
     return es6This;
@@ -125,7 +153,8 @@ class Fibonacci{
 
   forI(I){
     for(var i=0;i<I;i++){
-      this.draw(i);
+      // this.drawRect(i);
+      this.drawArc(i);
     }
   }
 
@@ -134,4 +163,4 @@ class Fibonacci{
 } //class
 
 var obj=new Fibonacci();
-obj.forI(11);
+obj.forI(13);
