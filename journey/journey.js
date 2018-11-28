@@ -5,11 +5,12 @@ class Journey{
     this.chessboardLen=8;
     this.arrStep=[];  //0，1,2,3,,,63
     this.arrXY=[];  //記錄每一步的坐標xy
+    this.okay=false;
   }
 
   solve(){
     var es6This=this;
-    es6This.nextStep(0,0,0);
+    es6This.okay=es6This.nextStep(0,0,0);
     return es6This;
   }
 
@@ -22,6 +23,7 @@ class Journey{
     }
 
     //當前步信息
+    console.log(step);
     es6This.arrXY[step]={
       step:step,
       x:x,
@@ -44,7 +46,9 @@ class Journey{
 
       //回溯
       if(!success){
-        // es6This.arrXY.length=step;
+        console.log('回溯'+step);
+        es6This.arrXY.length=step;
+        console.log(JSON.stringify(es6This.arrXY));
         continue;
       }
 
@@ -59,7 +63,7 @@ class Journey{
     
   }
 
-  check(x,y,step){
+  check(x,y){
 
     
     var es6This=this;
@@ -68,38 +72,10 @@ class Journey{
       return false;
     }
     //已經走過
-    // es6This.arrXY.length=step+1;
-    // console.log(x,y,step);
-    // for(var ii=0;ii<step+1;ii++){
-    //   if(es6This.arrXY[ii].x===x && es6This.arrXY[ii].y===y){
-    //     return false;
-    //   }
-    // }
-    // var some=es6This.arrXY.some(function(v){
-    //   return (v.x===x && v.y===y);
-    // });
-    // console.log(some);
-    // if(some){
-    //   return false;
-    // }
-    // es6This.arrXY.length=step+1;
-    // var index=es6This.arrXY.findIndex(function(v){
-    //   // console.log(v);
-    //   if(v){
-    //     return (v.x===x && v.y===y);
-    //   }
-    // });
-
-    // if(index!==-1){
-    //   return false;
-    // }
-    // if(step===52){
-    //   this.arrXY.length=52;
-    //   console.log(step);
-    // console.log(JSON.parse(JSON.stringify(this.arrXY)));
-    // console.log(index);
-    // }
-    return true;
+    var some=es6This.arrXY.some(function(v){
+      return (v.x===x && v.y===y);
+    });
+    return !some;
   }
 
   xy2step(){
@@ -137,8 +113,8 @@ class Journey{
 
 var obj=new Journey();
 obj.solve().html();
-// console.log(obj.arrXY);
-// console.log(obj.arrStep);
+// obj.arrXY.length=1;
+console.log(obj.arrXY);
+console.log(obj.okay);
 
-// console.log(JSON.stringify(obj.arrXY));
 
