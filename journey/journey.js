@@ -25,7 +25,8 @@ class Journey{
     var arrCell=es6This.arrStep.map(function(step,i){
       var oddEven='';
       //第偶數行的奇數列 或者 第奇數行的偶數列  (0-base)
-      if((!!(i & 1) && !((i/es6This.chessboardLen) & 1)) || (!(i & 1) && !!((i/es6This.chessboardLen) & 1))){
+      //單目運算符 > 雙目運算符（*/% > +- > >>> > > > === > & > ^ > | > && > || > ?: > ^= > ,）
+      if(i&1^i>>>3&1){
         oddEven=' black_cell';
       }
       return (`<div class="cell${oddEven}">${step}</div>`);
