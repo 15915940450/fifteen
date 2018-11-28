@@ -3,7 +3,7 @@ class Journey{
     this.arrX=[1,2,2,1,-1,-2,-2,-1];  //橫軸
     this.arrY=[2,1,-1,-2,2,1,-1,-2];  //豎軸
     this.chessboardLen=8;
-    this.arrStep=[];  //1,2,3,,,64
+    this.arrStep=[];  //0，1,2,3,,,63
     this.arrXY=[];  //記錄每一步的坐標xy
   }
 
@@ -27,7 +27,7 @@ class Journey{
       x:0,
       y:0
     };
-    this.arrStep.push(step);
+    this.arrStep[step]=step;
 
     //下一步8個位置（分支）
     for(var cell=0;cell<8;cell++){
@@ -55,15 +55,6 @@ class Journey{
     
   }
 
-  step64(){
-    var es6This=this;
-    es6This.arrStep.length=Math.pow(es6This.chessboardLen,2);
-    es6This.arrStep.fill(null);
-    es6This.arrStep=_.shuffle(es6This.arrStep.map(function(v,i){
-      return (i+1);
-    }));
-    return es6This;
-  }
   check(cell){
     var pass=true;
     return pass;
