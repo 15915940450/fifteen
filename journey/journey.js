@@ -4,6 +4,55 @@ class Journey{
     this.arrY=[2,1,-1,-2,2,1,-1,-2];  //豎軸
     this.chessboardLen=8;
     this.arrStep=[];  //1,2,3,,,64
+    this.arrXY=[];  //記錄每一步的坐標xy
+  }
+
+  solve(){
+    var es6This=this;
+    es6This.nextStep(0);
+    return es6This;
+  }
+
+  nextStep(step){
+    var es6This=this;
+    //step:0,1,2,3,4,,,64
+    if(step>=6){
+      //走完64步，成功
+      return true;
+    }
+
+    //當前步信息
+    es6This.arrXY[step]={
+      step:step,
+      x:0,
+      y:0
+    };
+    this.arrStep.push(step);
+
+    //下一步8個位置（分支）
+    for(var cell=0;cell<8;cell++){
+      //檢查該位置是否可以跳
+      if(!es6This.check(cell)){
+        //不可以跳，嘗試下一個位置
+        continue;
+      }
+      //可以跳，下一步
+      var success=es6This.nextStep(step+1);
+
+      //回溯
+      if(!success){
+        continue;
+      }
+
+      //遞歸結束，跳完64步，已經找到一個解，退出循環
+      return true;
+
+    }
+    //所有分支都試了
+    return false;
+    
+
+    
   }
 
   step64(){
@@ -15,7 +64,7 @@ class Journey{
     }));
     return es6This;
   }
-  check(){
+  check(cell){
     var pass=true;
     return pass;
   }
@@ -38,5 +87,4 @@ class Journey{
 } //class
 
 var obj=new Journey();
-obj.check();
-obj.step64().html();
+obj.solve().html();
