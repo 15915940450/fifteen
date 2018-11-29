@@ -6,6 +6,7 @@ class Journey{
     this.arrStep=[];  //0，1,2,3,,,63
     this.arrXY=[];  //記錄每一步的坐標xy
     this.okay=false;
+    this.dirShuffle=_.shuffle([0,1,2,3,4,5,6,7]);
   }
 
   solve(){
@@ -17,25 +18,22 @@ class Journey{
   nextStep(step,x,y){
     var es6This=this;
     //step:0,1,2,3,4,,,64
-    if(step>=64){
+    if(step>=60){
       //走完64步，成功
       return true;
     }
 
     //當前步信息
-    console.log(step);
     es6This.arrXY[step]={
       step:step,
       x:x,
       y:y
     };
-    // console.log(step);
-    // console.log(JSON.stringify(es6This.arrXY));
 
     //下一步8個位置（分支）
     for(var dir=0;dir<8;dir++){
-      var nextX=x+es6This.arrX[dir];
-      var nextY=y+es6This.arrY[dir];
+      var nextX=x+es6This.arrX[es6This.dirShuffle[dir]];
+      var nextY=y+es6This.arrY[es6This.dirShuffle[dir]];
       //檢查該位置是否可以跳
       if(!es6This.check(nextX,nextY,step)){
         //不可以跳，嘗試下一個位置
@@ -46,9 +44,9 @@ class Journey{
 
       //回溯
       if(!success){
-        console.log('回溯'+step);
-        es6This.arrXY.length=step;
-        console.log(JSON.stringify(es6This.arrXY));
+        // console.log('回溯'+step);
+        es6This.arrXY.length=step+1;
+        // console.log(JSON.stringify(es6This.arrXY));
         continue;
       }
 
@@ -113,8 +111,7 @@ class Journey{
 
 var obj=new Journey();
 obj.solve().html();
-// obj.arrXY.length=1;
-console.log(obj.arrXY);
+console.log(JSON.stringify(obj.arrXY));
 console.log(obj.okay);
 
 
