@@ -32,8 +32,9 @@ class Journey{
 
     //下一步8個位置（分支）
     for(var dir=0;dir<8;dir++){
-      var nextX=x+es6This.arrX[es6This.dirShuffle[dir]];
-      var nextY=y+es6This.arrY[es6This.dirShuffle[dir]];
+      var greedDir=es6This.dirShuffle[dir];
+      var nextX=x+es6This.arrX[greedDir];
+      var nextY=y+es6This.arrY[greedDir];
       //檢查該位置是否可以跳
       if(!es6This.check(nextX,nextY,step)){
         //不可以跳，嘗試下一個位置
@@ -44,7 +45,7 @@ class Journey{
 
       //回溯
       if(!success){
-        // console.log('回溯'+step);
+        console.log('回溯'+step);
         es6This.arrXY.length=step+1;
         // console.log(JSON.stringify(es6This.arrXY));
         continue;
@@ -83,11 +84,28 @@ class Journey{
       cellIndex=v.x+v.y*8;
       return ({
         cellIndex:cellIndex,
+        x:v.x,
+        y:v.y,
         step:v.step
       });
     }).sort(function(a,b){
       return (a.cellIndex-b.cellIndex);
     });
+    var arrTemp=[];
+    for(var i=0;i<64;i++){
+      var ele=es6This.arrStep.find(function(v){
+        return (v.cellIndex===i);
+      });
+      if(ele){
+        arrTemp[i]=ele;
+      }else{
+        arrTemp[i]={
+          cellIndex:i,
+          step:-1
+        };
+      }
+    }
+    es6This.arrStep=arrTemp;
     return es6This;
   }
   html(){
@@ -111,7 +129,7 @@ class Journey{
 
 var obj=new Journey();
 obj.solve().html();
-console.log(JSON.stringify(obj.arrXY));
+console.log(JSON.stringify(obj.arrStep));
 console.log(obj.okay);
 
 
