@@ -1,6 +1,6 @@
 class Journey{
   constructor(){
-    this.arrStep=[];  //0，1,2,3,,,63(記錄每一步)
+    this.arrStep=[];  //(記錄每一步)
 
     this.direction=[
       {
@@ -125,51 +125,42 @@ class Journey{
     return !some;
   }
 
-  xy2step(){
+  step2cell(){
     var es6This=this;
-    es6This.arrStep=es6This.arrStep.map(function(v){
-      var cellIndex;
-      cellIndex=v.x+v.y*8;
-      return ({
-        cellIndex:cellIndex,
-        x:v.x,
-        y:v.y,
-        step:v.step
-      });
-    }).sort(function(a,b){
-      return (a.cellIndex-b.cellIndex);
-    });
-    var arrTemp=[];
+    var arrCell=[];
     for(var i=0;i<Math.pow(this.gth,2);i++){
       var ele=es6This.arrStep.find(function(v){
-        return (v.cellIndex===i);
+        return (v.x+v.y*es6This.gth===i);
       });
       if(ele){
-        arrTemp[i]=ele;
+        arrCell[i]=Object.assign({
+          cellIndex:i
+        },ele);
       }else{
-        arrTemp[i]={
+        arrCell[i]={
           cellIndex:i,
           step:''
         };
       }
     }
-    es6This.arrStep=arrTemp;
-    return es6This;
+    return (arrCell.sort(function(a,b){
+      return (a.cellIndex-b.cellIndex);
+    }));
   }
   html(){
     var es6This=this;
-    es6This.xy2step();
-    var arrCell=es6This.arrStep.map(function(v,i){
-      // console.log(v);
-      var oddEven='';
+    var arrCell=es6This.step2cell();
+    console.log(JSON.stringify(arrCell));
+    
+    var strCell=arrCell.map(function(v,i){
       //第偶數行的奇數列 或者 第奇數行的偶數列  (0-base)
       //單目運算符 > 雙目運算符（*/% > +- > >>> > > > === > & > ^ > | > && > || > ?: > ^= > ,）
+      var oddEven='';
       if(i&1^i>>>3&1){
         oddEven=' black_cell';
       }
       return (`<div class="cell${oddEven}">${v.step}</div>`);
-    });
-    var strCell=arrCell.join('');
+    }).join('');
     document.getElementById('container').innerHTML=strCell;
     return es6This;
   }
@@ -177,7 +168,6 @@ class Journey{
 
 var obj=new Journey();
 obj.solve().html();
-console.log(JSON.stringify(obj.arrStep));
 console.log(obj.okay);
 
 
