@@ -71,7 +71,8 @@ class Journey{
   nextStep(stepInfo){
     var es6This=this;
     //step:0,1,2,3,4,,,64
-    if(stepInfo.step>=6){
+    if(stepInfo.step>55){
+    // if(stepInfo.step>>>6){  //64=2^6
       //走完64步，成功
       return true;
     }
@@ -96,6 +97,7 @@ class Journey{
 
       //回溯，還原數組arrStep
       if(!success){
+        console.log('回溯:'+stepInfo.step);
         es6This.arrStep.length=stepInfo.step+1;
         continue;
       }
@@ -106,15 +108,14 @@ class Journey{
     }
     //所有分支都試了
     return false;
-    
 
-    
   }
 
   check(stepInfo){
     var es6This=this;
     //1.超出邊界
-    if(stepInfo.x>=8 || stepInfo.y>=8 || stepInfo.x<0 || stepInfo.y<0){
+    // if(stepInfo.x>=8 || stepInfo.y>=8 || stepInfo.x<0 || stepInfo.y<0){
+    if(stepInfo.x>>>3 || stepInfo.y>>>3){
       return false;
     }
     //2.已經走過
@@ -139,7 +140,7 @@ class Journey{
       return (a.cellIndex-b.cellIndex);
     });
     var arrTemp=[];
-    for(var i=0;i<64;i++){
+    for(var i=0;i<Math.pow(this.gth,2);i++){
       var ele=es6This.arrStep.find(function(v){
         return (v.cellIndex===i);
       });
@@ -148,7 +149,7 @@ class Journey{
       }else{
         arrTemp[i]={
           cellIndex:i,
-          step:-1
+          step:''
         };
       }
     }
