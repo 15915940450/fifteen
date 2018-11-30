@@ -85,6 +85,7 @@ class Journey{
 
 
       return (Object.assign({},v,{
+        nextStepInfo:JSON.stringify(nextStepInfo),
         greedLevel:greedLevel
       }));
     }).filter(function(v){
@@ -109,19 +110,20 @@ class Journey{
     //=====下一步8個位置（分支）(貪心選擇)
     var arrDirGreed=es6This.dirGreed(stepInfo);
 
+
     for(var dir=0;dir<arrDirGreed.length;dir++){
-      var nextStepInfo={
-        step:stepInfo.step+1,
-        x:stepInfo.x+arrDirGreed[dir].xPlus,
-        y:stepInfo.y+arrDirGreed[dir].yPlus
-      };
-      //檢查該位置是否可以跳
-      if(!es6This.check(nextStepInfo)){
-        //不可以跳，嘗試下一個位置
-        continue;
-      }
+      // var nextStepInfo={
+      //   step:stepInfo.step+1,
+      //   x:stepInfo.x+arrDirGreed[dir].xPlus,
+      //   y:stepInfo.y+arrDirGreed[dir].yPlus
+      // };
+      // //檢查該位置是否可以跳
+      // if(!es6This.check(nextStepInfo)){
+      //   //不可以跳，嘗試下一個位置
+      //   continue;
+      // }
       //可以跳，下一步
-      var success=es6This.nextStep(nextStepInfo);
+      var success=es6This.nextStep(JSON.parse(arrDirGreed[dir].nextStepInfo));
 
       //回溯，還原數組arrStep
       if(!success){
