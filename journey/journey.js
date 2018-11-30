@@ -62,8 +62,8 @@ class Journey{
     //第0步：x和y都為0的位置開始跳
     es6This.okay=es6This.nextStep({
       step:0,
-      x:0,
-      y:0
+      x:Math.random()*es6This.gth>>0,
+      y:Math.random()*es6This.gth>>0
     });
     return es6This;
   }
@@ -114,7 +114,7 @@ class Journey{
     es6This.arrStep[stepInfo.step]=stepInfo;
 
     //step:0,1,2,3,4,,,63,走完64步，成功
-    if(stepInfo.step===Math.pow(this.gth,2)-1){
+    if(stepInfo.step===Math.pow(es6This.gth,2)-1){
       return true;
     }
 
@@ -171,7 +171,7 @@ class Journey{
   step2cell(){
     var es6This=this;
     var arrCell=[];
-    for(var i=0;i<Math.pow(this.gth,2);i++){
+    for(var i=0;i<Math.pow(es6This.gth,2);i++){
       var ele=es6This.arrStep.find(function(v){
         return (v.x+v.y*es6This.gth===i);
       });
