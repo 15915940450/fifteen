@@ -68,6 +68,33 @@ class Journey{
     return es6This;
   }
 
+  //貪心計算
+  dirGreed(stepInfo){
+    var es6This=this;
+    var arrDirGreed=es6This.direction.map(function(v){
+      //八個方向上其中的一個點
+      var nextStepInfo={
+        step:stepInfo.step+1,
+        x:stepInfo.x+v.xPlus,
+        y:stepInfo.y+v.yPlus
+      };
+      var greedLevel=0;
+      if(es6This.check(nextStepInfo)){
+        greedLevel=7;
+      }
+
+
+      return (Object.assign({},v,{
+        greedLevel:greedLevel
+      }));
+    }).filter(function(v){
+      return (v.greedLevel);
+    });
+
+    console.log(arrDirGreed);
+
+    return arrDirGreed;
+  }
   nextStep(stepInfo){
     var es6This=this;
     //step:0,1,2,3,4,,,64,走完64步，成功
@@ -79,12 +106,14 @@ class Journey{
     //當前步信息存貯到 arrStep
     es6This.arrStep[stepInfo.step]=stepInfo;
 
-    //下一步8個位置（分支）
-    for(var dir=0;dir<8;dir++){
+    //=====下一步8個位置（分支）(貪心選擇)
+    var arrDirGreed=es6This.dirGreed(stepInfo);
+
+    for(var dir=0;dir<arrDirGreed.length;dir++){
       var nextStepInfo={
         step:stepInfo.step+1,
-        x:stepInfo.x+es6This.direction[dir].xPlus,
-        y:stepInfo.y+es6This.direction[dir].yPlus
+        x:stepInfo.x+arrDirGreed[dir].xPlus,
+        y:stepInfo.y+arrDirGreed[dir].yPlus
       };
       //檢查該位置是否可以跳
       if(!es6This.check(nextStepInfo)){
