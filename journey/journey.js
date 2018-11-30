@@ -70,10 +70,9 @@ class Journey{
 
   nextStep(stepInfo){
     var es6This=this;
-    //step:0,1,2,3,4,,,64
+    //step:0,1,2,3,4,,,64,走完64步，成功
     if(stepInfo.step>55){
     // if(stepInfo.step>>>6){  //64=2^6
-      //走完64步，成功
       return true;
     }
 
@@ -150,7 +149,7 @@ class Journey{
   html(){
     var es6This=this;
     var arrCell=es6This.step2cell();
-    console.log(JSON.stringify(arrCell));
+    console.log(arrCell);
     
     var strCell=arrCell.map(function(v,i){
       //第偶數行的奇數列 或者 第奇數行的偶數列  (0-base)
@@ -169,5 +168,6 @@ class Journey{
 var obj=new Journey();
 obj.solve().html();
 console.log(obj.okay);
+console.log(JSON.stringify(obj.arrStep));
 
 
