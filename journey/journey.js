@@ -79,33 +79,46 @@ class Journey{
         y:stepInfo.y+v.yPlus
       };
       var greedLevel=0;
-      if(es6This.check(nextStepInfo)){
-        greedLevel=7;
-      }
 
+      if(es6This.check(nextStepInfo)){
+        //該點有多少個不通的出口？
+        greedLevel=_.compact(es6This.direction.map(function(point){
+          return (!es6This.check({
+            step:nextStepInfo.step+1,
+            x:nextStepInfo.x+point.xPlus,
+            y:nextStepInfo.y+point.yPlus
+          }));
+        })).length;
+
+      }
 
       return (Object.assign({},v,{
         nextStepInfo:JSON.stringify(nextStepInfo),
         greedLevel:greedLevel
       }));
+
     }).filter(function(v){
       return (v.greedLevel);
+    }).sort(function(a,b){
+      return (b.greedLevel-a.greedLevel);
     });
 
-    console.log(arrDirGreed);
+    // console.log(arrDirGreed);
 
     return arrDirGreed;
   }
   nextStep(stepInfo){
     var es6This=this;
-    //step:0,1,2,3,4,,,64,走完64步，成功
-    if(stepInfo.step>55){
-    // if(stepInfo.step>>>6){  //64=2^6
-      return true;
-    }
 
     //當前步信息存貯到 arrStep
     es6This.arrStep[stepInfo.step]=stepInfo;
+
+    //step:0,1,2,3,4,,,63,走完64步，成功
+    if(stepInfo.step===Math.pow(this.gth,2)-1){
+      return true;
+    }
+
+    
 
     //=====下一步8個位置（分支）(貪心選擇)
     var arrDirGreed=es6This.dirGreed(stepInfo);
