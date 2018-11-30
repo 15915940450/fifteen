@@ -1,53 +1,102 @@
 class Journey{
   constructor(){
-    this.arrX=[1,2,2,1,-1,-2,-2,-1];  //橫軸
-    this.arrY=[2,1,-1,-2,2,1,-1,-2];  //豎軸
-    this.chessboardLen=8;
-    this.arrStep=[];  //0，1,2,3,,,63
-    this.arrXY=[];  //記錄每一步的坐標xy
-    this.okay=false;
-    this.dirShuffle=_.shuffle([0,1,2,3,4,5,6,7]);
+    this.arrStep=[];  //0，1,2,3,,,63(記錄每一步)
+
+    this.direction=[
+      {
+        xPlus:2,
+        yPlus:-1,
+        greedLevel:0,
+        ZH:'右下'
+      },
+      {
+        xPlus:1,
+        yPlus:-2,
+        greedLevel:0,
+        ZH:'下右'
+      },
+      {
+        xPlus:-1,
+        yPlus:-2,
+        greedLevel:0,
+        ZH:'下左'
+      },
+      {
+        xPlus:-2,
+        yPlus:-1,
+        greedLevel:0,
+        ZH:'左下'
+      },
+      {
+        xPlus:-2,
+        yPlus:1,
+        greedLevel:0,
+        ZH:'左上'
+      },
+      {
+        xPlus:-1,
+        yPlus:2,
+        greedLevel:0,
+        ZH:'上左'
+      },
+      {
+        xPlus:1,
+        yPlus:2,
+        greedLevel:0,
+        ZH:'上右'
+      },
+      {
+        xPlus:2,
+        yPlus:1,
+        greedLevel:0,
+        ZH:'右上'
+      }
+    ];  //八個方向
+    this.gth=8; //棋盤大小8*8
+    
+    this.okay=false;  //是否已經找到解
   }
 
   solve(){
     var es6This=this;
-    es6This.okay=es6This.nextStep(0,0,0);
+    //第0步：x和y都為0的位置開始跳
+    es6This.okay=es6This.nextStep({
+      step:0,
+      x:0,
+      y:0
+    });
     return es6This;
   }
 
-  nextStep(step,x,y){
+  nextStep(stepInfo){
     var es6This=this;
     //step:0,1,2,3,4,,,64
-    if(step>=60){
+    if(stepInfo.step>=6){
       //走完64步，成功
       return true;
     }
 
-    //當前步信息
-    es6This.arrXY[step]={
-      step:step,
-      x:x,
-      y:y
-    };
+    //當前步信息存貯到 arrStep
+    es6This.arrStep[stepInfo.step]=stepInfo;
 
     //下一步8個位置（分支）
     for(var dir=0;dir<8;dir++){
-      var greedDir=es6This.dirShuffle[dir];
-      var nextX=x+es6This.arrX[greedDir];
-      var nextY=y+es6This.arrY[greedDir];
+      var nextStepInfo={
+        step:stepInfo.step+1,
+        x:stepInfo.x+es6This.direction[dir].xPlus,
+        y:stepInfo.y+es6This.direction[dir].yPlus
+      };
       //檢查該位置是否可以跳
-      if(!es6This.check(nextX,nextY,step)){
+      if(!es6This.check(nextStepInfo)){
         //不可以跳，嘗試下一個位置
         continue;
       }
       //可以跳，下一步
-      var success=es6This.nextStep(step+1,nextX,nextY);
+      var success=es6This.nextStep(nextStepInfo);
 
-      //回溯
+      //回溯，還原數組arrStep
       if(!success){
-        console.log('回溯'+step);
-        es6This.arrXY.length=step+1;
-        // console.log(JSON.stringify(es6This.arrXY));
+        es6This.arrStep.length=stepInfo.step+1;
         continue;
       }
 
@@ -62,24 +111,22 @@ class Journey{
     
   }
 
-  check(x,y){
-
-    
+  check(stepInfo){
     var es6This=this;
-    //超出邊界
-    if(x>=8 || y>=8 || x<0 || y<0){
+    //1.超出邊界
+    if(stepInfo.x>=8 || stepInfo.y>=8 || stepInfo.x<0 || stepInfo.y<0){
       return false;
     }
-    //已經走過
-    var some=es6This.arrXY.some(function(v){
-      return (v.x===x && v.y===y);
+    //2.已經走過
+    var some=es6This.arrStep.some(function(v){
+      return (v.x===stepInfo.x && v.y===stepInfo.y);
     });
     return !some;
   }
 
   xy2step(){
     var es6This=this;
-    es6This.arrStep=es6This.arrXY.map(function(v){
+    es6This.arrStep=es6This.arrStep.map(function(v){
       var cellIndex;
       cellIndex=v.x+v.y*8;
       return ({
