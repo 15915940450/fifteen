@@ -68,45 +68,6 @@ class Journey{
     return es6This;
   }
 
-  //貪心計算
-  dirGreed(stepInfo){
-    var es6This=this;
-    var arrDirGreed=es6This.direction.map(function(v){
-      //八個方向上其中的一個點
-      var nextStepInfo={
-        step:stepInfo.step+1,
-        x:stepInfo.x+v.xPlus,
-        y:stepInfo.y+v.yPlus
-      };
-      var greedLevel=0;
-
-      if(es6This.check(nextStepInfo)){
-        //該點有多少個不通的出口？
-        greedLevel=_.compact(es6This.direction.map(function(point){
-          return (!es6This.check({
-            step:nextStepInfo.step+1,
-            x:nextStepInfo.x+point.xPlus,
-            y:nextStepInfo.y+point.yPlus
-          }));
-        })).length;
-
-      }
-
-      return (Object.assign({},v,{
-        nextStepInfo:JSON.stringify(nextStepInfo),
-        greedLevel:greedLevel
-      }));
-
-    }).filter(function(v){
-      return (v.greedLevel);
-    }).sort(function(a,b){
-      return (b.greedLevel-a.greedLevel);
-    });
-
-    // console.log(arrDirGreed);
-
-    return arrDirGreed;
-  }
   nextStep(stepInfo){
     var es6This=this;
 
@@ -153,6 +114,44 @@ class Journey{
     return false;
 
   }
+  //貪心計算:返回目前爲止最優的下一步數組集合，按貪心級別從高到低排序
+  dirGreed(stepInfo){
+    var es6This=this;
+    var arrDirGreed=es6This.direction.map(function(v){
+      //八個方向上其中的一個點
+      var nextStepInfo=es6This.getNextStep(stepInfo,v);
+      var greedLevel=0;
+
+      if(es6This.check(nextStepInfo)){
+        //該點有多少個不通的出口？
+        greedLevel=_.compact(es6This.direction.map(function(v2){
+          return (!es6This.check(es6This.getNextStep(nextStepInfo,v2)));
+        })).length;
+      }
+
+      return (Object.assign({},v,{
+        nextStepInfo:JSON.stringify(nextStepInfo),
+        greedLevel:greedLevel
+      }));
+
+    }).filter(function(v){
+      //過濾掉不符合條件的下一步
+      return (v.greedLevel);
+    }).sort(function(a,b){
+      return (b.greedLevel-a.greedLevel);
+    });
+
+    // console.log(arrDirGreed);
+    return arrDirGreed;
+  }
+  getNextStep(currentStep,objDirection){
+    return ({
+      step:currentStep.step+1,
+      x:currentStep.x+objDirection.xPlus,
+      y:currentStep.y+objDirection.yPlus
+    });
+  }
+  
 
   check(stepInfo){
     var es6This=this;
@@ -168,6 +167,25 @@ class Journey{
     return !isJumped;
   }
 
+  
+  html(){
+    var es6This=this;
+    var arrCell=es6This.step2cell();
+    console.log(arrCell);
+
+    var strCell=arrCell.map(function(v,i){
+      //第偶數行的奇數列 或者 第奇數行的偶數列  (0-base)
+      //單目運算符 > 雙目運算符（*/% > +- > >>> > > > === > & > ^ > | > && > || > ?: > ^= > ,）
+      var oddEven='';
+      if(i&1^i>>>3&1){
+        oddEven=' black_cell';
+      }
+      return (`<div class="cell${oddEven}">${v.step}</div>`);
+    }).join('');
+    document.getElementById('container').innerHTML=strCell;
+    return es6This;
+  }
+  //將步數數組（解）轉化為按單元格排序的數組
   step2cell(){
     var es6This=this;
     var arrCell=[];
@@ -199,23 +217,8 @@ class Journey{
     }
     return (arrCell);
   }
-  html(){
-    var es6This=this;
-    var arrCell=es6This.step2cell();
-    console.log(arrCell);
 
-    var strCell=arrCell.map(function(v,i){
-      //第偶數行的奇數列 或者 第奇數行的偶數列  (0-base)
-      //單目運算符 > 雙目運算符（*/% > +- > >>> > > > === > & > ^ > | > && > || > ?: > ^= > ,）
-      var oddEven='';
-      if(i&1^i>>>3&1){
-        oddEven=' black_cell';
-      }
-      return (`<div class="cell${oddEven}">${v.step}</div>`);
-    }).join('');
-    document.getElementById('container').innerHTML=strCell;
-    return es6This;
-  }
+
 } //class
 
 var obj=new Journey();
