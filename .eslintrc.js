@@ -7,6 +7,8 @@ module.exports = {
       "es6": true
     },
     "globals":{
+      "X2JS":true,
+      "Vue":true,
       "_":true
     },
     "extends": "eslint:recommended",

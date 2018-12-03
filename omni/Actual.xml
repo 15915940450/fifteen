@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario xmlns="http://www.omnigroup.com/namespace/OmniPlan/v2" xmlns:opns="http://www.omnigroup.com/namespace/OmniPlan/v2" id="hS62Zsv6Hq3">
+  <start-date>2018-11-30T00:00:00.000Z</start-date>
+  <prototype-task>
+    <task id="t-2">
+      <title>任务 1</title>
+      <effort>28800</effort>
+    </task>
+  </prototype-task>
+  <prototype-task>
+    <task id="t-3">
+      <title>里程碑 1</title>
+      <type>milestone</type>
+    </task>
+  </prototype-task>
+  <prototype-task>
+    <task id="t-4">
+      <title>群组 1</title>
+      <type>group</type>
+    </task>
+  </prototype-task>
+  <prototype-resource>
+    <resource id="r-2">
+      <name>资源 1</name>
+      <type>Staff</type>
+    </resource>
+  </prototype-resource>
+  <prototype-resource>
+    <resource id="r-3">
+      <name>设备 1</name>
+      <type>Equipment</type>
+    </resource>
+  </prototype-resource>
+  <prototype-resource>
+    <resource id="r-4">
+      <name>素材 1</name>
+      <type>Material</type>
+      <units-available>0</units-available>
+      <efficiency>0</efficiency>
+    </resource>
+  </prototype-resource>
+  <prototype-resource>
+    <resource id="r-5">
+      <name>群组 1</name>
+      <type>Group</type>
+    </resource>
+  </prototype-resource>
+  <top-resource idref="r-1"/>
+  <resource id="r-1">
+    <name/>
+    <type>Group</type>
+    <schedule>
+      <schedule-day day-of-week="sunday"/>
+      <schedule-day day-of-week="monday">
+        <time-span start-time="28800" end-time="43200"/>
+        <time-span start-time="46800" end-time="61200"/>
+      </schedule-day>
+      <schedule-day day-of-week="tuesday">
+        <time-span start-time="28800" end-time="43200"/>
+        <time-span start-time="46800" end-time="61200"/>
+      </schedule-day>
+      <schedule-day day-of-week="wednesday">
+        <time-span start-time="28800" end-time="43200"/>
+        <time-span start-time="46800" end-time="61200"/>
+      </schedule-day>
+      <schedule-day day-of-week="thursday">
+        <time-span start-time="28800" end-time="43200"/>
+        <time-span start-time="46800" end-time="61200"/>
+      </schedule-day>
+      <schedule-day day-of-week="friday">
+        <time-span start-time="28800" end-time="43200"/>
+        <time-span start-time="46800" end-time="61200"/>
+      </schedule-day>
+      <schedule-day day-of-week="saturday">
+        <time-span start-time="28800" end-time="43200"/>
+        <time-span start-time="46800" end-time="61200"/>
+      </schedule-day>
+      <calendar name="Time Off" editable="yes" overtime="no"/>
+      <calendar name="Overtime" editable="yes" overtime="yes"/>
+    </schedule>
+    <child-resource idref="r1"/>
+    <child-resource idref="r2"/>
+    <child-resource idref="r3"/>
+    <child-resource idref="r4"/>
+    <child-resource idref="r5"/>
+    <child-resource idref="r6"/>
+  </resource>
+  <resource id="r1">
+    <name>资源 1</name>
+    <type>Staff</type>
+  </resource>
+  <resource id="r2">
+    <name>前端-thilina</name>
+    <type>Staff</type>
+  </resource>
+  <resource id="r3">
+    <name>后台-impact</name>
+    <type>Staff</type>
+  </resource>
+  <resource id="r4">
+    <name>后台-mark</name>
+    <type>Staff</type>
+  </resource>
+  <resource id="r5">
+    <name>测试-jk</name>
+    <type>Staff</type>
+  </resource>
+  <resource id="r6">
+    <name>项目-bill</name>
+    <type>Staff</type>
+  </resource>
+  <top-task idref="t-1"/>
+  <task id="t-1">
+    <type>group</type>
+    <child-task idref="t2"/>
+    <child-task idref="t31"/>
+    <child-task idref="t3"/>
+    <child-task idref="t4"/>
+  </task>
+  <task id="t2">
+    <title>前端工作</title>
+    <type>group</type>
+    <start-constraint-date>2018-11-29T08:15:00.000Z</start-constraint-date>
+    <child-task idref="t5"/>
+    <child-task idref="t6"/>
+    <child-task idref="t7"/>
+    <child-task idref="t8"/>
+    <child-task idref="t9"/>
+    <child-task idref="t20"/>
+    <child-task idref="t21"/>
+    <child-task idref="t22"/>
+    <child-task idref="t23"/>
+    <child-task idref="t24"/>
+    <child-task idref="t25"/>
+    <child-task idref="t26"/>
+    <child-task idref="t27"/>
+    <child-task idref="t28"/>
+    <child-task idref="t29"/>
+    <child-task idref="t30"/>
+    <start-no-earlier-than>2018-11-29T08:15:00.000Z</start-no-earlier-than>
+  </task>
+  <task id="t3">
+    <title>测试</title>
+    <type>group</type>
+    <start-constraint-date>2018-08-15T00:00:00.000Z</start-constraint-date>
+    <child-task idref="t17"/>
+    <child-task idref="t18"/>
+    <start-no-earlier-than>2018-08-15T00:00:00.000Z</start-no-earlier-than>
+  </task>
+  <task id="t4">
+    <title>项目</title>
+    <type>group</type>
+    <start-constraint-date>2018-12-18T00:15:00.000Z</start-constraint-date>
+    <child-task idref="t19"/>
+    <start-no-earlier-than>2018-12-18T00:15:00.000Z</start-no-earlier-than>
+  </task>
+  <task id="t5">
+    <title>换电单可通过柜子SN搜索</title>
+    <leveled-start>2018-11-30T00:00:00.000Z</leveled-start>
+    <effort>7200</effort>
+    <assignment idref="r2"/>
+  </task>
+  <task id="t6">
+    <title>运营后台群组增加 展示代理商和城市、押金类型</title>
+    <leveled-start>2018-11-30T02:00:00.000Z</leveled-start>
+    <effort>7200</effort>
+    <assignment idref="r2"/>
+  </task>
+  <task id="t7">
+    <title>创建代理商时，可设置渠道类型</title>
+    <leveled-start>2018-11-30T05:00:00.000Z</leveled-start>
+    <effort>14400</effort>
+    <assignment idref="r2"/>
+  </task>
+  <task id="t8">
+    <title>账号权限改版，将运营后台（含大数据）、小程序、安卓屏的账号统一</title>
+    <leveled-start>2018-12-03T00:00:00.000Z</leveled-start>
+    <effort>28800</effort>
+    <assignment idref="r2"/>
+  </task>
+  <task id="t9">
+    <title>增加角色管理，可管理角色</title>
+    <leveled-start>2018-12-04T00:00:00.000Z</leveled-start>
+    <effort>28800</effort>
+    <assignment idref="r2"/>
+  </task>
+  <task id="t12">
+    <title>柜子配置同步、版本信息上报</title>
+    <leveled-start>2018-11-30T00:00:00.000Z</leveled-start>
+    <effort>18000</effort>
+    <assignment idref="r3"/>
+  </task>
+  <task id="t17">
+    <title>测试用例</title>
+    <effort>86400</effort>
+    <start-constraint-date>2018-12-10T00:00:00.000Z</start-constraint-date>
+    <assignment idref="r5"/>
+    <start-no-earlier-than>2018-12-10T00:00:00.000Z</start-no-earlier-than>
+  </task>
+  <task id="t18">
+    <title>测试验收</title>
+    <effort>86400</effort>
+    <start-constraint-date>2018-12-14T00:00:00.000Z</start-constraint-date>
+    <assignment idref="r5"/>
+    <start-no-earlier-than>2018-12-14T00:00:00.000Z</start-no-earlier-than>
+  </task>
+  <task id="t19">
+    <title>验收发布</title>
+    <leveled-start>2018-11-30T00:00:00.000Z</leveled-start>
+    <effort>28800</effort>
+    <assignment idref="r6"/>
+  </task>
+  <task id="t20">
+    <title>增加权限设置，可修改角色权限</title>
+    <leveled-start>2018-12-05T00:00:00.000Z</leveled-start>
+    <effort>28800</effort>
+    <assignment idref="r2"/>
+  </task>
+  <task id="t21">
+    <title>增加账号管理，可添加、修改账号</title>
+    <leveled-start>2018-12-06T00:00:00.000Z</leveled-start>
+    <effort>28800</effort>
+    <assignment idref="r2"/>
+  </task>
+  <task id="t22">
+    <title>增加操作日志（安卓屏）</title>
+    <leveled-start>2018-12-07T00:00:00.000Z</leveled-start>
+    <effort>28800</effort>
+    <assignment idref="r2"/>
+  </task>
+  <task id="t23">
+    <title>调整菜单、页面名称、调整页面功能</title>
+    <leveled-start>2018-12-10T00:00:00.000Z</leveled-start>
+    <effort>14400</effort>
+    <assignment idref="r2"/>
+  </task>
+  <task id="t24">
+    <title>库管理支持搜索手机号码</title>
+    <leveled-start>2018-12-10T05:00:00.000Z</leveled-start>
+    <effort>7200</effort>
+    <assignment idref="r2"/>
+  </task>
+  <task id="t25">
+    <title>库管理-添加/设置时，取消级联选择，增加关键字模糊检索，选项格式为【城市-代理库名】</title>
+    <leveled-start>2018-12-10T07:00:00.000Z</leveled-start>
+    <effort>21600</effort>
+    <assignment idref="r2"/>
+  </task>
+  <task id="t26">
+    <title>库管理-添加/设置时，可直接创建并选中创建的库</title>
+    <leveled-start>2018-12-11T05:00:00.000Z</leveled-start>
+    <effort>28800</effort>
+    <assignment idref="r2"/>
+  </task>
+  <task id="t27">
+    <title>库管理页面，原【权限】字段改为【库权限】，增加【操作权限】字段</title>
+    <leveled-start>2018-12-12T05:00:00.000Z</leveled-start>
+    <effort>7200</effort>
+    <assignment idref="r2"/>
+  </task>
+  <task id="t28">
+    <title>仓增加通讯中断状态</title>
+    <leveled-start>2018-12-12T07:00:00.000Z</leveled-start>
+    <effort>14400</effort>
+    <assignment idref="r2"/>
+  </task>
+  <task id="t29">
+    <title>增加【电压】字段，展示中控适配的电池规格</title>
+    <leveled-start>2018-12-13T02:00:00.000Z</leveled-start>
+    <effort>7200</effort>
+    <assignment idref="r2"/>
+  </task>
+  <task id="t30">
+    <title>增加字段【城市】，展示用户充、退押金时所在群组的城市。</title>
+    <leveled-start>2018-12-13T05:00:00.000Z</leveled-start>
+    <effort>7200</effort>
+    <assignment idref="r2"/>
+  </task>
+  <task id="t31">
+    <title>后台工作</title>
+    <type>group</type>
+    <start-constraint-date>2018-08-15T00:00:00.000Z</start-constraint-date>
+    <child-task idref="t12"/>
+    <child-task idref="t32"/>
+    <child-task idref="t33"/>
+    <child-task idref="t34"/>
+    <child-task idref="t35"/>
+    <child-task idref="t36"/>
+    <child-task idref="t37"/>
+    <child-task idref="t38"/>
+    <child-task idref="t39"/>
+    <child-task idref="t40"/>
+    <child-task idref="t41"/>
+    <child-task idref="t42"/>
+    <child-task idref="t43"/>
+    <child-task idref="t44"/>
+    <child-task idref="t45"/>
+    <child-task idref="t46"/>
+    <child-task idref="t47"/>
+    <start-no-earlier-than>2018-08-15T00:00:00.000Z</start-no-earlier-than>
+  </task>
+  <task id="t32">
+    <title>运营后台群组显示代理商、城市、押金类型</title>
+    <leveled-start>2018-11-30T06:00:00.000Z</leveled-start>
+    <effort>3600</effort>
+    <assignment idref="r3"/>
+  </task>
+  <task id="t33">
+    <title>创建代理商时，设置渠道类型（业务统计同步调整</title>
+    <leveled-start>2018-11-30T07:00:00.000Z</leveled-start>
+    <effort>18000</effort>
+    <assignment idref="r3"/>
+  </task>
+  <task id="t34">
+    <title>多平台账号权限统一管理</title>
+    <leveled-start>2018-12-03T03:00:00.000Z</leveled-start>
+    <effort>28800</effort>
+    <assignment idref="r3"/>
+  </task>
+  <task id="t35">
+    <title>增加角色管理，可管理角色</title>
+    <leveled-start>2018-12-04T03:00:00.000Z</leveled-start>
+    <effort>28800</effort>
+    <assignment idref="r3"/>
+  </task>
+  <task id="t36">
+    <title>增加权限设置，可修改角色权限</title>
+    <leveled-start>2018-12-05T03:00:00.000Z</leveled-start>
+    <effort>28800</effort>
+    <assignment idref="r3"/>
+  </task>
+  <task id="t37">
+    <title>增加账号管理，可添加、修改账号</title>
+    <leveled-start>2018-12-06T03:00:00.000Z</leveled-start>
+    <effort>28800</effort>
+    <assignment idref="r3"/>
+  </task>
+  <task id="t38">
+    <title>增加操作日志（安卓屏）</title>
+    <leveled-start>2018-12-07T03:00:00.000Z</leveled-start>
+    <effort>14400</effort>
+    <assignment idref="r3"/>
+  </task>
+  <task id="t39">
+    <title>付费用户按城市展示</title>
+    <leveled-start>2018-12-07T08:00:00.000Z</leveled-start>
+    <effort>10800</effort>
+    <assignment idref="r3"/>
+  </task>
+  <task id="t40">
+    <title>库管理支持搜索手机号码</title>
+    <leveled-start>2018-11-30T00:00:00.000Z</leveled-start>
+    <effort>14400</effort>
+    <assignment idref="r4"/>
+  </task>
+  <task id="t41">
+    <title>库管理-添加/设置时，取消级联选择，增加关键字模糊检索，选项格式为【城市-代理库名】</title>
+    <leveled-start>2018-11-30T05:00:00.000Z</leveled-start>
+    <effort>28800</effort>
+    <assignment idref="r4"/>
+  </task>
+  <task id="t42">
+    <title>库管理-添加/设置时，可直接创建并选中创建的库</title>
+    <leveled-start>2018-12-03T05:00:00.000Z</leveled-start>
+    <effort>28800</effort>
+    <assignment idref="r4"/>
+  </task>
+  <task id="t43">
+    <title>库管理-添加/设置时库管理页面，原【权限】字段改为【库权限】，增加【操作权限】字段
+
+，增加操作权限【入库、查库、查电池】。原有的库选项变为【库权限】</title>
+    <leveled-start>2018-12-04T05:00:00.000Z</leveled-start>
+    <effort>28800</effort>
+    <assignment idref="r4"/>
+  </task>
+  <task id="t44">
+    <title>远程控制仓增加通讯中断状态</title>
+    <leveled-start>2018-12-05T05:00:00.000Z</leveled-start>
+    <effort>14400</effort>
+    <assignment idref="r4"/>
+  </task>
+  <task id="t45">
+    <title>中控列表增加【电压】字段，展示中控适配的电池规格</title>
+    <leveled-start>2018-12-06T00:00:00.000Z</leveled-start>
+    <effort>14400</effort>
+    <assignment idref="r4"/>
+  </task>
+  <task id="t46">
+    <title>增加字段【城市】，展示用户充、退押金时所在群组的城市。</title>
+    <leveled-start>2018-12-06T05:00:00.000Z</leveled-start>
+    <effort>14400</effort>
+    <assignment idref="r4"/>
+  </task>
+  <task id="t47">
+    <title>增加帮助文档管理和添加功能</title>
+    <leveled-start>2018-12-07T00:00:00.000Z</leveled-start>
+    <effort>28800</effort>
+    <assignment idref="r4"/>
+  </task>
+  <critical-path root="-1" enabled="false" resources="false">
+    <color space="srgb" r="1" g="0.5" b="0.5"/>
+  </critical-path>
+</scenario>
