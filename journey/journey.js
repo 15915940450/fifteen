@@ -59,11 +59,13 @@ class Journey{
 
   solve(){
     var es6This=this;
-    //第0步：x和y都為0的位置開始跳
+    //第0步：x和y都為0的位置開始跳(x:2,y:3)
     es6This.okay=es6This.nextStep({
-      step:0,
+      // x:2,
+      // y:3,
       x:Math.random()*es6This.gth>>0,
-      y:Math.random()*es6This.gth>>0
+      y:Math.random()*es6This.gth>>0,
+      step:0
     });
     return es6This;
   }
@@ -180,9 +182,13 @@ class Journey{
       if(i&1^i>>>3&1){
         oddEven=' black_cell';
       }
-      return (`<div class="cell${oddEven}">${v.step}</div>`);
+      //索引原則：開發者使用則0-base，暴露給用戶的則1-base
+      return (`<div class="cell${oddEven}">
+          <span class="hidden" data-step="${v.step}">${v.step+1}</span>
+        </div>`);
     }).join('');
     document.getElementById('container').innerHTML=strCell;
+    es6This.stepByStep();
     return es6This;
   }
   //將步數數組（解）轉化為按單元格排序的數組
@@ -218,9 +224,27 @@ class Journey{
     return (arrCell);
   }
 
+  stepByStep(){
+    var es6This=this;
+    var step=0;
+    var elesCell=document.querySelectorAll('.cell span');
+    var timer=window.setInterval(function(){
+      
+      if(step===Math.pow(es6This.gth,2)-1){
+        window.clearInterval(timer);
+      }
+
+      for(var i=0;i<elesCell.length;i++){
+        if(+elesCell[i].dataset.step===step){
+          elesCell[i].className='';
+        }
+      }
+      step++;
+    },1.3e3);
+    return es6This;
+  }
 
 } //class
-
 var obj=new Journey();
 console.time('貪心算法');
 obj.solve().html();
