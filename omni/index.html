@@ -16,7 +16,7 @@
     <h3>Me</h3>
     <ul>
       <li v-for="v in fe">
-        {{v["leveled-start"] | justHour}} ── {{v.title}}
+        {{v["leveled-start"] | justDate}} ── {{v.title}}
       </li>
     </ul>
   </section>
@@ -24,7 +24,7 @@
     <h3>1</h3>
     <ul>
       <li v-for="v in one">
-        {{v["leveled-start"] | justHour}} ── {{v.title}}
+        {{v["leveled-start"] | justDate}} ── {{v.title}}
       </li>
     </ul>
   </section>
@@ -32,7 +32,7 @@
     <h3>2</h3>
     <ul>
       <li v-for="v in two">
-        {{v["leveled-start"] | justHour}} ── {{v.title}}
+        {{v["leveled-start"] | justDate}} ── {{v.title}}
       </li>
     </ul>
   </section>
@@ -40,62 +40,6 @@
 </div>  <!--container-->
 <script src="../vue.js"></script>
 <script src="../xml2json.min.js"></script>
-<script>
-// var vm=new Vue({
-new Vue({
-  el:'#omni',
-  data:{
-    test:'69',
-    fe:[],
-    one:[],
-    two:[]
-  },
-  filters:{
-    justHour:function(v){
-      return (v.slice(0,13));
-    }
-  },
-  methods:{
-    ajax:function(){
-      var vueThis=this;
-      var x2js = new X2JS();
-      var xmlHttp=new XMLHttpRequest();
-      xmlHttp.open('GET','Actual.xml',true);
-      xmlHttp.send();
-      //responseXML
-      xmlHttp.onreadystatechange=function(){
-        if(xmlHttp.readyState===4 && xmlHttp.status===200){
-          var xml=xmlHttp.responseXML;
-          var jsonObj=(x2js.xml2json(xml));
-          var task=jsonObj.scenario.task;
-          // console.log(task);
-          vueThis.done(task);
-        }
-      };
-    },
-    done:function(task){
-      this.fe=task.filter(function(v){
-        if(v.assignment){
-          return (v.assignment._idref==='r2');
-        }
-      });
-      // console.log(JSON.stringify(this.fe));
-      this.one=task.filter(function(v){
-        if(v.assignment){
-          return (v.assignment._idref==='r3');
-        }
-      });
-      this.two=task.filter(function(v){
-        if(v.assignment){
-          return (v.assignment._idref==='r4');
-        }
-      });
-    }
-  },
-  created:function(){
-    this.ajax();
-  }
-});
-</script>
+<script src="./index.js"></script>
 </body>
 </html>
