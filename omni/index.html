@@ -7,6 +7,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
 <meta name="author" content="Thilina Fong" />
 <meta name="description" content="" />
+<style>
+.is_done{
+  text-decoration: line-through;
+  color: #a7a7a7;
+}
+</style>
 </head>
 <body>
 
@@ -15,7 +21,7 @@
   <section class="me">
     <h3>Me</h3>
     <ul>
-      <li v-for="v in fe">
+      <li v-for="v in fe" :class="v['is-done']">
         {{v["leveled-start"] | justDate}} ── {{v.title}}
       </li>
     </ul>

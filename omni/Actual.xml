@@ -154,32 +154,39 @@
     <child-task idref="t19"/>
     <start-no-earlier-than>2018-12-18T00:15:00.000Z</start-no-earlier-than>
   </task>
+
+  <!-- <is-done>is_done</is-done> -->
   <task id="t5">
     <title>换电单可通过柜子SN搜索</title>
+    <is-done>is_done</is-done>
     <leveled-start>2018-11-30T00:00:00.000Z</leveled-start>
     <effort>7200</effort>
     <assignment idref="r2"/>
   </task>
   <task id="t6">
     <title>运营后台群组增加 展示代理商和城市、押金类型</title>
+    <is-done>is_done</is-done>
     <leveled-start>2018-11-30T02:00:00.000Z</leveled-start>
     <effort>7200</effort>
     <assignment idref="r2"/>
   </task>
   <task id="t7">
     <title>创建代理商时，可设置渠道类型</title>
+    <is-done>is_done</is-done>
     <leveled-start>2018-11-30T05:00:00.000Z</leveled-start>
     <effort>14400</effort>
     <assignment idref="r2"/>
   </task>
   <task id="t8">
     <title>账号权限改版，将运营后台（含大数据）、小程序、安卓屏的账号统一</title>
+    <is-done>is_done</is-done>
     <leveled-start>2018-12-03T00:00:00.000Z</leveled-start>
     <effort>28800</effort>
     <assignment idref="r2"/>
   </task>
   <task id="t9">
     <title>增加角色管理，可管理角色</title>
+    <is-done>is_done</is-done>
     <leveled-start>2018-12-04T00:00:00.000Z</leveled-start>
     <effort>28800</effort>
     <assignment idref="r2"/>
@@ -212,24 +219,28 @@
   </task>
   <task id="t20">
     <title>增加权限设置，可修改角色权限</title>
+    <is-done>is_done</is-done>
     <leveled-start>2018-12-05T00:00:00.000Z</leveled-start>
     <effort>28800</effort>
     <assignment idref="r2"/>
   </task>
   <task id="t21">
     <title>增加账号管理，可添加、修改账号</title>
+    <is-done>is_done</is-done>
     <leveled-start>2018-12-06T00:00:00.000Z</leveled-start>
     <effort>28800</effort>
     <assignment idref="r2"/>
   </task>
   <task id="t22">
     <title>增加操作日志（安卓屏）</title>
+    <is-done>is_done</is-done>
     <leveled-start>2018-12-07T00:00:00.000Z</leveled-start>
     <effort>28800</effort>
     <assignment idref="r2"/>
   </task>
   <task id="t23">
     <title>调整菜单、页面名称、调整页面功能</title>
+    <is-done>is_done</is-done>
     <leveled-start>2018-12-10T00:00:00.000Z</leveled-start>
     <effort>14400</effort>
     <assignment idref="r2"/>
@@ -238,40 +249,47 @@
     <title>库管理支持搜索手机号码</title>
     <leveled-start>2018-12-10T05:00:00.000Z</leveled-start>
     <effort>7200</effort>
+    <is-done>is_done</is-done>
     <assignment idref="r2"/>
   </task>
   <task id="t25">
     <title>库管理-添加/设置时，取消级联选择，增加关键字模糊检索，选项格式为【城市-代理库名】</title>
+    <is-done>is_done</is-done>
     <leveled-start>2018-12-10T07:00:00.000Z</leveled-start>
     <effort>21600</effort>
     <assignment idref="r2"/>
   </task>
   <task id="t26">
     <title>库管理-添加/设置时，可直接创建并选中创建的库</title>
+    <is-done>is_done</is-done>
     <leveled-start>2018-12-11T05:00:00.000Z</leveled-start>
     <effort>28800</effort>
     <assignment idref="r2"/>
   </task>
   <task id="t27">
     <title>库管理页面，原【权限】字段改为【库权限】，增加【操作权限】字段</title>
+    <is-done>is_done</is-done>
     <leveled-start>2018-12-12T05:00:00.000Z</leveled-start>
     <effort>7200</effort>
     <assignment idref="r2"/>
   </task>
   <task id="t28">
     <title>仓增加通讯中断状态</title>
+    <is-done>is_done</is-done>
     <leveled-start>2018-12-12T07:00:00.000Z</leveled-start>
     <effort>14400</effort>
     <assignment idref="r2"/>
   </task>
   <task id="t29">
     <title>增加【电压】字段，展示中控适配的电池规格</title>
+    <is-done>is_done</is-done>
     <leveled-start>2018-12-13T02:00:00.000Z</leveled-start>
     <effort>7200</effort>
     <assignment idref="r2"/>
   </task>
   <task id="t30">
     <title>增加字段【城市】，展示用户充、退押金时所在群组的城市。</title>
+    <is-done>is_done</is-done>
     <leveled-start>2018-12-13T05:00:00.000Z</leveled-start>
     <effort>7200</effort>
     <assignment idref="r2"/>
