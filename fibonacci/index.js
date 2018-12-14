@@ -11,6 +11,43 @@ class Fibonacci{
     this.initStartPoint=[this.clientW/2,(this.clientH-4)/2];
   }
 
+  //Dynamic Programming(记住求过的解来节省时间)
+  fibonacci(index){
+    if(index<=1){
+      return (1);
+    }
+    var vIndex; //index下的斐波那契數值
+    var vIndex_1=1;
+    var vIndex_2=1;
+    for(var i=2;i<=index;i++){
+      vIndex=vIndex_1+vIndex_2;
+      //此時 vIndex_2 已無用,替換為新值
+      vIndex_2=vIndex_1;
+      vIndex_1=vIndex;
+    }
+    return (vIndex);
+  }
+  fibonacciArr(index){
+    if(index===0){
+      return ([1]);
+    }
+    if(index===1){
+      return ([1,1]);
+    }
+    var arrFibonacci=[1,1];
+    var vIndex; //index下的斐波那契數值
+    var vIndex_1=1;
+    var vIndex_2=1;
+    for(var i=2;i<=index;i++){
+      vIndex=vIndex_1+vIndex_2;
+      arrFibonacci.push(vIndex);
+      //此時 vIndex_2 已無用,替換為新值
+      vIndex_2=vIndex_1;
+      vIndex_1=vIndex;
+    }
+    return (arrFibonacci);
+  }
+
   //斐波那契数(索引)
   //index:0,1,2,3  F0=1,F1=1,F2=2,,,,Fn=F(n-1)+F(n-2)
   fibonacciNum(index){
@@ -38,32 +75,32 @@ class Fibonacci{
     var startPoint=this.startPoint(i);
     //畫矩形的起始點與弧綫起始點坐標(主因)的關係
     switch(direction){
-      case 0:
+    case 0:
       x=startPoint.x-sideLen;
       y=startPoint.y;
       arcX=startPoint.x;
       arcY=startPoint.y+sideLen;
       break;
-      case 1:
+    case 1:
       x=startPoint.x;
       y=startPoint.y;
       arcX=startPoint.x+sideLen;
       arcY=startPoint.y;
       break;
-      case 2:  //向右1--》3
+    case 2:  //向右1--》3
       x=startPoint.x;
       y=startPoint.y-sideLen;
       arcX=startPoint.x;
       arcY=startPoint.y-sideLen;
       break;
-      case 3:
+    case 3:
       x=startPoint.x-sideLen;
       y=startPoint.y-sideLen;
       arcX=startPoint.x-sideLen;
       arcY=startPoint.y;
       break;
-      default:
-      console.log('impossible');
+    default:
+      alert('impossible');
     }
 
     return ({
@@ -91,24 +128,24 @@ class Fibonacci{
     var sideLen=this.px10(i-1);
     //弧綫起始點坐標與上一個弧綫起始點坐標的關係，建立遞歸
     switch(direction){
-      case 0:
+    case 0:
       x=this.startPoint(i-1).x-sideLen;
       y=this.startPoint(i-1).y-sideLen;
       break;
-      case 1:
+    case 1:
       x=this.startPoint(i-1).x-sideLen;
       y=this.startPoint(i-1).y+sideLen;
       break;
-      case 2:  //向右 1->3
+    case 2:  //向右 1->3
       x=this.startPoint(i-1).x+sideLen;
       y=this.startPoint(i-1).y+sideLen;
       break;
-      case 3:
+    case 3:
       x=this.startPoint(i-1).x+sideLen;
       y=this.startPoint(i-1).y-sideLen;
       break;
-      default:
-      console.log('impossible');
+    default:
+      alert('impossible');
     }
 
     return ({
