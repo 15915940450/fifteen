@@ -13,12 +13,47 @@
 // }
 // queen([1,1,1,1,1,1,1,1],0);
 class EightQueens{
-  constructor(){}
+  constructor(){
+    this.result=[-1,-1,-1,-1,-1,-1,-1,-1];
+    this.okay=false;
+  }
 
   solve(){
     var es6This=this;
-  
+    es6This.okay=es6This.tryrow(0);
+    console.log(es6This.okay);
     return es6This;
+  }
+  tryrow(row){
+    var es6This=this;
+    if(row>=8){
+      return true;
+    }
+
+    for(var col=0;col<8;col++){
+      var isPassCurrent=es6This.check(row,col);
+      if(!isPassCurrent){
+        continue;
+      }
+
+
+      //下一行
+      var isPassNext=es6This.tryrow(row+1);
+      if(!isPassNext){
+        //回溯
+        continue;
+      }
+      return true;
+    }
+
+    
+
+    return false;
+  }
+  check(){
+    var es6This=this;
+  
+    return true;
   }
   html(){
     var es6This=this;
@@ -33,4 +68,4 @@ class EightQueens{
 }
 
 var obj=new EightQueens();
-obj.solve().html();
+obj.solve();
