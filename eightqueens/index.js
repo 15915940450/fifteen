@@ -12,6 +12,8 @@
 //   }
 // }
 // queen([1,1,1,1,1,1,1,1],0);
+
+
 class EightQueens{
   constructor(){
     this.result=[];
@@ -35,7 +37,7 @@ class EightQueens{
     for(var col=0;col<8;col++){
       //八皇后的解
       this.result[row]=col;
-      var isPassCurrent=es6This.check(row);
+      var isPassCurrent=es6This.check(row,col);
       if(!isPassCurrent){
         //下一列
         continue;
@@ -58,28 +60,29 @@ class EightQueens{
     return false;
   }
   //檢查this.result[row]下是否可行，沒有被攻擊
-  check(row){
+  check(row,col){
     var es6This=this;
     
-    // console.log(row);
+    // console.log(es6This.result.slice(0,-1));
+    // console.log(JSON.stringify(es6This.result));
     //1.列
-    var checkCol=es6This.result.findIndex(function(v){
-      return (v===es6This.result[row]);
-    });
-    // console.log(checkCol);
-    if(checkCol!==row){
+    if(es6This.result.slice(0,-1).includes(col)){
       return false;
     }
     //2.45deg(有一些)
-    var check45=es6This.result.some(function(v,i){
-      // console.log(i,v);
-      if(v!==-1 && i!==row){
-        return (row-i===es6This.result[row]-v);
-      }
+    var check45=es6This.result.slice(0,-1).some(function(v,i){
+      return (Math.abs(row-i)===Math.abs(col-v));
     });
     if(check45){
       return false;
     }
+    //3.135deg(有一些)
+    // var check135=es6This.result.slice(0,-1).some(function(v,i){
+    //   return (i-row===col-v);
+    // });
+    // if(check135){
+    //   return false;
+    // }
 
     return true;
   }
