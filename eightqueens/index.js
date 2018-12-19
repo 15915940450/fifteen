@@ -18,6 +18,19 @@ class EightQueens{
   constructor(){
     this.result=[];
     this.okay=false;
+    this.arrColIndex=[0,1,2,3,4,5,6,7];
+  }
+  shuffle(arr){
+    var es6This=this;
+    arr=arr || es6This.arrColIndex;
+    for(var i=0;i<arr.length;i++){
+      var eleLastI=arr[arr.length-i-1];
+      var randomNum=Math.floor(Math.random()*(arr.length-i));
+      arr[arr.length-i-1]=arr[randomNum];
+      arr[randomNum]=eleLastI;
+    }
+    // console.log(arr);
+    return arr;
   }
 
   //解決方案
@@ -33,11 +46,14 @@ class EightQueens{
     if(row>=8){
       return true;
     }
+    var arrColIndexRandom=es6This.arrColIndex;
+    // var arrColIndexRandom=es6This.shuffle();
     //每一行裏的操作：一列一列的試
     for(var col=0;col<8;col++){
+      var colReal=arrColIndexRandom[col];
       //八皇后的解
-      this.result[row]=col;
-      var isPassCurrent=es6This.check(row,col);
+      this.result[row]=colReal;
+      var isPassCurrent=es6This.check(row,colReal);
       if(!isPassCurrent){
         //下一列
         continue;
@@ -65,7 +81,7 @@ class EightQueens{
     
     // console.log(es6This.result.slice(0,-1));
     // console.log(JSON.stringify(es6This.result));
-    
+
     //1.列
     // if(es6This.result.slice(0,-1).includes(col)){
     //   return false;
