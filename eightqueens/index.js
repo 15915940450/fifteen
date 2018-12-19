@@ -65,13 +65,17 @@ class EightQueens{
     
     // console.log(es6This.result.slice(0,-1));
     // console.log(JSON.stringify(es6This.result));
+    
     //1.列
-    if(es6This.result.slice(0,-1).includes(col)){
-      return false;
-    }
+    // if(es6This.result.slice(0,-1).includes(col)){
+    //   return false;
+    // }
     //2.45deg(有一些)
     var check45=es6This.result.slice(0,-1).some(function(v,i){
-      return (Math.abs(row-i)===Math.abs(col-v));
+      //已存在的點(v,i)與 當前點(col,row)
+      var cot=(col-v)/(row-i);
+      var arrCot=[0,-1,1];
+      return (arrCot.includes(cot));
     });
     if(check45){
       return false;
