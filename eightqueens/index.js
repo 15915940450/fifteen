@@ -21,7 +21,7 @@ class EightQueens{
     this.arrColIndex=[0,1,2,3,4,5,6,7];
     this.numAllSolve=0;
 
-    this.isJustSolveOne=false;  //是否只求單一解
+    this.isJustSolveOne=true;  //是否只求單一解
   }
 
   //洗牌
@@ -148,3 +148,14 @@ obj.solve().html();
 if(!obj.isJustSolveOne){
   console.log(obj.numAllSolve);
 }
+
+//===array and set
+// var arr=[1,2,3,2,6,5,6];
+// var dataSet=new Set(arr);
+// var arr2=Array.from(dataSet);
+// console.log(arr);
+// console.log(dataSet);
+// console.log(arr2);
+// console.log(arr.length);
+// console.log(dataSet.size);
+// console.log(arr2.length);
