@@ -19,7 +19,12 @@ class EightQueens{
     this.result=[];
     this.okay=false;
     this.arrColIndex=[0,1,2,3,4,5,6,7];
+    this.numAllSolve=0;
+
+    this.isJustSolveOne=false;  //是否只求單一解
   }
+
+  //洗牌
   shuffle(arr){
     var es6This=this;
     arr=arr || es6This.arrColIndex;
@@ -44,10 +49,16 @@ class EightQueens{
   tryrow(row){
     var es6This=this;
     if(row>=8){
+      es6This.numAllSolve++;
+      console.log(es6This.result);
+      
       return true;
     }
     var arrColIndexRandom=es6This.arrColIndex;
-    // var arrColIndexRandom=es6This.shuffle();
+    //單個解最好用shuffle
+    if(es6This.isJustSolveOne){
+      arrColIndexRandom=es6This.shuffle();
+    }
     //每一行裏的操作：一列一列的試
     for(var col=0;col<8;col++){
       var colReal=arrColIndexRandom[col];
@@ -64,15 +75,18 @@ class EightQueens{
       var isPassNext=es6This.tryrow(row+1);
       if(!isPassNext){
         es6This.result.length=row;
-        console.log('回溯:',es6This.result);
+        // console.log('回溯:',es6This.result);
         //回溯,下一列
         continue;
       }
-      return true;
+      //前面沒有continue，證明成功執行了下一行。若要找所有的解，則此處不能return(__here__)
+      if(es6This.isJustSolveOne){
+        return true;
+      }
     }
 
     
-
+    //遍歷了所有，主要是找所有的解
     return false;
   }
   //檢查this.result[row]下是否可行，沒有被攻擊
@@ -120,7 +134,7 @@ class EightQueens{
     var arr=[];
     arr.length=64;
     var strHTML=arr.fill(0).map(function(v,i){
-      var red=arrCellIndex.includes(i)?'red':''
+      var red=arrCellIndex.includes(i)?'red':'';
       //i&1^i>>>3&1  偶數行奇數列或奇數行偶數列
       return (`<div class="${i&1^i>>>3&1?'black':''} ${red}"></div>`);
     }).join('');
@@ -131,4 +145,6 @@ class EightQueens{
 
 var obj=new EightQueens();
 obj.solve().html();
-console.log(obj.result);
+if(!obj.isJustSolveOne){
+  console.log(obj.numAllSolve);
+}
