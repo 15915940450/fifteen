@@ -16,3 +16,34 @@
 <script src="index.js"></script>
 </body>
 </html>
+
+
+<!-- function knapsack(weights, values, w){
+    var n = weights.length -1;//获取物品个数
+    var f=[[]];//定义f的矩阵
+    for(var j=0;j<=w;j++){
+        if(j<weights[0]){//容量当不下物品0的重量，价值为0
+        f[0][j]=0;
+        }else{
+            f[0][j]=values[0];//否则容量为物品0的价值
+            }
+        }
+    for(var j=0;j<=w;j++){
+        for(var i=1;i<=n;i++){
+            if(!f[i]){//创建新的一行
+                f[i]=[];
+            }
+            if(j<weights[i]){//等于之前的最优值
+                f[i][j]=f[i-1][j];
+            }else{
+                f[i][j]=Math.max(f[i-1][j],f[i-1][j-weights[i]]+values[i]);
+                }
+            }
+        }
+    return f[n][w];
+}
+var weights=[7,3,4,5];
+var values=[42,12,40,25];
+var w=8;
+var result=knapsack(weights, values, w);
+console.log(result); -->
