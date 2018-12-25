@@ -1,1 +1,3 @@
-console.log(5);
+class Travelling{}  //class
+
+var obj=new Travelling();
