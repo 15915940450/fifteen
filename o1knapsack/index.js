@@ -1,3 +1,13 @@
+/*
+* js注釋：
+0-1 knapsack problem
+
+動態規劃狀態轉移方程->
+f(0,w)=0;
+f(i,w)=f(i-1,w)  if wi>w
+f(i,w)=max{ f(i-1,w), f(i-1,w-wi)+vi }   if wi<=w
+*/
+
 class O1knapsack{
   constructor(){
     this.W=10;  //能够携重W的背包
