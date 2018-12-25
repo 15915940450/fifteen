@@ -73,10 +73,10 @@ class O1knapsack{
           es6This.matrix[i][j]=es6This.matrix[i-1][j];
         }else{
           //公式part2
-          var vNoChooseI=es6This.matrix[i-1][j];
-          var vChooseI=es6This.matrix[i-1][j-es6This.n[i-1].weight]+es6This.n[i-1].values;
+          var vNoChooseIDi=es6This.matrix[i-1][j];
+          var vChooseIDi=es6This.matrix[i-1][j-es6This.n[i-1].weight]+es6This.n[i-1].values;
           
-          es6This.matrix[i][j]=Math.max(vNoChooseI,vChooseI);
+          es6This.matrix[i][j]=Math.max(vNoChooseIDi,vChooseIDi);
         }
       }
     }
