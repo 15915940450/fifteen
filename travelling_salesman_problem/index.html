@@ -8,6 +8,10 @@
 <meta name="author" content="Thilina Fong" />
 <meta name="description" content="" />
 <style>
+html,body{
+  background: black;
+  color: floralwhite;
+}
 .btn{
   width: 160px;
   height: 50px;
@@ -17,21 +21,27 @@
   border: 1px solid black;
   margin: 30px 10px;
 }
+.percent{
+  font-size: 20px;
+}
 </style>
 </head>
 <body>
 
 <div id="container">
-  1.https://blog.oldj.net/2018/01/21/ga-tsp-javascript/
+  <!-- 1.https://blog.oldj.net/2018/01/21/ga-tsp-javascript/ -->
   <br>
-  2.https://oldj.net/static/tsp/ga/index.html
+  <!-- 2.https://oldj.net/static/tsp/ga/index.html -->
   <br>
   <!-- 3.music(Friendships(Original Mix))+TravellingSalesmanProblem -->
   
   <div>
     <canvas id="canvas" width="800" height="300" style="border:1px solid black;"></canvas>
   </div>
-  <button class="btn">Genetic Algorithm, go</button>
+  <div>
+    <button class="btn">Genetic Algorithm, go</button>
+    <strong class="percent">0.00%</strong>
+  </div>
   <div>
     <canvas id="canvasAfter" width="800" height="300" style="border:1px solid black;"></canvas>
   </div>

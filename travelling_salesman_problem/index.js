@@ -2,7 +2,9 @@ class Travelling{
   constructor(){
     this.canvasWidth=800;
     this.canvasHeight=300;
+    this.gthAllPoints=13;
     this.points=[];
+    this.numAllPermutation=0;
 
     this.ctx=null;
     this.ctxAfter=null;
@@ -10,21 +12,20 @@ class Travelling{
       distance:0,
       points:[]
     };
-    this.times=0;
+    this.times=-1;
     this.completePermutation=false;
   }
 
   initPoints(){
-    console.time('time_timeEnd_lexical');
     var es6This=this;
-    // es6This.points.length=0;
-    // for(var i=0;i<30;i++){
-    //   es6This.points.push({
-    //     id:i,
-    //     x:(Math.random()*(800-50)>>0)+25,
-    //     y:(Math.random()*(300-50)>>0)+25
-    //   });
-    // }
+    es6This.points.length=0;
+    for(var i=0;i<es6This.gthAllPoints;i++){
+      es6This.points.push({
+        id:i,
+        x:(Math.random()*(800-50)>>0)+25,
+        y:(Math.random()*(300-50)>>0)+25
+      });
+    }
     // console.log(JSON.stringify(es6This.points));
 
 
@@ -35,9 +36,17 @@ class Travelling{
     //   {'id':14,'x':72,'y':113},
     //   {'id':19,'x':520,'y':56}
     // ];
-    es6This.points=[{'id':0,'x':575,'y':242},{'id':1,'x':52,'y':249},{'id':2,'x':602,'y':230},{'id':3,'x':625,'y':265},{'id':4,'x':427,'y':207},{'id':5,'x':450,'y':186},{'id':6,'x':114,'y':43},{'id':7,'x':374,'y':141},{'id':8,'x':78,'y':61},{'id':9,'x':731,'y':103},{'id':10,'x':171,'y':221},{'id':11,'x':598,'y':131},{'id':12,'x':608,'y':82},{'id':13,'x':639,'y':230},{'id':14,'x':496,'y':33},{'id':15,'x':37,'y':114},{'id':16,'x':731,'y':273},{'id':17,'x':476,'y':49},{'id':18,'x':720,'y':71},{'id':19,'x':293,'y':242},{'id':20,'x':340,'y':103},{'id':21,'x':310,'y':62},{'id':22,'x':228,'y':56},{'id':23,'x':211,'y':268},{'id':24,'x':71,'y':190},{'id':25,'x':706,'y':175},{'id':26,'x':705,'y':120},{'id':27,'x':90,'y':90},{'id':28,'x':639,'y':48},{'id':29,'x':716,'y':175}];
+    // es6This.points=[{'id':0,'x':575,'y':242},{'id':1,'x':52,'y':249},{'id':2,'x':602,'y':230},{'id':3,'x':625,'y':265},{'id':4,'x':427,'y':207},{'id':5,'x':450,'y':186},{'id':6,'x':114,'y':43},{'id':7,'x':374,'y':141},{'id':8,'x':78,'y':61},{'id':9,'x':731,'y':103},{'id':10,'x':171,'y':221},{'id':11,'x':598,'y':131},{'id':12,'x':608,'y':82},{'id':13,'x':639,'y':230},{'id':14,'x':496,'y':33},{'id':15,'x':37,'y':114},{'id':16,'x':731,'y':273},{'id':17,'x':476,'y':49},{'id':18,'x':720,'y':71},{'id':19,'x':293,'y':242},{'id':20,'x':340,'y':103},{'id':21,'x':310,'y':62},{'id':22,'x':228,'y':56},{'id':23,'x':211,'y':268},{'id':24,'x':71,'y':190},{'id':25,'x':706,'y':175},{'id':26,'x':705,'y':120},{'id':27,'x':90,'y':90},{'id':28,'x':639,'y':48},{'id':29,'x':716,'y':175}];
+    es6This.numAllPermutation=es6This.calcAllPermutation(es6This.gthAllPoints);
     
     return es6This;
+  }
+  calcAllPermutation(n){
+    var es6This=this;
+    if(n===1){
+      return (1);
+    }
+    return (n*es6This.calcAllPermutation(n-1));
   }
 
   draw(id){
@@ -60,8 +69,8 @@ class Travelling{
       ctx.beginPath();
       
       if(i){
-        ctx.fillStyle='black';
-        ctx.arc(points[i].x,points[i].y,3,0,Math.PI*2,true);
+        ctx.fillStyle='ghostwhite';
+        ctx.arc(points[i].x,points[i].y,4,0,Math.PI*2,true);
       }else{
         ctx.fillStyle='crimson';
         ctx.arc(points[0].x,points[0].y,10,0,Math.PI*2,true);
@@ -86,7 +95,7 @@ class Travelling{
     }
     ctx.lineTo(points[0].x,points[0].y);
 
-    ctx.strokeStyle='black';
+    ctx.strokeStyle='ghostwhite';
     ctx.stroke();
     return es6This;
   }
@@ -96,10 +105,13 @@ class Travelling{
     var es6This=this;
     var Timer1=window.setInterval(function(){
       es6This.times++;
+      document.querySelector('.percent').innerHTML=((es6This.times/es6This.numAllPermutation*100).toFixed(4)+'%'+'('+es6This.gthAllPoints+')');
       if(es6This.completePermutation){
-        console.log('complete',es6This.best.distance,es6This.times);
+        console.log('complete,最短距離是：',es6This.best.distance);
         console.log(JSON.stringify(es6This.best.points));
         window.clearInterval(Timer1);
+        // console.log(es6This.numAllPermutation);
+        // console.log(es6This.times+' times');
         console.timeEnd('time_timeEnd_lexical');
       }
       // es6This.points.sort(function(){
@@ -190,6 +202,8 @@ class Travelling{
   }
 
 }  //class
+
+console.time('time_timeEnd_lexical');
 
 var obj=new Travelling();
 obj.initPoints().draw().drawWithCTX().calcDistance().timer();
