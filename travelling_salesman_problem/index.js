@@ -10,6 +10,9 @@ class Travelling{
       distance:0,
       points:[]
     };
+    // this.test=[3,2,1];
+    this.test=[1,2,3];
+    this.completePermutation=false;
   }
 
   initPoints(){
@@ -68,9 +71,51 @@ class Travelling{
       es6This.points.sort(function(){
         return (Math.random()-0.5);
       });
+      //lexical
+      es6This.nextLexical();
       es6This.drawWithCTX();
       es6This.calcDistance();
-    },1);
+    },1e3);
+    // },1);
+    return es6This;
+  }
+  //典順序遍歷數組
+  nextLexical(arr){
+    var es6This=this;
+    arr=arr || es6This.test;
+    if(es6This.completePermutation){
+      return ('complete permutation');
+    }
+    var xMax=arr.reduce(function(acc,cur,idx,src){
+      if(cur<src[idx+1]){
+        acc=idx;
+      }
+      return acc;
+    },-1);
+    // console.log('xMax',xMax);
+    if(xMax+1){
+      var yMax=arr.reduce(function(acc,cur,idx,src){
+        if(src[xMax]<src[idx]){
+          acc=idx;
+        }
+        return acc;
+      },-1);
+      // console.log('yMax',yMax);
+      es6This.swap(arr,xMax,yMax);
+      var arrNeedReverse=arr.splice(xMax+1);
+      arrNeedReverse.reverse();
+      arr=arr.concat(arrNeedReverse);
+    }else{
+      es6This.completePermutation=true;
+    }
+    
+    return es6This;
+  }
+  swap(arr,i,j){
+    var es6This=this;
+    var tmp=arr[i];
+    arr[i]=arr[j];
+    arr[j]=tmp;
     return es6This;
   }
   //計算所有點長度
@@ -104,7 +149,7 @@ class Travelling{
   drawBest(){
     var es6This=this;
     es6This.draw('canvasAfter').drawWithCTX(es6This.ctxAfter,es6This.best.points);
-    console.log(es6This.best.distance);
+    // console.log(es6This.best.distance);
     return es6This;
   }
 
@@ -112,4 +157,5 @@ class Travelling{
 
 var obj=new Travelling();
 obj.draw().drawWithCTX().calcDistance().timer();
+//http://localhost/fifteen/travelling_salesman_problem/
 
