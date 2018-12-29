@@ -17,8 +17,8 @@ class Travelling{
   initPoints(){
     console.time('time_timeEnd_lexical');
     var es6This=this;
-    es6This.points.length=0;
-    // for(var i=0;i<50;i++){
+    // es6This.points.length=0;
+    // for(var i=0;i<30;i++){
     //   es6This.points.push({
     //     id:i,
     //     x:(Math.random()*(800-50)>>0)+25,
@@ -26,8 +26,17 @@ class Travelling{
     //   });
     // }
     // console.log(JSON.stringify(es6This.points));
-    es6This.points=[{'id':0,'x':470,'y':235},{'id':1,'x':603,'y':164},{'id':2,'x':532,'y':200},{'id':3,'x':769,'y':99},{'id':4,'x':163,'y':178},{'id':5,'x':371,'y':91},{'id':6,'x':583,'y':79},{'id':7,'x':231,'y':209},{'id':8,'x':548,'y':272},{'id':9,'x':306,'y':154},{'id':10,'x':195,'y':162},{'id':11,'x':125,'y':191},{'id':12,'x':750,'y':107},{'id':13,'x':733,'y':135},{'id':14,'x':72,'y':113},{'id':15,'x':660,'y':203},{'id':16,'x':241,'y':206},{'id':17,'x':25,'y':219},{'id':18,'x':53,'y':30},{'id':19,'x':520,'y':56},{'id':20,'x':628,'y':237},{'id':21,'x':636,'y':145},{'id':22,'x':172,'y':90},{'id':23,'x':618,'y':46},{'id':24,'x':238,'y':152},{'id':25,'x':243,'y':112},{'id':26,'x':513,'y':47},{'id':27,'x':607,'y':48},{'id':28,'x':89,'y':109},{'id':29,'x':510,'y':47},{'id':30,'x':753,'y':236},{'id':31,'x':349,'y':47},{'id':32,'x':774,'y':142},{'id':33,'x':353,'y':192},{'id':34,'x':397,'y':173},{'id':35,'x':412,'y':169},{'id':36,'x':166,'y':85},{'id':37,'x':323,'y':214},{'id':38,'x':58,'y':81},{'id':39,'x':596,'y':42},{'id':40,'x':494,'y':103},{'id':41,'x':76,'y':29},{'id':42,'x':472,'y':33},{'id':43,'x':394,'y':104},{'id':44,'x':100,'y':265},{'id':45,'x':84,'y':122},{'id':46,'x':707,'y':47},{'id':47,'x':523,'y':76},{'id':48,'x':194,'y':173},{'id':49,'x':387,'y':37}];
-    es6This.points=[{'id':33,'x':353,'y':192},{'id':34,'x':397,'y':173},{'id':35,'x':412,'y':169},{'id':36,'x':166,'y':85},{'id':37,'x':323,'y':214},{'id':39,'x':596,'y':42}];
+
+
+    // es6This.points=[
+    //   {'id':10,'x':195,'y':162},
+    //   {'id':11,'x':125,'y':191},
+    //   {'id':12,'x':750,'y':107},
+    //   {'id':14,'x':72,'y':113},
+    //   {'id':19,'x':520,'y':56}
+    // ];
+    es6This.points=[{'id':0,'x':575,'y':242},{'id':1,'x':52,'y':249},{'id':2,'x':602,'y':230},{'id':3,'x':625,'y':265},{'id':4,'x':427,'y':207},{'id':5,'x':450,'y':186},{'id':6,'x':114,'y':43},{'id':7,'x':374,'y':141},{'id':8,'x':78,'y':61},{'id':9,'x':731,'y':103},{'id':10,'x':171,'y':221},{'id':11,'x':598,'y':131},{'id':12,'x':608,'y':82},{'id':13,'x':639,'y':230},{'id':14,'x':496,'y':33},{'id':15,'x':37,'y':114},{'id':16,'x':731,'y':273},{'id':17,'x':476,'y':49},{'id':18,'x':720,'y':71},{'id':19,'x':293,'y':242},{'id':20,'x':340,'y':103},{'id':21,'x':310,'y':62},{'id':22,'x':228,'y':56},{'id':23,'x':211,'y':268},{'id':24,'x':71,'y':190},{'id':25,'x':706,'y':175},{'id':26,'x':705,'y':120},{'id':27,'x':90,'y':90},{'id':28,'x':639,'y':48},{'id':29,'x':716,'y':175}];
+    
     return es6This;
   }
 
@@ -49,19 +58,35 @@ class Travelling{
     ctx.clearRect(0,0,es6This.canvasWidth,es6This.canvasHeight);
     for(var i=0;i<points.length;i++){
       ctx.beginPath();
-      ctx.arc(points[i].x,points[i].y,4,0,Math.PI*2,true);
+      
+      if(i){
+        ctx.fillStyle='black';
+        ctx.arc(points[i].x,points[i].y,3,0,Math.PI*2,true);
+      }else{
+        ctx.fillStyle='crimson';
+        ctx.arc(points[0].x,points[0].y,10,0,Math.PI*2,true);
+      }
+      
       ctx.fill();
     }
 
     //畫曲綫
     ctx.beginPath();
+    //0-1
     ctx.moveTo(points[0].x,points[0].y);
-
-    for(i=1;i<points.length;i++){
+    ctx.lineTo(points[1].x,points[1].y);
+    ctx.strokeStyle='crimson';
+    ctx.stroke();
+    
+    ctx.beginPath();
+    //1-2-3----(gth-1)-0
+    ctx.moveTo(points[1].x,points[1].y);
+    for(i=2;i<points.length;i++){
       ctx.lineTo(points[i].x,points[i].y);
     }
+    ctx.lineTo(points[0].x,points[0].y);
 
-    ctx.closePath();
+    ctx.strokeStyle='black';
     ctx.stroke();
     return es6This;
   }
@@ -73,7 +98,7 @@ class Travelling{
       es6This.times++;
       if(es6This.completePermutation){
         console.log('complete',es6This.best.distance,es6This.times);
-        console.log(JSON.stringify(es6This.points));
+        console.log(JSON.stringify(es6This.best.points));
         window.clearInterval(Timer1);
         console.timeEnd('time_timeEnd_lexical');
       }
