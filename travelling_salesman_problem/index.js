@@ -2,7 +2,7 @@ class Travelling{
   constructor(){
     this.canvasWidth=800;
     this.canvasHeight=200;
-    this.startPoint=null;
+    this.startPointAlsoEndPoint=null;
 
     this.gthAllPoints=5;
     this.points=[];
@@ -24,6 +24,7 @@ class Travelling{
     for(var i=0;i<es6This.gthAllPoints;i++){
       es6This.points.push(es6This.generateRandomPoint(i));
     }
+    es6This.startPointAlsoEndPoint=es6This.generateRandomPoint(-1);
     // console.log(JSON.stringify(es6This.points));
 
 
@@ -71,35 +72,33 @@ class Travelling{
     ctx=ctx || es6This.ctx;
     points=points || es6This.points;
     ctx.clearRect(0,0,es6This.canvasWidth,es6This.canvasHeight);
+
+    //畫點
+    ctx.beginPath();
+    ctx.fillStyle='crimson';
+    ctx.arc(es6This.startPointAlsoEndPoint.x,es6This.startPointAlsoEndPoint.y,10,0,Math.PI*2,true);
+    ctx.fill();
+
     for(var i=0;i<points.length;i++){
       ctx.beginPath();
-
-      if(i){
-        ctx.fillStyle='ghostwhite';
-        ctx.arc(points[i].x,points[i].y,4,0,Math.PI*2,true);
-      }else{
-        ctx.fillStyle='crimson';
-        ctx.arc(points[0].x,points[0].y,10,0,Math.PI*2,true);
-      }
-
+      ctx.fillStyle='ghostwhite';
+      ctx.arc(points[i].x,points[i].y,4,0,Math.PI*2,true);
       ctx.fill();
     }
 
     //畫曲綫
     ctx.beginPath();
-    //0-1
-    ctx.moveTo(points[0].x,points[0].y);
-    ctx.lineTo(points[1].x,points[1].y);
+    ctx.moveTo(es6This.startPointAlsoEndPoint.x,es6This.startPointAlsoEndPoint.y);
+    ctx.lineTo(points[0].x,points[0].y);
     ctx.strokeStyle='crimson';
     ctx.stroke();
 
     ctx.beginPath();
-    //1-2-3----(gth-1)-0
-    ctx.moveTo(points[1].x,points[1].y);
-    for(i=2;i<points.length;i++){
+    ctx.moveTo(points[0].x,points[0].y);
+    for(i=1;i<points.length;i++){
       ctx.lineTo(points[i].x,points[i].y);
     }
-    ctx.lineTo(points[0].x,points[0].y);
+    ctx.lineTo(es6This.startPointAlsoEndPoint.x,es6This.startPointAlsoEndPoint.y);
 
     ctx.strokeStyle='ghostwhite';
     ctx.stroke();
