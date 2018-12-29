@@ -145,7 +145,7 @@ class Travelling{
       // console.log('xMax',xMax);
       if(xMax+1){
         var yMax=arr.reduce(function(acc,cur,idx,src){
-          if(src[xMax][key]<src[idx][key]){
+          if(src[xMax][key]<cur[key]){
             acc=idx;
           }
           return acc;
@@ -173,18 +173,18 @@ class Travelling{
   //計算所有點長度
   calcDistance(){
     var es6This=this;
+    var initialValue=es6This.calcDistanceAbout2point(es6This.startPointAlsoEndPoint,es6This.points[0]);
     var distance=es6This.points.reduce(function(acc,cur,idx,src){
-      var lastIndex=src.length-1;
-      if(idx){
-        //1,2,3,4...
-        lastIndex=idx-1;
+      var distance2idx;
+
+      if(idx===src.length-1){
+        distance2idx=es6This.calcDistanceAbout2point(cur,es6This.startPointAlsoEndPoint);
+      }else{
+        distance2idx=es6This.calcDistanceAbout2point(cur,src[idx+1]);
       }
 
-      var powX=Math.pow(src[idx].x-src[lastIndex].x,2);
-      var powY=Math.pow(src[idx].y-src[lastIndex].y,2);
-      var distance2idx=Math.sqrt(powX+powY);
       return (acc+distance2idx);
-    },0)>>0;
+    },initialValue)>>0;
     //set best
     if(!es6This.best.distance || distance<es6This.best.distance){
       es6This.best={
@@ -194,6 +194,13 @@ class Travelling{
       es6This.drawBest();
     }
     return es6This;
+  }
+  calcDistanceAbout2point(m,n){
+    var es6This=this;
+    var powX=Math.pow(m.x-n.x,2);
+    var powY=Math.pow(m.y-n.y,2);
+    var distanceMN=Math.sqrt(powX+powY);
+    return (distanceMN);
   }
 
   drawBest(){
