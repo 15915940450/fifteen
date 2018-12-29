@@ -2,7 +2,9 @@ class Travelling{
   constructor(){
     this.canvasWidth=800;
     this.canvasHeight=200;
-    this.gthAllPoints=9;
+    this.startPoint=null;
+
+    this.gthAllPoints=5;
     this.points=[];
     this.numAllPermutation=0;
 
@@ -20,11 +22,7 @@ class Travelling{
     var es6This=this;
     es6This.points.length=0;
     for(var i=0;i<es6This.gthAllPoints;i++){
-      es6This.points.push({
-        id:i,
-        x:(Math.random()*(es6This.canvasWidth-50)>>0)+25,
-        y:(Math.random()*(es6This.canvasHeight-50)>>0)+25
-      });
+      es6This.points.push(es6This.generateRandomPoint(i));
     }
     // console.log(JSON.stringify(es6This.points));
 
@@ -40,6 +38,14 @@ class Travelling{
     es6This.numAllPermutation=es6This.calcAllPermutation(es6This.gthAllPoints);
 
     return es6This;
+  }
+  generateRandomPoint(id){
+    var es6This=this;
+    return ({
+      id:id,
+      x:(Math.random()*(es6This.canvasWidth-50)>>0)+25,
+      y:(Math.random()*(es6This.canvasHeight-50)>>0)+25
+    });
   }
   calcAllPermutation(n){
     var es6This=this;
