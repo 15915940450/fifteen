@@ -2,41 +2,36 @@ class Travelling{
   constructor(){
     this.canvasWidth=800;
     this.canvasHeight=200;
+    this.ctx=null;
+    this.ctxAfter=null;
+
     this.startPointAlsoEndPoint=null; //起點
     this.gthAllPoints=4;  //除起點外的所經過點的個數
     this.points=[]; //所經過的點
     this.numAllPermutation=0;
-
-    this.ctx=null;
-    this.ctxAfter=null;
+    //最好的路綫
     this.best={
       distance:0,
       points:[]
     };
-    this.times=-1;
-    this.completePermutation=false;
+    this.times=-1;  //運行了多少次
+    this.completePermutation=false; //是否已經遍歷完成
+
+    this.order=[];  //決定經過順序
   }
 
+  //初始化
   initPoints(){
     var es6This=this;
     es6This.points.length=0;
     for(var i=0;i<es6This.gthAllPoints;i++){
       es6This.points.push(es6This.generateRandomPoint(i));
+      es6This.order[i]=i;
     }
     es6This.startPointAlsoEndPoint=es6This.generateRandomPoint(-1);
-    // console.log(JSON.stringify(es6This.points));
-
-
-    // es6This.points=[
-    //   {'id':10,'x':195,'y':162},
-    //   {'id':11,'x':125,'y':191},
-    //   {'id':12,'x':750,'y':107},
-    //   {'id':14,'x':72,'y':113},
-    //   {'id':19,'x':520,'y':56}
-    // ];
-    // es6This.points=[{'id':0,'x':575,'y':242},{'id':1,'x':52,'y':249},{'id':2,'x':602,'y':230},{'id':3,'x':625,'y':265},{'id':4,'x':427,'y':207},{'id':5,'x':450,'y':186},{'id':6,'x':114,'y':43},{'id':7,'x':374,'y':141},{'id':8,'x':78,'y':61},{'id':9,'x':731,'y':103},{'id':10,'x':171,'y':221},{'id':11,'x':598,'y':131},{'id':12,'x':608,'y':82},{'id':13,'x':639,'y':230},{'id':14,'x':496,'y':33},{'id':15,'x':37,'y':114},{'id':16,'x':731,'y':273},{'id':17,'x':476,'y':49},{'id':18,'x':720,'y':71},{'id':19,'x':293,'y':242},{'id':20,'x':340,'y':103},{'id':21,'x':310,'y':62},{'id':22,'x':228,'y':56},{'id':23,'x':211,'y':268},{'id':24,'x':71,'y':190},{'id':25,'x':706,'y':175},{'id':26,'x':705,'y':120},{'id':27,'x':90,'y':90},{'id':28,'x':639,'y':48},{'id':29,'x':716,'y':175}];
+    //console.log(JSON.stringify(es6This.points));
     es6This.numAllPermutation=es6This.calcAllPermutation(es6This.gthAllPoints);
-    console.log(es6This.numAllPermutation);
+    //console.log(es6This.numAllPermutation);
 
     return es6This;
   }
