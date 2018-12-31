@@ -2,10 +2,9 @@ class Travelling{
   constructor(){
     this.canvasWidth=800;
     this.canvasHeight=200;
-    this.startPointAlsoEndPoint=null;
-
-    this.gthAllPoints=7;
-    this.points=[];
+    this.startPointAlsoEndPoint=null; //起點
+    this.gthAllPoints=4;  //除起點外的所經過點的個數
+    this.points=[]; //所經過的點
     this.numAllPermutation=0;
 
     this.ctx=null;
