@@ -18,7 +18,7 @@ class GA{
     };
     this.completeSearch=false; //是否繼續生成下一代
 
-    this.gthPopulation=10;
+    this.gthPopulation=1000;
     this.population=[];
   }
 
@@ -28,15 +28,16 @@ class GA{
     //計時開始
     console.time('time_timeEnd_GA');
     //生成起點（同時也是終點）
-    es6This.startPointAlsoEndPoint=es6This.generateRandomPoint(-1);
     //生成所經過的點
     var i,order=[];
     if(es6This.isUseConstantPoints){
+      es6This.startPointAlsoEndPoint={ id: -1, x: 522, y: 122 };
       es6This.points=[{"id":0,"x":488,"y":31},{"id":1,"x":702,"y":140},{"id":2,"x":581,"y":93},{"id":3,"x":207,"y":77},{"id":4,"x":37,"y":68},{"id":5,"x":471,"y":28},{"id":6,"x":602,"y":87},{"id":7,"x":459,"y":172},{"id":8,"x":70,"y":41},{"id":9,"x":465,"y":164},{"id":10,"x":709,"y":130},{"id":11,"x":578,"y":130},{"id":12,"x":771,"y":155}];
       for(i=0;i<es6This.gthAllPoints;i++){
         order[i]=i;
       }
     }else{
+      es6This.startPointAlsoEndPoint=es6This.generateRandomPoint(-1);
       es6This.points.length=0;
       for(i=0;i<es6This.gthAllPoints;i++){
         es6This.points.push(es6This.generateRandomPoint(i));
@@ -93,7 +94,7 @@ class GA{
     }else if(distance===es6This.best.distance){
       console.log('again best:',order);
     }
-    return es6This;
+    return distance;
   }
   //計算兩點之間的距離
   calcDistanceAbout2point(m,n){
@@ -102,6 +103,18 @@ class GA{
     var powY=Math.pow(m.y-n.y,2);
     var distanceMN=Math.sqrt(powX+powY);
     return (distanceMN);
+  }
+  //當前代中找到最優的解
+  findBestInCureentGeneration(){
+    var es6This=this;
+    es6This.population.reduce(function(acc,cur,idx,src){
+      var distance=es6This.calcDistance(cur);
+      if(distance<acc){
+        acc=distance;
+      }
+      return (acc);
+    },Infinity);
+    return es6This;
   }
 
   /*
@@ -161,11 +174,10 @@ class GA{
   drawBest(){
     var es6This=this;
     es6This.draw('canvasAfter').drawWithCTX(es6This.ctxAfter,es6This.best.order);
-    console.log(es6This.best.distance,'at '+es6This.times+'th time');
     return es6This;
   }
 
 }
 
 var obj=new GA();
-obj.initPoints().draw().drawWithCTX();
+obj.initPoints().draw().findBestInCureentGeneration().drawWithCTX();
