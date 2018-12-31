@@ -1,5 +1,6 @@
-class Travelling{
+class GA{
   constructor(){
+    this.tutorial='https://www.bilibili.com/video/av10257437/?p=4';
     this.canvasWidth=800;
     this.canvasHeight=200;
     this.ctx=null;
@@ -9,30 +10,44 @@ class Travelling{
     this.startPointAlsoEndPoint=null; //起點
     this.gthAllPoints=13;  //除起點外的所經過點的個數
     this.points=[]; //所經過的點
-    this.numAllPermutation=0;
-    //最好的路綫
+    this.isUseConstantPoints=true;  //是否使用恆定的點
+    //目標：最好的路綫
     this.best={
       distance:0,
       order:[]
     };
-    this.times=-1;  //運行了多少次
-    this.completePermutation=false; //是否已經遍歷完成
+    this.completeSearch=false; //是否繼續生成下一代
 
-    this.order=[];  //決定經過順序
+    this.gthPopulation=10;
+    this.population=[];
   }
 
   //初始化
   initPoints(){
     var es6This=this;
-    es6This.points.length=0;
-    for(var i=0;i<es6This.gthAllPoints;i++){
-      es6This.points.push(es6This.generateRandomPoint(i));
-      es6This.order[i]=i;
-    }
+    //計時開始
+    console.time('time_timeEnd_GA');
+    //生成起點（同時也是終點）
     es6This.startPointAlsoEndPoint=es6This.generateRandomPoint(-1);
-    //console.log(JSON.stringify(es6This.points));
-    es6This.numAllPermutation=es6This.calcAllPermutation(es6This.gthAllPoints);
-    //console.log(es6This.numAllPermutation);
+    //生成所經過的點
+    var i,order=[];
+    if(es6This.isUseConstantPoints){
+      es6This.points=[{"id":0,"x":488,"y":31},{"id":1,"x":702,"y":140},{"id":2,"x":581,"y":93},{"id":3,"x":207,"y":77},{"id":4,"x":37,"y":68},{"id":5,"x":471,"y":28},{"id":6,"x":602,"y":87},{"id":7,"x":459,"y":172},{"id":8,"x":70,"y":41},{"id":9,"x":465,"y":164},{"id":10,"x":709,"y":130},{"id":11,"x":578,"y":130},{"id":12,"x":771,"y":155}];
+      for(i=0;i<es6This.gthAllPoints;i++){
+        order[i]=i;
+      }
+    }else{
+      es6This.points.length=0;
+      for(i=0;i<es6This.gthAllPoints;i++){
+        es6This.points.push(es6This.generateRandomPoint(i));
+        order[i]=i;
+      }
+      console.log(JSON.stringify(es6This.points));
+    }
+    //生成種群
+    for(i=0;i<es6This.gthPopulation;i++){
+      es6This.population[i]=_.shuffle(order);
+    }
 
     return es6This;
   }
@@ -45,64 +60,6 @@ class Travelling{
       y:(Math.random()*(es6This.canvasHeight-50)>>0)+25
     });
   }
-  //計算所有排列個數(階乘)
-  calcAllPermutation(n){
-    var es6This=this;
-    if(n===1){
-      return (1);
-    }
-    return (n*es6This.calcAllPermutation(n-1));
-  }
-
-
-  //定時器
-  timer(){
-    var es6This=this;
-    var Timer1=window.setInterval(function(){
-      es6This.times++;
-      es6This.elePercent.innerHTML=((es6This.times/es6This.numAllPermutation*100).toFixed(9)+'%'+'('+es6This.gthAllPoints+')');
-      if(es6This.completePermutation){
-        console.log('complete,最短距離是：',es6This.best.distance);
-        console.log(JSON.stringify(es6This.best.order));
-        window.clearInterval(Timer1);
-        console.timeEnd('time_timeEnd_lexical');
-      }
-      //lexical
-      es6This.order=es6This.nextLexical();
-      es6This.drawWithCTX();
-      es6This.calcDistance();
-    },1); //最小时间间隔,但未必一定是1毫秒執行一次
-    // },1);
-    return es6This;
-  }
-  //典順序遍歷數組
-  nextLexical(){
-    var es6This=this;
-    var arr=es6This.order;
-    if(!es6This.completePermutation){
-      var yMax=-1;
-      var xMax=arr.reduce(function(acc,cur,idx,src){
-        if(idx+1-src.length && cur<src[idx+1]){
-          acc=idx;
-        }
-        if(acc+1 && src[acc]<cur){
-          yMax=idx;
-        }
-        return acc;
-      },-1);
-      //console.log('xMax:',xMax,'yMax:',yMax);
-      if(xMax+1){
-        es6This.swap(arr,xMax,yMax);
-        var arrNeedReverse=arr.splice(xMax+1);
-        arrNeedReverse.reverse();
-        arr=arr.concat(arrNeedReverse);
-      }else{
-        es6This.completePermutation=true;
-      }
-    }
-
-    return arr;
-  }
   //交換數組兩個元素
   swap(arr,i,j){
     var es6This=this;
@@ -112,10 +69,10 @@ class Travelling{
     return es6This;
   }
   //計算所有點長度
-  calcDistance(){
+  calcDistance(order){
     var es6This=this;
-    var initialValue=es6This.calcDistanceAbout2point(es6This.startPointAlsoEndPoint,es6This.points[es6This.order[0]]);
-    var distance=es6This.order.reduce(function(acc,cur,idx,src){
+    var initialValue=es6This.calcDistanceAbout2point(es6This.startPointAlsoEndPoint,es6This.points[order[0]]);
+    var distance=order.reduce(function(acc,cur,idx,src){
       var distance2idx;
 
       if(idx===es6This.gthAllPoints-1){
@@ -130,11 +87,11 @@ class Travelling{
     if(!es6This.best.distance || distance<es6This.best.distance){
       es6This.best={
         distance:distance,
-        order:es6This.order.slice()
+        order:order.slice()
       };
       es6This.drawBest();
     }else if(distance===es6This.best.distance){
-      console.log('again best:',es6This.order);
+      console.log('again best:',order);
     }
     return es6This;
   }
@@ -166,7 +123,7 @@ class Travelling{
   drawWithCTX(ctx,order){
     var es6This=this;
     ctx=ctx || es6This.ctx;
-    order=order || es6This.order;
+    order=order || es6This.population[0];
     ctx.clearRect(0,0,es6This.canvasWidth,es6This.canvasHeight);
 
     //畫點
@@ -208,12 +165,7 @@ class Travelling{
     return es6This;
   }
 
-}  //class
+}
 
-console.time('time_timeEnd_lexical');
-
-var obj=new Travelling();
-obj.initPoints().draw().drawWithCTX().calcDistance().timer();
-
-//http://localhost/fifteen/travelling_salesman_problem/
-//https://www.bilibili.com/video/av10257437/?p=2
+var obj=new GA();
+obj.initPoints().draw().drawWithCTX();
