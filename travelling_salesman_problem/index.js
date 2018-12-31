@@ -133,6 +133,8 @@ class Travelling{
         order:es6This.order.slice()
       };
       es6This.drawBest();
+    }else if(distance===es6This.best.distance){
+      console.log('again best:',es6This.order);
     }
     return es6This;
   }
