@@ -14,7 +14,7 @@ class GA{
     //目標：最好的路綫
     this.best={
       distance:0,
-      order:[]
+      DNA:[]
     };
     this.completeSearch=false; //是否繼續生成下一代
 
@@ -29,25 +29,25 @@ class GA{
     console.time('time_timeEnd_GA');
     //生成起點（同時也是終點）
     //生成所經過的點
-    var i,order=[];
+    var i,DNA=[];
     if(es6This.isUseConstantPoints){
       es6This.startPointAlsoEndPoint={ id: -1, x: 522, y: 122 };
       es6This.points=[{"id":0,"x":488,"y":31},{"id":1,"x":702,"y":140},{"id":2,"x":581,"y":93},{"id":3,"x":207,"y":77},{"id":4,"x":37,"y":68},{"id":5,"x":471,"y":28},{"id":6,"x":602,"y":87},{"id":7,"x":459,"y":172},{"id":8,"x":70,"y":41},{"id":9,"x":465,"y":164},{"id":10,"x":709,"y":130},{"id":11,"x":578,"y":130},{"id":12,"x":771,"y":155}];
       for(i=0;i<es6This.gthAllPoints;i++){
-        order[i]=i;
+        DNA[i]=i;
       }
     }else{
       es6This.startPointAlsoEndPoint=es6This.generateRandomPoint(-1);
       es6This.points.length=0;
       for(i=0;i<es6This.gthAllPoints;i++){
         es6This.points.push(es6This.generateRandomPoint(i));
-        order[i]=i;
+        DNA[i]=i;
       }
       console.log(JSON.stringify(es6This.points));
     }
     //生成種群
     for(i=0;i<es6This.gthPopulation;i++){
-      es6This.population[i]=_.shuffle(order);
+      es6This.population[i]=_.shuffle(DNA);
     }
 
     return es6This;
@@ -70,10 +70,10 @@ class GA{
     return es6This;
   }
   //計算所有點長度
-  calcDistance(order){
+  calcDistance(DNA){
     var es6This=this;
-    var initialValue=es6This.calcDistanceAbout2point(es6This.startPointAlsoEndPoint,es6This.points[order[0]]);
-    var distance=order.reduce(function(acc,cur,idx,src){
+    var initialValue=es6This.calcDistanceAbout2point(es6This.startPointAlsoEndPoint,es6This.points[DNA[0]]);
+    var distance=DNA.reduce(function(acc,cur,idx,src){
       var distance2idx;
 
       if(idx===es6This.gthAllPoints-1){
@@ -88,11 +88,11 @@ class GA{
     if(!es6This.best.distance || distance<es6This.best.distance){
       es6This.best={
         distance:distance,
-        order:order.slice()
+        DNA:DNA.slice()
       };
       es6This.drawBest();
     }else if(distance===es6This.best.distance){
-      console.log('again best:',order);
+      console.log('again best:',DNA);
     }
     return distance;
   }
@@ -133,10 +133,10 @@ class GA{
     return es6This;
   }
   //渲染
-  drawWithCTX(ctx,order){
+  drawWithCTX(ctx,DNA){
     var es6This=this;
     ctx=ctx || es6This.ctx;
-    order=order || es6This.population[0];
+    DNA=DNA || es6This.population[0];
     ctx.clearRect(0,0,es6This.canvasWidth,es6This.canvasHeight);
 
     //畫點
@@ -148,7 +148,7 @@ class GA{
     for(var i=0;i<es6This.gthAllPoints;i++){
       ctx.beginPath();
       ctx.fillStyle='ghostwhite';
-      ctx.arc(es6This.points[order[i]].x,es6This.points[order[i]].y,4,0,Math.PI*2,true);
+      ctx.arc(es6This.points[DNA[i]].x,es6This.points[DNA[i]].y,4,0,Math.PI*2,true);
       ctx.fill();
     }
 
@@ -156,14 +156,14 @@ class GA{
     //start-0
     ctx.beginPath();
     ctx.moveTo(es6This.startPointAlsoEndPoint.x,es6This.startPointAlsoEndPoint.y);
-    ctx.lineTo(es6This.points[order[0]].x,es6This.points[order[0]].y);
+    ctx.lineTo(es6This.points[DNA[0]].x,es6This.points[DNA[0]].y);
     ctx.strokeStyle='crimson';
     ctx.stroke();
     //0-1-2-last-start
     ctx.beginPath();
-    ctx.moveTo(es6This.points[order[0]].x,es6This.points[order[0]].y);
+    ctx.moveTo(es6This.points[DNA[0]].x,es6This.points[DNA[0]].y);
     for(i=1;i<es6This.gthAllPoints;i++){
-      ctx.lineTo(es6This.points[order[i]].x,es6This.points[order[i]].y);
+      ctx.lineTo(es6This.points[DNA[i]].x,es6This.points[DNA[i]].y);
     }
     ctx.lineTo(es6This.startPointAlsoEndPoint.x,es6This.startPointAlsoEndPoint.y);
     ctx.strokeStyle='ghostwhite';
@@ -173,7 +173,7 @@ class GA{
   //渲染繪製最優解
   drawBest(){
     var es6This=this;
-    es6This.draw('canvasAfter').drawWithCTX(es6This.ctxAfter,es6This.best.order);
+    es6This.draw('canvasAfter').drawWithCTX(es6This.ctxAfter,es6This.best.DNA);
     return es6This;
   }
 
