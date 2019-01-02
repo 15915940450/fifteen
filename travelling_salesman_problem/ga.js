@@ -9,7 +9,7 @@ class GA{
 
     this.startPointAlsoEndPoint=null; //起點
     this.points=[]; //所經過的點
-    this.isUseConstantPoints=true;  //是否使用恆定的點
+    this.isUseConstantPoints=false;  //是否使用恆定的點
     //目標：最好的路綫
     this.best={
       distance:0,
@@ -18,10 +18,10 @@ class GA{
     this.completeSearch=false; //是否繼續生成下一代
     this.currentGeneration=0;
     //參數
-    this.gthAllPoints=13;  //除起點外的所經過點的個數
-    this.gthPopulation=1e2; //種群DNA總數
-    this.allGeneration=1e4; //要進化多少代
-    this.mutateRate=0.01;
+    this.gthAllPoints=100;  //除起點外的所經過點的個數
+    this.gthPopulation=1e3; //種群DNA總數
+    this.allGeneration=1e3; //要進化多少代
+    this.mutateRate=0.009;
     this.population=[];
   }
 
@@ -203,7 +203,7 @@ class GA{
   calcFitness(){
     var es6This=this;
     es6This.population=es6This.population.map(function(v){
-      v.fitness=1e11/(Math.pow(es6This.calcDistance(v.DNA),4)+1);
+      v.fitness=1e11/(Math.pow(es6This.calcDistance(v.DNA),11)+1);
       return (v);
     });
     var sumFitness=es6This.population.reduce(function(acc,cur){
@@ -232,6 +232,8 @@ class GA{
     var es6This=this;
     var rafCallback=function(){
       es6This.currentGeneration++;
+      var percent=(es6This.currentGeneration/es6This.allGeneration*100).toFixed(3)+'% complete';
+      es6This.elePercent.innerHTML=percent;
       if(es6This.currentGeneration<es6This.allGeneration){
         es6This.nextGeneration();
         window.requestAnimationFrame(rafCallback);
