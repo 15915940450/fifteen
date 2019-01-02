@@ -35,14 +35,20 @@ class GA{
       es6This.startPointAlsoEndPoint={ id: -1, x: 522, y: 122 };
       es6This.points=[{'id':0,'x':488,'y':31},{'id':1,'x':702,'y':140},{'id':2,'x':581,'y':93},{'id':3,'x':207,'y':77},{'id':4,'x':37,'y':68},{'id':5,'x':471,'y':28},{'id':6,'x':602,'y':87},{'id':7,'x':459,'y':172},{'id':8,'x':70,'y':41},{'id':9,'x':465,'y':164},{'id':10,'x':709,'y':130},{'id':11,'x':578,'y':130},{'id':12,'x':771,'y':155}];
       for(i=0;i<es6This.gthAllPoints;i++){
-        DNA[i]=i;
+        DNA[i]={
+          gene:i,
+          fitness:-1
+        };
       }
     }else{
       es6This.startPointAlsoEndPoint=es6This.generateRandomPoint(-1);
       es6This.points.length=0;
       for(i=0;i<es6This.gthAllPoints;i++){
         es6This.points.push(es6This.generateRandomPoint(i));
-        DNA[i]=i;
+        DNA[i]={
+          gene:i,
+          fitness:-1
+        };
       }
       console.log(JSON.stringify(es6This.points));
     }
@@ -73,19 +79,20 @@ class GA{
   //計算所有點長度
   calcDistance(DNA){
     var es6This=this;
-    var initialValue=es6This.calcDistanceAbout2point(es6This.startPointAlsoEndPoint,es6This.points[DNA[0]]);
+    var initialValue=es6This.calcDistanceAbout2point(es6This.startPointAlsoEndPoint,es6This.points[DNA[0].gene]);
     var distance=DNA.reduce(function(acc,cur,idx,src){
       var distance2idx;
 
       if(idx===es6This.gthAllPoints-1){
-        distance2idx=es6This.calcDistanceAbout2point(es6This.points[cur],es6This.startPointAlsoEndPoint);
+        distance2idx=es6This.calcDistanceAbout2point(es6This.points[cur.gene],es6This.startPointAlsoEndPoint);
       }else{
-        distance2idx=es6This.calcDistanceAbout2point(es6This.points[cur],es6This.points[src[idx+1]]);
+        distance2idx=es6This.calcDistanceAbout2point(es6This.points[cur.gene],es6This.points[src[idx+1].gene]);
       }
 
       return (acc+distance2idx);
     },initialValue)>>0;
 
+    //一旦找到比歷史更短的distance，立馬設置為最優解並繪製
     //set best(初次或當前比歷史更短)
     es6This.setBest(distance,DNA);
     return distance;
@@ -97,9 +104,10 @@ class GA{
         distance:distance,
         DNA:DNA.slice()
       };
+      console.log('best distance:'+distance+', at '+es6This.currentGeneration+'th generation');
       es6This.drawBest();
     }else if(distance===es6This.best.distance){
-      console.log('again best:',DNA);
+      // console.log('again best:',DNA);
     }
     return es6This;
   }
@@ -120,16 +128,34 @@ class GA{
       }
       return (acc);
     },Infinity);
+    //找到之後在第一個canvas中繪製
+    es6This.drawWithCTX();
     return es6This;
   }
   nextGeneration(){
     var es6This=this;
+    //生成N個個體
     es6This.population=es6This.population.map(function(v){
-      return (_.shuffle(v));
+      return ((v));
     });
-    es6This.findBestInCureentGeneration().drawWithCTX();
+    es6This.mutate(0.01);
+
+    //生成第二代之後找出當前代中最優解
+    es6This.findBestInCureentGeneration();
     return es6This;
   }
+  mutate(mutateRate){
+    var es6This=this;
+    es6This.population.forEach(function(DNA){
+      DNA.forEach(function(gene,i){
+        if(Math.random()<mutateRate){
+          es6This.swap(DNA,i,(i+1)%DNA.length);
+        }
+      });
+    });
+    return es6This;
+  }
+  //不斷產生下一代
   timer(){
     var es6This=this;
     var rafCallback=function(){
@@ -174,7 +200,7 @@ class GA{
     for(var i=0;i<es6This.gthAllPoints;i++){
       ctx.beginPath();
       ctx.fillStyle='ghostwhite';
-      ctx.arc(es6This.points[DNA[i]].x,es6This.points[DNA[i]].y,4,0,Math.PI*2,true);
+      ctx.arc(es6This.points[DNA[i].gene].x,es6This.points[DNA[i].gene].y,4,0,Math.PI*2,true);
       ctx.fill();
     }
 
@@ -182,14 +208,14 @@ class GA{
     //start-0
     ctx.beginPath();
     ctx.moveTo(es6This.startPointAlsoEndPoint.x,es6This.startPointAlsoEndPoint.y);
-    ctx.lineTo(es6This.points[DNA[0]].x,es6This.points[DNA[0]].y);
+    ctx.lineTo(es6This.points[DNA[0].gene].x,es6This.points[DNA[0].gene].y);
     ctx.strokeStyle='crimson';
     ctx.stroke();
     //0-1-2-last-start
     ctx.beginPath();
-    ctx.moveTo(es6This.points[DNA[0]].x,es6This.points[DNA[0]].y);
+    ctx.moveTo(es6This.points[DNA[0].gene].x,es6This.points[DNA[0].gene].y);
     for(i=1;i<es6This.gthAllPoints;i++){
-      ctx.lineTo(es6This.points[DNA[i]].x,es6This.points[DNA[i]].y);
+      ctx.lineTo(es6This.points[DNA[i].gene].x,es6This.points[DNA[i].gene].y);
     }
     ctx.lineTo(es6This.startPointAlsoEndPoint.x,es6This.startPointAlsoEndPoint.y);
     ctx.strokeStyle='ghostwhite';
@@ -206,4 +232,4 @@ class GA{
 }
 
 var obj=new GA();
-obj.initPoints().draw().findBestInCureentGeneration().drawWithCTX().timer();
+obj.initPoints().draw().findBestInCureentGeneration().timer();
