@@ -32,7 +32,7 @@ class GA{
     var i,DNA=[];
     if(es6This.isUseConstantPoints){
       es6This.startPointAlsoEndPoint={ id: -1, x: 522, y: 122 };
-      es6This.points=[{"id":0,"x":488,"y":31},{"id":1,"x":702,"y":140},{"id":2,"x":581,"y":93},{"id":3,"x":207,"y":77},{"id":4,"x":37,"y":68},{"id":5,"x":471,"y":28},{"id":6,"x":602,"y":87},{"id":7,"x":459,"y":172},{"id":8,"x":70,"y":41},{"id":9,"x":465,"y":164},{"id":10,"x":709,"y":130},{"id":11,"x":578,"y":130},{"id":12,"x":771,"y":155}];
+      es6This.points=[{'id':0,'x':488,'y':31},{'id':1,'x':702,'y':140},{'id':2,'x':581,'y':93},{'id':3,'x':207,'y':77},{'id':4,'x':37,'y':68},{'id':5,'x':471,'y':28},{'id':6,'x':602,'y':87},{'id':7,'x':459,'y':172},{'id':8,'x':70,'y':41},{'id':9,'x':465,'y':164},{'id':10,'x':709,'y':130},{'id':11,'x':578,'y':130},{'id':12,'x':771,'y':155}];
       for(i=0;i<es6This.gthAllPoints;i++){
         DNA[i]=i;
       }
@@ -84,7 +84,13 @@ class GA{
 
       return (acc+distance2idx);
     },initialValue)>>0;
+
     //set best(初次或當前比歷史更短)
+    es6This.setBest(distance,DNA);
+    return distance;
+  }
+  setBest(distance,DNA){
+    var es6This=this;
     if(!es6This.best.distance || distance<es6This.best.distance){
       es6This.best={
         distance:distance,
@@ -94,11 +100,10 @@ class GA{
     }else if(distance===es6This.best.distance){
       console.log('again best:',DNA);
     }
-    return distance;
+    return es6This;
   }
   //計算兩點之間的距離
   calcDistanceAbout2point(m,n){
-    var es6This=this;
     var powX=Math.pow(m.x-n.x,2);
     var powY=Math.pow(m.y-n.y,2);
     var distanceMN=Math.sqrt(powX+powY);
@@ -107,7 +112,7 @@ class GA{
   //當前代中找到最優的解
   findBestInCureentGeneration(){
     var es6This=this;
-    es6This.population.reduce(function(acc,cur,idx,src){
+    es6This.population.reduce(function(acc,cur){
       var distance=es6This.calcDistance(cur);
       if(distance<acc){
         acc=distance;
