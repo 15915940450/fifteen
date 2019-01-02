@@ -17,11 +17,11 @@ class GA{
       DNA:[]
     };
     this.completeSearch=false; //是否繼續生成下一代
-
-    this.gthPopulation=1e1;
-    this.population=[];
     this.currentGeneration=0;
-    this.allGeneration=1e2;
+
+    this.gthPopulation=1e2; //種群DNA總數
+    this.allGeneration=1e3; //要進化多少代
+    this.population=[];
   }
 
   //初始化
@@ -152,9 +152,39 @@ class GA{
   selection(){
     var es6This=this;
     es6This.calcFitness();
-    // console.log(es6This.population);
-    return es6This;
+    var DNA1index=es6This.roulette();
+    var DNA2index=es6This.roulette();
+    
+
+    es6This.population.forEach(function(v){
+      v.DNA=es6This.crossover(es6This.population[DNA1index].DNA,es6This.population[DNA2index].DNA);
+    });
   }
+  crossover(DNA1,DNA2){
+    var es6This=this;
+    var start=_.random(es6This.gthAllPoints);
+    var end=_.random(start+1,es6This.gthAllPoints);
+    // console.log(start,end);
+    var sniDNA1=DNA1.slice(start,end);
+    DNA2.forEach(function(v){
+      if(!sniDNA1.includes(v)){
+        sniDNA1.push(v);
+      }
+    });
+    return sniDNA1;
+  }
+  //輪盤賭
+  roulette(){
+    var es6This=this;
+    var index=0;
+    var randomNum=Math.random();
+    while(randomNum>0){
+      randomNum=randomNum-es6This.population[index].fitness;
+      index++;
+    }
+    return (index-1);
+  }
+  //計算適應度
   calcFitness(){
     var es6This=this;
     es6This.population=es6This.population.map(function(v){
@@ -190,6 +220,8 @@ class GA{
       if(es6This.currentGeneration<es6This.allGeneration){
         es6This.nextGeneration();
         window.requestAnimationFrame(rafCallback);
+      }else{
+        console.log(es6This.population);
       }
     };
     window.requestAnimationFrame(rafCallback);
