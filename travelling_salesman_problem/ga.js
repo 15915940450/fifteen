@@ -21,6 +21,7 @@ class GA{
     this.gthPopulation=1e1;
     this.population=[];
     this.currentGeneration=0;
+    this.allGeneration=1e2;
   }
 
   //初始化
@@ -36,8 +37,7 @@ class GA{
       es6This.points=[{'id':0,'x':488,'y':31},{'id':1,'x':702,'y':140},{'id':2,'x':581,'y':93},{'id':3,'x':207,'y':77},{'id':4,'x':37,'y':68},{'id':5,'x':471,'y':28},{'id':6,'x':602,'y':87},{'id':7,'x':459,'y':172},{'id':8,'x':70,'y':41},{'id':9,'x':465,'y':164},{'id':10,'x':709,'y':130},{'id':11,'x':578,'y':130},{'id':12,'x':771,'y':155}];
       for(i=0;i<es6This.gthAllPoints;i++){
         DNA[i]={
-          gene:i,
-          fitness:-1
+          gene:i
         };
       }
     }else{
@@ -46,15 +46,17 @@ class GA{
       for(i=0;i<es6This.gthAllPoints;i++){
         es6This.points.push(es6This.generateRandomPoint(i));
         DNA[i]={
-          gene:i,
-          fitness:-1
+          gene:i
         };
       }
       console.log(JSON.stringify(es6This.points));
     }
     //生成種群
     for(i=0;i<es6This.gthPopulation;i++){
-      es6This.population[i]=_.shuffle(DNA);
+      es6This.population[i]={
+        DNA:_.shuffle(DNA),
+        fitness:-1
+      };
     }
 
     return es6This;
@@ -122,7 +124,7 @@ class GA{
   findBestInCureentGeneration(){
     var es6This=this;
     es6This.population.reduce(function(acc,cur){
-      var distance=es6This.calcDistance(cur);
+      var distance=es6This.calcDistance(cur.DNA);
       if(distance<acc){
         acc=distance;
       }
@@ -146,7 +148,8 @@ class GA{
   }
   mutate(mutateRate){
     var es6This=this;
-    es6This.population.forEach(function(DNA){
+    es6This.population.forEach(function(objDNA){
+      var DNA=objDNA.DNA;
       DNA.forEach(function(gene,i){
         if(Math.random()<mutateRate){
           es6This.swap(DNA,i,(i+1)%DNA.length);
@@ -160,7 +163,7 @@ class GA{
     var es6This=this;
     var rafCallback=function(){
       es6This.currentGeneration++;
-      if(es6This.currentGeneration<1e2){
+      if(es6This.currentGeneration<es6This.allGeneration){
         es6This.nextGeneration();
         window.requestAnimationFrame(rafCallback);
       }
@@ -188,7 +191,7 @@ class GA{
   drawWithCTX(ctx,DNA){
     var es6This=this;
     ctx=ctx || es6This.ctx;
-    DNA=DNA || es6This.population[0];
+    DNA=DNA || es6This.population[0].DNA;
     ctx.clearRect(0,0,es6This.canvasWidth,es6This.canvasHeight);
 
     //畫點
