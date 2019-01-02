@@ -18,8 +18,9 @@ class GA{
     };
     this.completeSearch=false; //是否繼續生成下一代
 
-    this.gthPopulation=1000;
+    this.gthPopulation=1e1;
     this.population=[];
+    this.currentGeneration=0;
   }
 
   //初始化
@@ -121,6 +122,25 @@ class GA{
     },Infinity);
     return es6This;
   }
+  nextGeneration(){
+    var es6This=this;
+    es6This.population=es6This.population.map(function(v){
+      return (_.shuffle(v));
+    });
+    es6This.findBestInCureentGeneration().drawWithCTX();
+    return es6This;
+  }
+  timer(){
+    var es6This=this;
+    var Timer1=window.setInterval(function(){
+      es6This.currentGeneration++;
+      if(es6This.currentGeneration>1e3){
+        window.clearInterval(Timer1);
+      }
+      es6This.nextGeneration();
+    },1);
+    return es6This;
+  }
 
   /*
    *渲染：在canvas中繪製
@@ -185,4 +205,4 @@ class GA{
 }
 
 var obj=new GA();
-obj.initPoints().draw().findBestInCureentGeneration().drawWithCTX();
+obj.initPoints().draw().findBestInCureentGeneration().drawWithCTX().timer();
