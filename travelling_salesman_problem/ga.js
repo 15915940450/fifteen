@@ -8,7 +8,6 @@ class GA{
     this.elePercent=document.querySelector('.percent');
 
     this.startPointAlsoEndPoint=null; //起點
-    this.gthAllPoints=13;  //除起點外的所經過點的個數
     this.points=[]; //所經過的點
     this.isUseConstantPoints=true;  //是否使用恆定的點
     //目標：最好的路綫
@@ -18,9 +17,11 @@ class GA{
     };
     this.completeSearch=false; //是否繼續生成下一代
     this.currentGeneration=0;
-
+    //參數
+    this.gthAllPoints=13;  //除起點外的所經過點的個數
     this.gthPopulation=1e2; //種群DNA總數
-    this.allGeneration=1e3; //要進化多少代
+    this.allGeneration=1e4; //要進化多少代
+    this.mutateRate=0.01;
     this.population=[];
   }
 
@@ -123,15 +124,18 @@ class GA{
   //當前代中找到最優的解
   findBestInCureentGeneration(){
     var es6This=this;
+    var bestInCurrentGeneration=[];
     es6This.population.reduce(function(acc,cur){
       var distance=es6This.calcDistance(cur.DNA);
       if(distance<acc){
         acc=distance;
+      }else{
+        bestInCurrentGeneration=cur.DNA;
       }
       return (acc);
     },Infinity);
     //找到之後在第一個canvas中繪製
-    es6This.drawWithCTX();
+    es6This.drawWithCTX(false,bestInCurrentGeneration);
     return es6This;
   }
   nextGeneration(){
@@ -143,7 +147,7 @@ class GA{
     // es6This.population=es6This.population.map(function(v){
     //   return ((v));
     // });
-    es6This.mutation(0.01);
+    es6This.mutation(es6This.mutateRate);
 
     //生成第二代之後找出當前代中最優解
     es6This.findBestInCureentGeneration();
@@ -152,13 +156,24 @@ class GA{
   selection(){
     var es6This=this;
     es6This.calcFitness();
-    var DNA1index=es6This.roulette();
-    var DNA2index=es6This.roulette();
-    
+    var newPopulation=[];
 
-    es6This.population.forEach(function(v){
-      v.DNA=es6This.crossover(es6This.population[DNA1index].DNA,es6This.population[DNA2index].DNA);
-    });
+    for(var i=0;i<es6This.gthPopulation;i++){
+      if(i){
+        var DNA1index=es6This.roulette();
+        var DNA2index=es6This.roulette();
+        newPopulation[i]={
+          DNA:es6This.crossover(es6This.population[DNA1index].DNA,es6This.population[DNA2index].DNA),
+          fitness:-1
+        };
+      }else{
+        newPopulation[0]={
+          DNA:es6This.best.DNA,
+          fitness:-1
+        };
+      }
+    }
+    es6This.population=newPopulation;
   }
   crossover(DNA1,DNA2){
     var es6This=this;
@@ -221,6 +236,7 @@ class GA{
         es6This.nextGeneration();
         window.requestAnimationFrame(rafCallback);
       }else{
+        es6This.completeSearch=true;
         console.log(es6This.population);
       }
     };
