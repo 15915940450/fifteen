@@ -1,7 +1,13 @@
+/*
+* js注釋：
+遗传算法求解TSP问题
+*/
+
 class GA{
   constructor(){
     this.tutorial='https://www.bilibili.com/video/av10257437/?p=4';
     this.elePercent=document.querySelector('.percent');
+    this.eleRecord=document.querySelector('.record');
     this.eleCanvas=document.querySelector('#canvas');
     this.eleCanvasBest=document.querySelector('#canvasBest');
     this.cW=document.documentElement.clientWidth || document.body.clientWidth;
@@ -24,10 +30,11 @@ class GA{
     this.isUseConstantPoints=true;  //是否使用恆定的點
     this.gthAllPoints=30;  //除起點外的所經過點的個數
     this.gthPopulation=1e3; //種群DNA總數
-    this.allGeneration=1e4; //要進化多少代
-    this.mutateRate=1e-2;   //突變率
+    this.allGeneration=3e3; //要進化多少代
+    this.mutateRate=1e-2;   //突變率,一般取0.001－0.1
+
     this.population=[]; //種群
-    //三十個城市，一千個DNA，進化一萬代
+    //三十個城市，一千個DNA，進化三千(萬)代
   }
 
   //初始化
@@ -118,6 +125,11 @@ class GA{
         DNA:DNA.slice()
       };
       console.log('best distance:'+distance+', at '+es6This.currentGeneration+'th generation');
+      es6This.eleRecord.innerHTML='本次最短記錄：'+distance+'，歷史最短記錄：'+(window.localStorage['bestDNA'+es6This.gthAllPoints] || 0);
+      //存貯到本地(3398)
+      if(!window.localStorage['bestDNA'+es6This.gthAllPoints] || (window.localStorage['bestDNA'+es6This.gthAllPoints] && +window.localStorage['bestDNA'+es6This.gthAllPoints]>distance)){
+        window.localStorage['bestDNA'+es6This.gthAllPoints]=distance;
+      }
       es6This.drawBest();
     }else if(distance===es6This.best.distance){
       // console.log('again best:',DNA);
@@ -207,11 +219,15 @@ class GA{
     }
     return (index-1);
   }
+  //适应度函数设计直接影响到遗传算法的性能。
+  funFitness(DNA){
+    return (1e141/(Math.pow(this.calcDistance(DNA),4e1)+1));
+  }
   //計算適應度
   calcFitness(){
     var es6This=this;
     es6This.population=es6This.population.map(function(v){
-      v.fitness=1/(Math.pow(es6This.calcDistance(v.DNA),1e1)+1);
+      v.fitness=es6This.funFitness(v.DNA);
       return (v);
     });
     var sumFitness=es6This.population.reduce(function(acc,cur){
@@ -238,6 +254,7 @@ class GA{
   //不斷產生下一代
   timer(){
     var es6This=this;
+    //https://developer.mozilla.org/zh-CN/docs/Web/API/Window/requestAnimationFrame
     var rafCallback=function(){
       es6This.currentGeneration++;
       var percent=(es6This.currentGeneration/es6This.allGeneration*100).toFixed(3)+'% complete';
@@ -250,6 +267,7 @@ class GA{
         es6This.completeSearch=true;
         console.timeEnd('time_timeEnd_GA');
         console.log(es6This.best.DNA);
+        console.log(window.localStorage['bestDNA'+es6This.gthAllPoints]);
       }
     };
     window.requestAnimationFrame(rafCallback);
