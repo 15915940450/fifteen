@@ -132,13 +132,14 @@ class GA{
   }
   timer(){
     var es6This=this;
-    var Timer1=window.setInterval(function(){
+    var rafCallback=function(){
       es6This.currentGeneration++;
-      if(es6This.currentGeneration>1e3){
-        window.clearInterval(Timer1);
+      if(es6This.currentGeneration<1e2){
+        es6This.nextGeneration();
+        window.requestAnimationFrame(rafCallback);
       }
-      es6This.nextGeneration();
-    },1);
+    };
+    window.requestAnimationFrame(rafCallback);
     return es6This;
   }
 
