@@ -161,7 +161,6 @@ class GA{
     return es6This;
   }
   nextGeneration(){
-    //roulette
     //在每一代，根据问题域中个体的适应度（fitness）大小选择（selection）个体，并借助于自然遗传学的遗传算子（genetic operators）进行组合交叉（crossover）和变异（mutation），产生出代表新的解集的种群。这个过程将导致种群像自然进化一样的后生代种群比前代更加适应于环境，末代种群中的最优个体经过解码（decoding），可以作为问题近似最优解。
     var es6This=this;
     //選擇（selection）（組合交叉：crossover）
@@ -198,7 +197,7 @@ class GA{
   }
   crossover(DNA1,DNA2){
     var es6This=this;
-    var start=_.random(es6This.gthAllPoints-5);
+    var start=_.random(es6This.gthAllPoints);
     var end=_.random(start+1,es6This.gthAllPoints);
     var sniDNA1=DNA1.slice(start,end);
     DNA2.forEach(function(v){
@@ -245,7 +244,7 @@ class GA{
       var DNA=objDNA.DNA;
       DNA.forEach(function(gene,i){
         if(Math.random()<mutateRate){
-          es6This.swap(DNA,i,(i+1)%DNA.length);
+          es6This.swap(DNA,i,_.random(0,es6This.gthAllPoints-1));
         }
       });
     });
