@@ -257,7 +257,7 @@ class GA{
     //https://developer.mozilla.org/zh-CN/docs/Web/API/Window/requestAnimationFrame
     var rafCallback=function(){
       es6This.currentGeneration++;
-      var percent=(es6This.currentGeneration/es6This.allGeneration*100).toFixed(3)+'% complete';
+      var percent=(es6This.currentGeneration/es6This.allGeneration*100).toFixed(9)+'% complete';
       es6This.elePercent.innerHTML=percent;
       if(es6This.currentGeneration<es6This.allGeneration){
         es6This.nextGeneration();

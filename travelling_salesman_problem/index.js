@@ -1,10 +1,14 @@
 class Travelling{
   constructor(){
-    this.canvasWidth=800;
-    this.canvasHeight=200;
     this.ctx=null;
     this.ctxAfter=null;
     this.elePercent=document.querySelector('.percent');
+    this.eleCanvas=document.querySelector('#canvas');
+    this.eleCanvasBest=document.querySelector('#canvasBest');
+    this.cW=document.documentElement.clientWidth || document.body.clientWidth;
+    this.cH=document.documentElement.clientHeight || document.body.clientHeight;
+    this.canvasWidth=this.cW-30;
+    this.canvasHeight=this.cH/2-90;
 
     this.startPointAlsoEndPoint=null; //起點
     this.gthAllPoints=13;  //除起點外的所經過點的個數
@@ -24,12 +28,23 @@ class Travelling{
   //初始化
   initPoints(){
     var es6This=this;
+    //計時開始
+    console.time('time_timeEnd_lexical');
+    //設置canvas
+    es6This.eleCanvas.width=es6This.canvasWidth;
+    es6This.eleCanvas.height=es6This.canvasHeight;
+    es6This.eleCanvasBest.width=es6This.canvasWidth;
+    es6This.eleCanvasBest.height=es6This.canvasHeight;
+
     es6This.points.length=0;
+    es6This.startPointAlsoEndPoint={ id: -1, x: 555, y: 131 };
+    // es6This.points=[{'id':0,'x':797,'y':40},{'id':1,'x':58,'y':330},{'id':2,'x':1041,'y':261},{'id':3,'x':559,'y':316},{'id':4,'x':1173,'y':67},{'id':5,'x':1139,'y':210},{'id':6,'x':269,'y':247},{'id':7,'x':75,'y':61},{'id':8,'x':624,'y':42},{'id':9,'x':112,'y':295},{'id':10,'x':378,'y':223},{'id':11,'x':28,'y':108},{'id':12,'x':698,'y':214},{'id':13,'x':648,'y':229},{'id':14,'x':41,'y':171},{'id':15,'x':351,'y':69},{'id':16,'x':607,'y':243},{'id':17,'x':1145,'y':111},{'id':18,'x':626,'y':189},{'id':19,'x':298,'y':203},{'id':20,'x':656,'y':124},{'id':21,'x':1033,'y':247},{'id':22,'x':1130,'y':80},{'id':23,'x':830,'y':142},{'id':24,'x':730,'y':175},{'id':25,'x':552,'y':192},{'id':26,'x':631,'y':364},{'id':27,'x':219,'y':336},{'id':28,'x':1130,'y':265},{'id':29,'x':332,'y':365}];
+
+    // es6This.startPointAlsoEndPoint=es6This.generateRandomPoint(-1);
     for(var i=0;i<es6This.gthAllPoints;i++){
       es6This.points.push(es6This.generateRandomPoint(i));
       es6This.order[i]=i;
     }
-    es6This.startPointAlsoEndPoint=es6This.generateRandomPoint(-1);
     //console.log(JSON.stringify(es6This.points));
     es6This.numAllPermutation=es6This.calcAllPermutation(es6This.gthAllPoints);
     //console.log(es6This.numAllPermutation);
@@ -140,7 +155,6 @@ class Travelling{
   }
   //計算兩點之間的距離
   calcDistanceAbout2point(m,n){
-    var es6This=this;
     var powX=Math.pow(m.x-n.x,2);
     var powY=Math.pow(m.y-n.y,2);
     var distanceMN=Math.sqrt(powX+powY);
@@ -155,7 +169,7 @@ class Travelling{
     var es6This=this;
     id=id || 'canvas';
     var canvas=document.getElementById(id);
-    if(id==='canvasAfter'){
+    if(id==='canvasBest'){
       es6This.ctxAfter=canvas.getContext('2d');
     }else{
       es6This.ctx=canvas.getContext('2d');
@@ -203,14 +217,13 @@ class Travelling{
   //渲染繪製最優解
   drawBest(){
     var es6This=this;
-    es6This.draw('canvasAfter').drawWithCTX(es6This.ctxAfter,es6This.best.order);
+    es6This.draw('canvasBest').drawWithCTX(es6This.ctxAfter,es6This.best.order);
     console.log(es6This.best.distance,'at '+es6This.times+'th time');
     return es6This;
   }
 
 }  //class
 
-console.time('time_timeEnd_lexical');
 
 var obj=new Travelling();
 obj.initPoints().draw().drawWithCTX().calcDistance().timer();
