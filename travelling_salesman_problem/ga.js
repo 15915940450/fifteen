@@ -6,6 +6,7 @@
 class GA{
   constructor(){
     this.tutorial='https://www.bilibili.com/video/av10257437/?p=4';
+    this.eleBtn=document.querySelector('.btn');
     this.elePercent=document.querySelector('.percent');
     this.eleRecord=document.querySelector('.record');
     this.eleCanvas=document.querySelector('#canvas');
@@ -40,6 +41,7 @@ class GA{
   //初始化
   initPoints(){
     var es6This=this;
+    es6This.eleBtn.innerHTML=es6This.calcAllPermutation(es6This.gthAllPoints);
     //計時開始
     console.time('time_timeEnd_GA');
     //設置canvas
@@ -78,6 +80,14 @@ class GA{
     }
 
     return es6This;
+  }
+  //計算所有排列個數(階乘)
+  calcAllPermutation(n){
+    var es6This=this;
+    if(n===1){
+      return (1);
+    }
+    return (n*es6This.calcAllPermutation(n-1));
   }
   //生成點
   generateRandomPoint(id){

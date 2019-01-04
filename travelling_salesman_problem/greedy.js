@@ -1,46 +1,32 @@
 class Greedy{
   constructor(){
-    this.tutorial='https://www.bilibili.com/video/av10257437/?p=4';
-    this.elePercent=document.querySelector('.percent');
-    this.eleRecord=document.querySelector('.record');
     this.eleCanvas=document.querySelector('#canvas');
-    this.eleCanvasBest=document.querySelector('#canvasBest');
     this.cW=document.documentElement.clientWidth || document.body.clientWidth;
     this.cH=document.documentElement.clientHeight || document.body.clientHeight;
     this.canvasWidth=this.cW-30;
     this.canvasHeight=this.cH/2-90;
     this.ctx=null;
-    this.ctxAfter=null;
 
     this.startPointAlsoEndPoint=null; //起點
     this.points=[]; //所經過的點
-    //目標：最好的路綫
-    this.best={
-      distance:0,
-      DNA:[]
-    };
-    this.completeSearch=false; //是否繼續生成下一代
-    this.currentGeneration=0;
+    
     //參數
     this.isUseConstantPoints=true;  //是否使用恆定的點
     this.gthAllPoints=30;  //除起點外的所經過點的個數
-    this.gthPopulation=1e3; //種群DNA總數
-    this.allGeneration=3e3; //要進化多少代
-    this.mutateRate=1e-2;   //突變率,一般取0.001－0.1
 
     this.order=[];  //求解order
+    this.newOrder=[];
   }
 
   //初始化
   initPoints(){
     var es6This=this;
+    
     //計時開始
-    console.time('time_timeEnd_GA');
+    console.time('time_timeEnd_Greedy');
     //設置canvas
     es6This.eleCanvas.width=es6This.canvasWidth;
     es6This.eleCanvas.height=es6This.canvasHeight;
-    es6This.eleCanvasBest.width=es6This.canvasWidth;
-    es6This.eleCanvasBest.height=es6This.canvasHeight;
     //生成所經過的點
     var i,DNA=[];
     if(es6This.isUseConstantPoints){
@@ -66,6 +52,15 @@ class Greedy{
     this.order=DNA;
     return es6This;
   }
+  //生成點
+  generateRandomPoint(id){
+    var es6This=this;
+    return ({
+      id:id,
+      x:(Math.random()*(es6This.canvasWidth-50)>>0)+25,
+      y:(Math.random()*(es6This.canvasHeight-50)>>0)+25
+    });
+  }
 
   draw(id){
     var es6This=this;
@@ -82,9 +77,9 @@ class Greedy{
   drawWithCTX(ctx,DNA){
     var es6This=this;
     ctx=ctx || es6This.ctx;
-    DNA=DNA || es6This.order;
+    DNA=DNA || es6This.newOrder;
     ctx.clearRect(0,0,es6This.canvasWidth,es6This.canvasHeight);
-
+    
     //畫點
     ctx.beginPath();
     ctx.fillStyle='crimson';
@@ -116,8 +111,43 @@ class Greedy{
     ctx.stroke();
     return es6This;
   }
-  
+
+  findNearestFromM(M){
+    var es6This=this;
+    var theIdx; 
+    es6This.order.reduce(function(acc,cur,idx){
+      var distance=es6This.calcDistanceAbout2point(M,es6This.points[cur.gene]);
+      if(distance<acc){
+        acc=distance;
+        theIdx=idx;
+      }
+      return (acc);
+    },window.Infinity);
+    return theIdx;
+  }
+  //計算兩點之間的距離
+  calcDistanceAbout2point(m,n){
+    var powX=Math.pow(m.x-n.x,2);
+    var powY=Math.pow(m.y-n.y,2);
+    var distanceMN=Math.sqrt(powX+powY);
+    return (distanceMN);
+  }
+  solve(){
+    var es6This=this;
+    var currentPoint=null;
+    for(var i=0;i<es6This.gthAllPoints;i++){
+      if(i){
+        currentPoint=es6This.points[_.last(es6This.newOrder).gene];
+      }else{
+        currentPoint=es6This.startPointAlsoEndPoint;
+      }
+      var nextPoint=es6This.findNearestFromM(currentPoint);
+      es6This.newOrder[i]=es6This.order.splice(nextPoint,1)[0];
+    }
+    console.timeEnd('time_timeEnd_Greedy');
+    return es6This;
+  }
 }
 
 var obj=new Greedy();
-obj.initPoints().draw();
+obj.initPoints().solve().draw();
