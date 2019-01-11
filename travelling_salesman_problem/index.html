@@ -30,21 +30,18 @@ html,body{
 <body>
 
 <div id="container">
-  <!-- 1.https://blog.oldj.net/2018/01/21/ga-tsp-javascript/ -->
-  <br>
-  <!-- 2.https://oldj.net/static/tsp/ga/index.html -->
-  <br>
-  <!-- 3.music(Friendships(Original Mix))+TravellingSalesmanProblem -->
-
   <div>
     <canvas id="canvas" width="800" height="200" style="border:1px solid black;"></canvas>
   </div>
   <div>
     <button class="btn">Genetic Algorithm, go</button>
-    <strong class="percent">0.00%</strong>
     <small class="record">
-      本次最短記錄：-，歷史最短記錄：-
+      本次最短記錄：-
     </small>
+    <small class="current">
+      當前第 <strong id="generation">─</strong> 代， <strong class="percent">0.00%</strong>
+    </small>
+    <small id="param">種群DNA總數:,要進化多少代:,突變率:,一共 ─ 個城市</small>
   </div>
   <div>
     <canvas id="canvasBest" width="800" height="200" style="border:1px solid black;"></canvas>
@@ -54,5 +51,8 @@ html,body{
 <script src="./ga.js"></script>
 <!-- <script src="./greedy.js"></script> -->
 <!-- <script src="./index.js"></script> -->
+<!-- 1.https://blog.oldj.net/2018/01/21/ga-tsp-javascript/ -->
+<!-- 2.https://oldj.net/static/tsp/ga/index.html -->
 </body>
 </html>
+

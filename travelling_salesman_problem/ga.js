@@ -8,6 +8,7 @@ class GA{
     this.tutorial='https://www.bilibili.com/video/av10257437/?p=4';
     this.eleBtn=document.querySelector('.btn');
     this.elePercent=document.querySelector('.percent');
+    this.eleGeneration=document.getElementById('generation');
     this.eleRecord=document.querySelector('.record');
     this.eleCanvas=document.querySelector('#canvas');
     this.eleCanvasBest=document.querySelector('#canvasBest');
@@ -28,14 +29,21 @@ class GA{
     this.completeSearch=false; //是否繼續生成下一代
     this.currentGeneration=0;
     //參數
-    this.isUseConstantPoints=true;  //是否使用恆定的點
-    this.gthAllPoints=30;  //除起點外的所經過點的個數
+    this.isUseConstantPoints=false;  //是否使用恆定的點
     this.gthPopulation=1e3; //種群DNA總數
-    this.allGeneration=1e2; //要進化多少代
-    this.mutateRate=1e-2;   //突變率,一般取0.001－0.1
+    this.allGeneration=1e5; //要進化多少代
+    this.mutateRate=0.05;   //突變率,一般取0.001－0.1
+    this.gthAllPoints=200;  //除起點外的所經過點的個數
 
     this.population=[]; //種群
     //三十個城市，一千個DNA，進化三千(萬)代
+  }
+
+  //适应度函数设计直接影响到遗传算法的性能。
+  funFitness(DNA){
+    var distance=this.calcDistance(DNA)/100;
+    var pow=Math.pow(distance,13)+1;
+    return (1e6/pow);
   }
 
   //初始化
@@ -49,6 +57,7 @@ class GA{
     es6This.eleCanvas.height=es6This.canvasHeight;
     es6This.eleCanvasBest.width=es6This.canvasWidth;
     es6This.eleCanvasBest.height=es6This.canvasHeight;
+    document.getElementById('param').innerHTML='種群DNA總數:'+es6This.gthPopulation+',要進化多少代:'+es6This.allGeneration+',突變率:'+es6This.mutateRate+',一共 '+es6This.gthAllPoints+' 個城市(pow=13)';
     //生成所經過的點
     var i,DNA=[];
     if(es6This.isUseConstantPoints){
@@ -135,7 +144,7 @@ class GA{
         DNA:DNA.slice()
       };
       console.log('best distance:'+distance+', at '+es6This.currentGeneration+'th generation');
-      es6This.eleRecord.innerHTML='本次最短記錄：'+distance+'，歷史最短記錄：'+(window.localStorage['bestDNA'+es6This.gthAllPoints] || 0);
+      es6This.eleRecord.innerHTML='最短記錄：'+distance;
       //存貯到本地(3398)
       if(!window.localStorage['bestDNA'+es6This.gthAllPoints] || (window.localStorage['bestDNA'+es6This.gthAllPoints] && +window.localStorage['bestDNA'+es6This.gthAllPoints]>distance)){
         window.localStorage['bestDNA'+es6This.gthAllPoints]=distance;
@@ -228,10 +237,7 @@ class GA{
     }
     return (index-1);
   }
-  //适应度函数设计直接影响到遗传算法的性能。
-  funFitness(DNA){
-    return (1e141/(Math.pow(this.calcDistance(DNA),4e1)+1));
-  }
+  
   //計算適應度
   calcFitness(){
     var es6This=this;
@@ -257,7 +263,20 @@ class GA{
       var i2=_.random(i1,es6This.gthAllPoints-1);
 
       if(Math.random()<mutateRate){
-        es6This.mutateA(DNA,i1,i2);
+        var randomABC=_.random(0,2);
+        switch(randomABC){
+        case 0:
+          es6This.mutateA(DNA,i1,i2);
+          break;
+        case 1:
+          es6This.mutateB(DNA,i1,i2);
+          break;
+        case 2:
+          es6This.mutateC(DNA,i1,i2);
+          break;
+        default:
+          console.log('it is impossible.');
+        }
       }
 
     });
@@ -265,8 +284,27 @@ class GA{
   }
   //交换
   mutateA(DNA,i1,i2){
+    this.swap(DNA,i1,i2);
+    return DNA;
+  }
+  //倒序
+  mutateB(DNA,i1,i2){
+    var DNA1=DNA.slice(0,i1);
+    var DNA2=DNA.slice(i1,i2);
+    DNA2.reverse();
+    var DNA3=DNA.slice(i2);
+    DNA=DNA1.concat(DNA2,DNA3);
+    return DNA;
+  }
+  //移动
+  mutateC(DNA,i1,i2){
     var es6This=this;
-    es6This.swap(DNA,i1,i2);
+    var i3=_.random(i2,es6This.gthAllPoints-1);
+    var DNA1=DNA.slice(0,i1);
+    var DNA2=DNA.slice(i1,i2);
+    var DNA3=DNA.slice(i2,i3);
+    var DNA4=DNA.slice(i3);
+    DNA=DNA1.concat(DNA3,DNA2,DNA4);
     return DNA;
   }
   //不斷產生下一代
@@ -275,6 +313,9 @@ class GA{
     //https://developer.mozilla.org/zh-CN/docs/Web/API/Window/requestAnimationFrame
     var rafCallback=function(){
       es6This.currentGeneration++;
+
+      es6This.eleGeneration.innerHTML=es6This.currentGeneration;
+
       var percent=(es6This.currentGeneration/es6This.allGeneration*100).toFixed(9)+'% complete';
       es6This.elePercent.innerHTML=percent;
       if(es6This.currentGeneration<es6This.allGeneration){
