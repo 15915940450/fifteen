@@ -260,6 +260,12 @@ class GA{
     });
     return es6This;
   }
+  //交换
+  mutateA(){
+    var es6This=this;
+  
+    return es6This;
+  }
   //不斷產生下一代
   timer(){
     var es6This=this;
@@ -346,4 +352,7 @@ class GA{
 }
 
 var obj=new GA();
-obj.initPoints().draw().findBestInCureentGeneration().timer();
+// obj.initPoints().draw().findBestInCureentGeneration().timer();
+
+
+

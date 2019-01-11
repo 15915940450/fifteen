@@ -12,6 +12,9 @@
   text-decoration: line-through;
   color: #a7a7a7;
 }
+#omni{
+  display: none;
+}
 .css_colors{
   width: 300px;
   position: absolute;
@@ -25,6 +28,11 @@
   padding-right: 10px;
   margin-bottom: 10px;
   /*color: yellow;*/
+}
+.fahrenheit{
+  font-size: 30px;
+  text-align: center;
+  color: darkblue;
 }
 </style>
 </head>
@@ -58,6 +66,13 @@
   </section>
 
 </div>
+<section id="f">
+  <h2 class="fahrenheit"> 
+    <strong>{{F.temperature | C2F}}</strong>
+    ℉
+    <small>{{F.reporttime}}</small>
+  </h2>
+</section>
 <section class="css_colors">
   <div style="background: antiquewhite;">(古典白)antiquewhite</div>
   <div style="background: aqua;">(淺綠)aqua</div>
