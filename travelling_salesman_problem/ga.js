@@ -31,7 +31,7 @@ class GA{
     this.isUseConstantPoints=true;  //是否使用恆定的點
     this.gthAllPoints=30;  //除起點外的所經過點的個數
     this.gthPopulation=1e3; //種群DNA總數
-    this.allGeneration=3e3; //要進化多少代
+    this.allGeneration=1e2; //要進化多少代
     this.mutateRate=1e-2;   //突變率,一般取0.001－0.1
 
     this.population=[]; //種群
@@ -252,19 +252,22 @@ class GA{
     var es6This=this;
     es6This.population.forEach(function(objDNA){
       var DNA=objDNA.DNA;
-      DNA.forEach(function(gene,i){
-        if(Math.random()<mutateRate){
-          es6This.swap(DNA,i,_.random(0,es6This.gthAllPoints-1));
-        }
-      });
+
+      var i1=_.random(0,es6This.gthAllPoints-1);
+      var i2=_.random(i1,es6This.gthAllPoints-1);
+
+      if(Math.random()<mutateRate){
+        es6This.mutateA(DNA,i1,i2);
+      }
+
     });
     return es6This;
   }
   //交换
-  mutateA(){
+  mutateA(DNA,i1,i2){
     var es6This=this;
-  
-    return es6This;
+    es6This.swap(DNA,i1,i2);
+    return DNA;
   }
   //不斷產生下一代
   timer(){
@@ -352,7 +355,7 @@ class GA{
 }
 
 var obj=new GA();
-// obj.initPoints().draw().findBestInCureentGeneration().timer();
+obj.initPoints().draw().findBestInCureentGeneration().timer();
 
 
 
