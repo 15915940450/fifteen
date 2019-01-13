@@ -31,9 +31,10 @@ class GA{
     //參數
     this.isUseConstantPoints=false;  //是否使用恆定的點
     this.gthPopulation=200; //種群DNA總數
-    this.allGeneration=3e3; //要進化多少代
+    this.allGeneration=1e4; //要進化多少代
     this.mutateRate=0.02;   //突變率,一般取0.001－0.1
-    this.gthAllPoints=20;  //除起點外的所經過點的個數
+    this.gthAllPoints=200;  //除起點外的所經過點的個數
+    this.pow=8;
 
     this.population=[]; //種群
     //三十個城市，一千個DNA，進化三千(萬)代
@@ -41,8 +42,9 @@ class GA{
 
   //适应度函数设计直接影响到遗传算法的性能。
   funFitness(DNA){
-    var distance=this.calcDistance(DNA);
-    var pow=Math.pow(distance,8)+1;
+    var es6This=this;
+    var distance=es6This.calcDistance(DNA);
+    var pow=Math.pow(distance,es6This.pow)+1;
     return (1/pow);
   }
 
@@ -57,7 +59,7 @@ class GA{
     es6This.eleCanvas.height=es6This.canvasHeight;
     es6This.eleCanvasBest.width=es6This.canvasWidth;
     es6This.eleCanvasBest.height=es6This.canvasHeight;
-    document.getElementById('param').innerHTML='種群DNA總數:'+es6This.gthPopulation+',要進化多少代:'+es6This.allGeneration+',突變率:'+es6This.mutateRate+',一共 '+es6This.gthAllPoints+' 個城市(pow=13)';
+    document.getElementById('param').innerHTML='種群DNA總數:'+es6This.gthPopulation+',要進化多少代:'+es6This.allGeneration+',突變率:'+es6This.mutateRate+',一共 '+es6This.gthAllPoints+' 個城市(pow='+es6This.pow+')';
     //生成所經過的點
     var i,DNA=[];
     if(es6This.isUseConstantPoints){
