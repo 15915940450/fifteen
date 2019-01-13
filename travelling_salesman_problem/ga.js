@@ -30,10 +30,10 @@ class GA{
     this.currentGeneration=0;
     //參數
     this.isUseConstantPoints=false;  //是否使用恆定的點
-    this.gthPopulation=1e3; //種群DNA總數
-    this.allGeneration=1e5; //要進化多少代
-    this.mutateRate=0.05;   //突變率,一般取0.001－0.1
-    this.gthAllPoints=200;  //除起點外的所經過點的個數
+    this.gthPopulation=200; //種群DNA總數
+    this.allGeneration=3e3; //要進化多少代
+    this.mutateRate=0.02;   //突變率,一般取0.001－0.1
+    this.gthAllPoints=20;  //除起點外的所經過點的個數
 
     this.population=[]; //種群
     //三十個城市，一千個DNA，進化三千(萬)代
@@ -41,9 +41,9 @@ class GA{
 
   //适应度函数设计直接影响到遗传算法的性能。
   funFitness(DNA){
-    var distance=this.calcDistance(DNA)/100;
-    var pow=Math.pow(distance,13)+1;
-    return (1e6/pow);
+    var distance=this.calcDistance(DNA);
+    var pow=Math.pow(distance,8)+1;
+    return (1/pow);
   }
 
   //初始化
@@ -216,8 +216,8 @@ class GA{
   }
   crossover(DNA1,DNA2){
     var es6This=this;
-    var start=_.random(es6This.gthAllPoints);
-    var end=_.random(start+1,es6This.gthAllPoints);
+    var start=_.random(0,es6This.gthAllPoints-1);
+    var end=_.random(start+1,es6This.gthAllPoints-1);
     var sniDNA1=DNA1.slice(start,end);
     DNA2.forEach(function(v){
       if(!sniDNA1.includes(v)){
@@ -237,7 +237,7 @@ class GA{
     }
     return (index-1);
   }
-  
+
   //計算適應度
   calcFitness(){
     var es6This=this;
@@ -256,7 +256,7 @@ class GA{
   }
   mutation(mutateRate){
     var es6This=this;
-    es6This.population.forEach(function(objDNA){
+    var populationMutation=es6This.population.map(function(objDNA){
       var DNA=objDNA.DNA;
 
       var i1=_.random(0,es6This.gthAllPoints-1);
@@ -266,20 +266,24 @@ class GA{
         var randomABC=_.random(0,2);
         switch(randomABC){
         case 0:
-          es6This.mutateA(DNA,i1,i2);
+          DNA=es6This.mutateA(DNA,i1,i2);
           break;
         case 1:
-          es6This.mutateB(DNA,i1,i2);
+          DNA=es6This.mutateB(DNA,i1,i2);
           break;
         case 2:
-          es6This.mutateC(DNA,i1,i2);
+          DNA=es6This.mutateC(DNA,i1,i2);
           break;
         default:
           console.log('it is impossible.');
         }
       }
-
+      return ({
+        DNA:DNA,
+        fitness:-1
+      });
     });
+    es6This.population=populationMutation;
     return es6This;
   }
   //交换
@@ -397,6 +401,3 @@ class GA{
 
 var obj=new GA();
 obj.initPoints().draw().findBestInCureentGeneration().timer();
-
-
-
