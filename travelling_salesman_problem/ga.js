@@ -2,6 +2,7 @@
 * js注釋：
 遗传算法求解TSP问题
 */
+var points=[{'id':0,'x':797,'y':40},{'id':1,'x':58,'y':330},{'id':2,'x':1041,'y':261},{'id':3,'x':559,'y':316},{'id':4,'x':1173,'y':67},{'id':5,'x':1139,'y':210},{'id':6,'x':269,'y':247},{'id':7,'x':75,'y':61},{'id':8,'x':624,'y':42},{'id':9,'x':112,'y':295},{'id':10,'x':378,'y':223},{'id':11,'x':28,'y':108},{'id':12,'x':698,'y':214},{'id':13,'x':648,'y':229},{'id':14,'x':41,'y':171},{'id':15,'x':351,'y':69},{'id':16,'x':607,'y':243},{'id':17,'x':1145,'y':111},{'id':18,'x':626,'y':189},{'id':19,'x':298,'y':203},{'id':20,'x':656,'y':124},{'id':21,'x':1033,'y':247},{'id':22,'x':1130,'y':80},{'id':23,'x':830,'y':142},{'id':24,'x':730,'y':175},{'id':25,'x':552,'y':192},{'id':26,'x':631,'y':364},{'id':27,'x':219,'y':336},{'id':28,'x':1130,'y':265},{'id':29,'x':332,'y':365}];
 
 class GA{
   constructor(){
@@ -32,7 +33,7 @@ class GA{
     this.isUseConstantPoints=false;  //是否使用恆定的點
     this.gthPopulation=2; //種群DNA總數
     this.allGeneration=10; //要進化多少代
-    this.mutateRate=0;   //突變率,一般取0.001－0.1
+    this.mutateRate=1;   //突變率,一般取0.001－0.1
     this.gthAllPoints=5;  //除起點外的所經過點的個數
     this.pow=8;
 
@@ -62,16 +63,18 @@ class GA{
     document.getElementById('param').innerHTML='種群DNA總數:'+es6This.gthPopulation+',要進化多少代:'+es6This.allGeneration+',突變率:'+es6This.mutateRate+',一共 '+es6This.gthAllPoints+' 個城市(pow='+es6This.pow+')';
     //生成所經過的點
     var i,DNA=[];
+    //使用固定的點
     if(es6This.isUseConstantPoints){
       //生成起點（同時也是終點）
       es6This.startPointAlsoEndPoint={ id: -1, x: 555, y: 131 };
-      es6This.points=[{'id':0,'x':797,'y':40},{'id':1,'x':58,'y':330},{'id':2,'x':1041,'y':261},{'id':3,'x':559,'y':316},{'id':4,'x':1173,'y':67},{'id':5,'x':1139,'y':210},{'id':6,'x':269,'y':247},{'id':7,'x':75,'y':61},{'id':8,'x':624,'y':42},{'id':9,'x':112,'y':295},{'id':10,'x':378,'y':223},{'id':11,'x':28,'y':108},{'id':12,'x':698,'y':214},{'id':13,'x':648,'y':229},{'id':14,'x':41,'y':171},{'id':15,'x':351,'y':69},{'id':16,'x':607,'y':243},{'id':17,'x':1145,'y':111},{'id':18,'x':626,'y':189},{'id':19,'x':298,'y':203},{'id':20,'x':656,'y':124},{'id':21,'x':1033,'y':247},{'id':22,'x':1130,'y':80},{'id':23,'x':830,'y':142},{'id':24,'x':730,'y':175},{'id':25,'x':552,'y':192},{'id':26,'x':631,'y':364},{'id':27,'x':219,'y':336},{'id':28,'x':1130,'y':265},{'id':29,'x':332,'y':365}];
+      es6This.points=points;
       for(i=0;i<es6This.gthAllPoints;i++){
         DNA[i]={
           gene:i
         };
       }
     }else{
+      //隨機生成點
       es6This.startPointAlsoEndPoint=es6This.generateRandomPoint(-1);
       es6This.points.length=0;
       for(i=0;i<es6This.gthAllPoints;i++){
@@ -258,11 +261,13 @@ class GA{
   }
   mutation(mutateRate){
     var es6This=this;
+    mutateRate=mutateRate || es6This.mutateRate;
     var populationMutation=es6This.population.map(function(objDNA){
       var DNA=objDNA.DNA;
 
-      var i1=_.random(0,es6This.gthAllPoints-1);
-      var i2=_.random(i1,es6This.gthAllPoints-1);
+      var i1=_.random(0,es6This.gthAllPoints-2);
+      var i2=_.random(i1+1,es6This.gthAllPoints-1);
+      
 
       if(Math.random()<mutateRate){
         var randomABC=_.random(0,2);
@@ -271,10 +276,20 @@ class GA{
           DNA=es6This.mutateA(DNA,i1,i2);
           break;
         case 1:
-          DNA=es6This.mutateB(DNA,i1,i2);
+          if(i2-i1<3){
+            //交換相鄰兩點
+            DNA=es6This.mutateA(DNA,i1,i1+1);
+          }else{
+            DNA=es6This.mutateB(DNA,i1,i2);
+          }
           break;
         case 2:
-          DNA=es6This.mutateC(DNA,i1,i2);
+          var i3=_.random(i2,es6This.gthAllPoints-1);
+          if(i3===i2){
+            DNA=es6This.mutateA(DNA,i1,i1+1);
+          }else{
+            DNA=es6This.mutateC(DNA,i1,i2,i3);
+          }
           break;
         default:
           console.log('it is impossible.');
@@ -303,13 +318,12 @@ class GA{
     return DNA;
   }
   //移动
-  mutateC(DNA,i1,i2){
-    var es6This=this;
-    var i3=_.random(i2,es6This.gthAllPoints-1);
+  mutateC(DNA,i1,i2,i3){
     var DNA1=DNA.slice(0,i1);
     var DNA2=DNA.slice(i1,i2);
     var DNA3=DNA.slice(i2,i3);
     var DNA4=DNA.slice(i3);
+    // console.log(i1,i2,i3);
     DNA=DNA1.concat(DNA3,DNA2,DNA4);
     return DNA;
   }
@@ -331,8 +345,8 @@ class GA{
         //結束
         es6This.completeSearch=true;
         console.timeEnd('time_timeEnd_GA');
-        console.log(es6This.best.DNA);
-        console.log(window.localStorage['bestDNA'+es6This.gthAllPoints]);
+        console.log('best:',es6This.best.DNA);
+        // console.log(window.localStorage['bestDNA'+es6This.gthAllPoints]);
       }
     };
     window.requestAnimationFrame(rafCallback);
