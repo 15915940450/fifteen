@@ -30,10 +30,10 @@ class GA{
     this.currentGeneration=0;
     //參數
     this.isUseConstantPoints=false;  //是否使用恆定的點
-    this.gthPopulation=200; //種群DNA總數
-    this.allGeneration=1e4; //要進化多少代
-    this.mutateRate=0.02;   //突變率,一般取0.001－0.1
-    this.gthAllPoints=200;  //除起點外的所經過點的個數
+    this.gthPopulation=2; //種群DNA總數
+    this.allGeneration=10; //要進化多少代
+    this.mutateRate=0;   //突變率,一般取0.001－0.1
+    this.gthAllPoints=5;  //除起點外的所經過點的個數
     this.pow=8;
 
     this.population=[]; //種群
@@ -167,16 +167,16 @@ class GA{
   //當前代中找到最優的解
   findBestInCureentGeneration(){
     var es6This=this;
-    var bestInCurrentGeneration=[];
-    es6This.population.reduce(function(acc,cur){
-      var distance=es6This.calcDistance(cur.DNA);
-      if(distance<acc){
-        acc=distance;
-      }else{
-        bestInCurrentGeneration=cur.DNA;
+    var bestInCurrentGeneration=es6This.population[0].DNA;
+    var bestDistance=es6This.calcDistance(bestInCurrentGeneration);
+    for(var i=1;i<es6This.gthPopulation;i++){
+      var distance=es6This.calcDistance(es6This.population[i].DNA);
+      if(distance<bestDistance){
+        bestInCurrentGeneration=es6This.population[i].DNA;
+        bestDistance=es6This.calcDistance(bestInCurrentGeneration);
       }
-      return (acc);
-    },Infinity);
+    }
+    // console.log(bestInCurrentGeneration);
     //找到之後在第一個canvas中繪製
     es6This.drawWithCTX(false,bestInCurrentGeneration);
     return es6This;
