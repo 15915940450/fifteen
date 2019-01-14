@@ -29,16 +29,16 @@ class GA{
     };
     this.completeSearch=false; //是否繼續生成下一代
     this.currentGeneration=0;
-    //參數
+
+    //==================參數
     this.isUseConstantPoints=false;  //是否使用恆定的點
-    this.gthPopulation=2; //種群DNA總數
-    this.allGeneration=10; //要進化多少代
-    this.mutateRate=1;   //突變率,一般取0.001－0.1
-    this.gthAllPoints=5;  //除起點外的所經過點的個數
-    this.pow=8;
+    this.gthPopulation=500; //種群DNA總數
+    this.allGeneration=10000; //要進化多少代
+    this.mutateRate=0.01;   //突變率,一般取0.001－0.1
+    this.gthAllPoints=200;  //除起點外的所經過點的個數
+    this.pow=10;
 
     this.population=[]; //種群
-    //三十個城市，一千個DNA，進化三千(萬)代
   }
 
   //适应度函数设计直接影响到遗传算法的性能。
