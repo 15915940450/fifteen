@@ -32,11 +32,11 @@ class GA{
 
     //==================參數
     this.isUseConstantPoints=false;  //是否使用恆定的點
-    this.gthPopulation=500; //種群DNA總數
-    this.allGeneration=10000; //要進化多少代
+    this.gthPopulation=1e3; //種群DNA總數
+    this.allGeneration=1e5; //要進化多少代
     this.mutateRate=0.01;   //突變率,一般取0.001－0.1
-    this.gthAllPoints=200;  //除起點外的所經過點的個數
-    this.pow=10;
+    this.gthAllPoints=55;  //除起點外的所經過點的個數
+    this.pow=15;
 
     this.population=[]; //種群
   }
