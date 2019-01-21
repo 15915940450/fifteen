@@ -31,17 +31,33 @@ class PubSub{
     }
     return es6This;
   }
+  //退訂
+  unsubscribe(eventType,handler){
+    var es6This=this;
+    if(es6This.handlers[eventType]){
+      es6This.handlers[eventType]=es6This.handlers[eventType].filter(function(v){
+        return (v!==handler);
+      });
+    }
+    return es6This;
+  }
 
 
 
-}
+} //class
 
 var obj=new PubSub();
 
-obj.subscribe('A',function(a,b,c,d){
-  console.log(a+b+c+'+'+d);
-});
+var xxx=function(){
+  console.log('訂閲1xxx');
+};
+var yyy=function(a,b,c,d){
+  console.log('訂閲2yyy'+a+b+c+d);
+};
+
+obj.subscribe('A',xxx);
+obj.subscribe('A',yyy);
 
 obj.publish('A','aaa','bbb','ddd');
-console.log(obj.handlers);
-
+obj.unsubscribe('A',yyy);
+obj.publish('A','x','y','z');
