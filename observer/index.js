@@ -10,7 +10,7 @@ class PubSub{
     this.handlers={}; //時間處理映射表
   }
 
-  //訂閲
+  //訂閲（事件類型+處理）
   subscribe(eventType,handler){
     var es6This=this;
     if(!(eventType in es6This.handlers)){
@@ -20,7 +20,7 @@ class PubSub{
 
     return es6This;
   }
-  //發佈
+  //發佈(事件類型+消息)
   publish(eventType){
     var es6This=this;
     var handlerArgs=Array.from(arguments).slice(1);
@@ -31,7 +31,7 @@ class PubSub{
     }
     return es6This;
   }
-  //退訂
+  //退訂（事件類型+處理）
   unsubscribe(eventType,handler){
     var es6This=this;
     if(es6This.handlers[eventType]){
@@ -52,12 +52,45 @@ var xxx=function(){
   console.log('訂閲1xxx');
 };
 var yyy=function(a,b,c,d){
-  console.log('訂閲2yyy'+a+b+c+d);
+  console.log('訂閲2yyy'+' '+a+' '+b+c+d);
 };
 
+//訂閲事件A，處理函數分別為xxx和yyy
 obj.subscribe('A',xxx);
 obj.subscribe('A',yyy);
 
+//發佈事件A，消息為'aaa','bbb','ddd'
 obj.publish('A','aaa','bbb','ddd');
-obj.unsubscribe('A',yyy);
-obj.publish('A','x','y','z');
+
+//取消訂閲事件A的xxx處理（yyy依然生效）
+obj.unsubscribe('A',xxx);
+
+obj.publish('A','2');
+
+
+
+// var e=Math.E;
+// var pi=Math.PI;
+// console.log(e); //2.718281828459045
+// console.log(pi);  //3.141592653589793
+
+function factorial(n){
+  if(n<=1){
+    return (1);
+  }
+  return (n*factorial(n-1));
+}
+
+var e=0;
+//Taylor's formula
+/*
+* js注釋：
+一般而言，计算一个已知函数在某个固定点处的近似值，其精度往往依赖于两个方面.其一是函数自身的属性，即当函数在该点只能有限次求导时，函数在该点处不能展为无穷泰勒级数，我们只能利用有限项的泰勒公式来近似计算其函数值.其二是具体要求，如果仅仅需要有限近似，我们往往选择泰勒公式进行处理，这种情况经常在多个领域的工程计算中会出现.当要求无限近似时，我们就选取泰勒级数
+泰勒公式常用于不要求足够精度的近似计算，而泰勒级数是用于研究具有无穷可微性质的函数
+*/
+
+// Taylor series 
+for(var i=0;i<1e3;i++){
+  e+=1/factorial(i);
+}
+console.log(e); //2.7182818284590455
