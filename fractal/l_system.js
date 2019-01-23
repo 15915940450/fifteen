@@ -64,17 +64,19 @@ class Lsystem{
     var es6This=this;
     
     var ctx=es6This.ctx;
-    //把原點移到中綫下方位置
+    //把原點移到中綫下方位置,並旋轉25角度
     ctx.translate(es6This.CW*4/5,es6This.CH-40);
     ctx.rotate(-Math.PI*25/180);
     ctx.strokeStyle='snow';
     ctx.beginPath();
 
-    es6This.L(es6This.rootLen);
+    //循環繪製
+    es6This.L();
 
     ctx.stroke();
     return es6This;
   }
+
   //result解析
   L(){
     var es6This=this;
@@ -108,8 +110,6 @@ class Lsystem{
         console.log('it is impossible');        
       }
     }
-    ctx.moveTo(0,0);
-    ctx.lineTo(0,-200);
   
     return es6This;
   }
