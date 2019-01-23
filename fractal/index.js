@@ -31,7 +31,10 @@ class Fractal{
     var ctx=es6This.ctx;
     //把原點移到中綫下方位置
     ctx.translate(es6This.CW/2,es6This.CH-4);
-    ctx.strokeStyle='blanchedalmond';
+    ctx.font='20px serif';
+    ctx.fillStyle='floralwhite';
+    
+    ctx.strokeStyle='snow';
     ctx.beginPath();
 
     //遞歸調用繪製分支
@@ -44,7 +47,8 @@ class Fractal{
   drawBranch(gth){
     var es6This=this;
     // 分支長度小於 _ 則終止繪製
-    if(gth<4){
+    var GTH=13;
+    if(gth<GTH){
       return (false);
     }
     es6This.count++;
@@ -52,9 +56,12 @@ class Fractal{
     var ctx=es6This.ctx;
     ctx.moveTo(0,0);
     ctx.lineTo(0,-gth); //1
-    // ctx.stroke();
     ctx.translate(0,-gth);
     ctx.save();
+    if(GTH>1e2){
+      ctx.fillText(es6This.count,0,0);
+    }
+
     ctx.rotate(es6This.rad);
     es6This.drawBranch(gth*es6This.rate);  //2:畫右分支
     ctx.restore();
