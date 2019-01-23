@@ -4,6 +4,7 @@ class Epi{
     this.eleN=document.querySelector('#n');
     this.pi=0;
     this.n=0;
+    this.all=1e13;
   }
   init(){
     var es6This=this;
@@ -13,7 +14,7 @@ class Epi{
   timer(){
     var es6This=this;
     var rafCallback=function(){
-      if(es6This.n>1e11){
+      if(es6This.n>es6This.all){
         return false;
       }
       if(es6This.n & 1){
@@ -21,7 +22,7 @@ class Epi{
       }else{
         es6This.pi=es6This.pi+4/(2*es6This.n+1);
       }
-      es6This.eleN.innerHTML='n:'+es6This.n;
+      es6This.eleN.innerHTML='n:'+es6This.n+','+es6This.n*100/es6This.all+'%已完成';
       es6This.elePI.innerHTML='PI='+es6This.pi;
       es6This.n++;
       window.requestAnimationFrame(rafCallback);
