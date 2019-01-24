@@ -6,19 +6,13 @@ class Epi{
     this.pi=0;
     this.e=0;
     this.n=0;
-    this.all=1e13;
+    this.all=1e9;
+    this.factorialN=1;
   }
   init(){
     var es6This=this;
     es6This.timer();
     return es6This;
-  }
-  factorial(n){
-    var es6This=this;
-    if(n<=1){
-      return (1);
-    }
-    return (n*es6This.factorial(n-1));
   }
   timer(){
     var es6This=this;
@@ -29,7 +23,8 @@ class Epi{
       }
 
       //e
-      es6This.e+=1/es6This.factorial(es6This.n);
+      es6This.factorialN=(es6This.n || 1)*es6This.factorialN;
+      es6This.e+=1/es6This.factorialN;
       //pi
       if(es6This.n & 1){
         es6This.pi=es6This.pi-4/(2*es6This.n+1);
