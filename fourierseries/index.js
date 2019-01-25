@@ -28,7 +28,7 @@ class Fourier{
     ctx.strokeStyle='floralwhite';
     
     var rafCallback=function(){
-      es6This.rad++;
+      es6This.rad+=0.01;
       if(es6This.rad<200){
         // console.log(es6This.rad);
         es6This.draw();
@@ -49,11 +49,19 @@ class Fourier{
 
     //畫圓
     ctx.translate(200,200);
+
     ctx.beginPath();
     ctx.arc(0,0,es6This.radius,0,Math.PI*2);
     // ctx.closePath();
-    //描邊，恢復坐標原點到（0，0）
     ctx.stroke();
+
+    ctx.beginPath();
+    var x=es6This.radius*Math.sin(es6This.rad);
+    var y=es6This.radius*Math.cos(es6This.rad);
+    ctx.arc(x,y,5,0,Math.PI*2);
+    ctx.fill();
+    
+    //描邊，恢復坐標原點到（0，0）
     ctx.translate(-200,-200);
     
     return es6This;
