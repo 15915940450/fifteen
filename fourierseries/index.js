@@ -14,8 +14,8 @@ class Fourier{
     this.divideRad=1e3;
     this.largestRad=1e6;
     this.originXY={
-      x:500,
-      y:400
+      x:this.CW/4,
+      y:this.CW/5
     };
     this.maxLength=this.divideRad*8;
     this.percent='0.0000%';
@@ -43,7 +43,7 @@ class Fourier{
     ctx.fillStyle='antiquewhite';
     ctx.strokeStyle='antiquewhite';
     ctx.font='20px serif';
-    
+
     var rafCallback=function(){
       es6This.radian+=es6This.radSpeed;
       es6This.percent=((es6This.radian+1)*100/es6This.largestRad).toFixed(6)+'%';
@@ -60,7 +60,7 @@ class Fourier{
   draw(){
     var es6This=this;
     var ctx=es6This.ctx;
-    
+
     //清除畫布,繪製百分比
     ctx.translate(0,0);
     ctx.clearRect(0,0,es6This.CW,es6This.CH-4);
@@ -68,7 +68,7 @@ class Fourier{
 
     ctx.translate(es6This.originXY.x,es6This.originXY.y);
 
-    
+
 
     var i;
     var x=0;
@@ -79,7 +79,7 @@ class Fourier{
 
     for(i=0;i<es6This.n;i++){
       var n=i*2+1;
-      es6This.radius=200*4/(Math.PI*n);
+      es6This.radius=es6This.CW*4/(Math.PI*n*10)>>0;
 
       //畫圓(圓心0，0)
       ctx.beginPath();
@@ -89,11 +89,11 @@ class Fourier{
 
       //畫小圓點
       ctx.beginPath();
-      x=es6This.radius*Math.cos(radian*n);
-      y=es6This.radius*Math.sin(radian*n);
+      x=es6This.radius*Math.cos(n*radian);
+      y=es6This.radius*Math.sin(n*radian);
       xSmall+=x;
       ySmall+=y;
-      
+
       if(i===es6This.n-1){
         //最後一個點
         ctx.fillStyle='crimson';
@@ -109,14 +109,14 @@ class Fourier{
       ctx.beginPath();
       ctx.moveTo(xSmall,ySmall);
       ctx.lineTo(xSmall-x,ySmall-y);
-      
+
       ctx.stroke();
     }
 
 
-    
 
-    
+
+
 
     //arrSineWavePointOrigin==>arrSineWavePoint
     es6This.arrSineWavePointOrigin.unshift({
@@ -159,7 +159,7 @@ class Fourier{
     ctx.strokeStyle='#222';
     ctx.beginPath();
     ctx.moveTo(es6This.arrSineWavePoint[0].x,0);
-    ctx.lineTo(3e3,0);
+    ctx.lineTo(2e3,0);
     ctx.stroke();
     ctx.strokeStyle='antiquewhite';
 
@@ -171,18 +171,18 @@ class Fourier{
     }
     ctx.stroke();
 
-    
-    
-    
-    //描邊，恢復坐標原點到（0，0）
+
+
+
+    //恢復坐標原點到（0，0）
     ctx.translate(-es6This.originXY.x,-es6This.originXY.y);
-    
+
     return es6This;
   }
 
   listenRange(){
     var es6This=this;
-    es6This.eleRange.value=4;
+    es6This.eleRange.value=es6This.n;
     es6This.eleRange.onchange=function(){
       es6This.n=this.value;
     };
