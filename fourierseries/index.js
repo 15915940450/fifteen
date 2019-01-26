@@ -1,20 +1,25 @@
 class Fourier{
   constructor(){
-    this.rad=0; //time
+    this.radian=0; //time
     this.CW=document.documentElement.clientWidth || document.body.clientWidth;
     this.CH=document.documentElement.clientHeight || document.body.clientHeight;
 
+    this.eleRange=document.querySelector('#n');
     this.eleFourier=document.querySelector('#fourier');
     this.ctx=this.eleFourier.getContext('2d');
 
     this.radius=0;  //圓半徑
     this.smallRadius=4;
-    this.radSpeed=0.02;
+    this.radSpeed=1;
+    this.divideRad=1e3;
     this.largestRad=1e6;
-    this.originXY=300;
-    this.maxLength=1e3;
+    this.originXY={
+      x:500,
+      y:400
+    };
+    this.maxLength=this.divideRad*8;
     this.percent='0.0000%';
-    this.n=1;
+    this.n=4;
 
     this.arrSineWavePoint=[]; //真正的正弦波點
     this.arrSineWavePointOrigin=[];
@@ -40,11 +45,10 @@ class Fourier{
     ctx.font='20px serif';
     
     var rafCallback=function(){
-      es6This.rad+=es6This.radSpeed;
-      es6This.percent=(es6This.rad*100/es6This.largestRad).toFixed(6)+'%';
-      es6This.percent+=', n='+es6This.n+'.';
-      if(es6This.rad<es6This.largestRad){
-        // console.log(es6This.rad);
+      es6This.radian+=es6This.radSpeed;
+      es6This.percent=((es6This.radian+1)*100/es6This.largestRad).toFixed(6)+'%';
+      es6This.percent+=', 傅立葉級數n='+es6This.n+'.';
+      if(es6This.radian<es6This.largestRad){
         es6This.draw();
         window.requestAnimationFrame(rafCallback);
       }
@@ -62,7 +66,7 @@ class Fourier{
     ctx.clearRect(0,0,es6This.CW,es6This.CH-4);
     ctx.fillText(es6This.percent,10,30);
 
-    ctx.translate(es6This.originXY,es6This.originXY);
+    ctx.translate(es6This.originXY.x,es6This.originXY.y);
 
     
 
@@ -71,10 +75,11 @@ class Fourier{
     var y=0;
     var xSmall=0;
     var ySmall=0;
+    var radian=es6This.radian/es6This.divideRad;
 
     for(i=0;i<es6This.n;i++){
       var n=i*2+1;
-      es6This.radius=100*4/(Math.PI*n);
+      es6This.radius=200*4/(Math.PI*n);
 
       //畫圓(圓心0，0)
       ctx.beginPath();
@@ -84,8 +89,8 @@ class Fourier{
 
       //畫小圓點
       ctx.beginPath();
-      x=es6This.radius*Math.cos(es6This.rad*n);
-      y=es6This.radius*Math.sin(es6This.rad*n);
+      x=es6This.radius*Math.cos(radian*n);
+      y=es6This.radius*Math.sin(radian*n);
       xSmall+=x;
       ySmall+=y;
       
@@ -115,8 +120,7 @@ class Fourier{
 
     //arrSineWavePointOrigin==>arrSineWavePoint
     es6This.arrSineWavePointOrigin.unshift({
-      // x:-es6This.rad*es6This.radius/2,
-      x:-100*es6This.rad,
+      x:-100*radian,
       y:ySmall
     });
     if(es6This.arrSineWavePointOrigin.length>es6This.maxLength){
@@ -126,7 +130,7 @@ class Fourier{
     var gap=es6This.arrSineWavePointOrigin[0].x;
     es6This.arrSineWavePoint=es6This.arrSineWavePointOrigin.map(function(v){
       return ({
-        x:v.x-gap+300,
+        x:v.x-gap+es6This.originXY.x,
         y:v.y
       });
     });
@@ -171,8 +175,17 @@ class Fourier{
     
     
     //描邊，恢復坐標原點到（0，0）
-    ctx.translate(-es6This.originXY,-es6This.originXY);
+    ctx.translate(-es6This.originXY.x,-es6This.originXY.y);
     
+    return es6This;
+  }
+
+  listenRange(){
+    var es6This=this;
+    es6This.eleRange.value=4;
+    es6This.eleRange.onchange=function(){
+      es6This.n=this.value;
+    };
     return es6This;
   }
 
@@ -181,4 +194,4 @@ class Fourier{
 } //class
 
 var obj=new Fourier();
-obj.init().Timer();
+obj.init().Timer().listenRange();
