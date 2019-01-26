@@ -8,6 +8,12 @@ class Fourier{
     this.ctx=this.eleFourier.getContext('2d');
 
     this.radius=130;  //圓半徑
+    this.radSpeed=0.02;
+    this.largestRad=1e6;
+    this.originXY=300;
+    this.maxLength=1e3;
+    this.percent='0.000000000000000000000000000000000000000%';
+
     this.arrSineWavePoint=[]; //真正的正弦波點
     this.arrSineWavePointOrigin=[];
   }
@@ -28,10 +34,12 @@ class Fourier{
     var ctx=es6This.ctx;
     ctx.fillStyle='snow';
     ctx.strokeStyle='floralwhite';
+    ctx.font='20px serif';
     
     var rafCallback=function(){
-      es6This.rad+=0.01;
-      if(es6This.rad<100){
+      es6This.rad+=es6This.radSpeed;
+      es6This.percent=(es6This.rad*100/es6This.largestRad).toFixed(6)+'%';
+      if(es6This.rad<es6This.largestRad){
         // console.log(es6This.rad);
         es6This.draw();
         window.requestAnimationFrame(rafCallback);
@@ -45,11 +53,12 @@ class Fourier{
     var es6This=this;
     var ctx=es6This.ctx;
     
-    //清除畫布
+    //清除畫布,繪製百分比
     ctx.translate(0,0);
     ctx.clearRect(0,0,es6This.CW,es6This.CH-4);
+    ctx.fillText(es6This.percent,10,30);
 
-    ctx.translate(190,190);
+    ctx.translate(es6This.originXY,es6This.originXY);
 
     //畫圓
     ctx.beginPath();
@@ -66,17 +75,17 @@ class Fourier{
 
     //arrSineWavePointOrigin==>arrSineWavePoint
     es6This.arrSineWavePointOrigin.unshift({
-      x:-es6This.rad*es6This.radius/5,
+      x:-es6This.rad*es6This.radius/2,
       y:y
     });
-    if(es6This.arrSineWavePointOrigin.length>3500){
-      es6This.arrSineWavePointOrigin.length=3500;
+    if(es6This.arrSineWavePointOrigin.length>es6This.maxLength){
+      es6This.arrSineWavePointOrigin.length=es6This.maxLength;
     }
     //arrSineWavePoint首個元素x為0
     var gap=es6This.arrSineWavePointOrigin[0].x;
     es6This.arrSineWavePoint=es6This.arrSineWavePointOrigin.map(function(v){
       return ({
-        x:v.x-gap+300,
+        x:v.x-gap+es6This.radius*2,
         y:v.y
       });
     });
@@ -100,7 +109,7 @@ class Fourier{
     
     
     //描邊，恢復坐標原點到（0，0）
-    ctx.translate(-190,-190);
+    ctx.translate(-es6This.originXY,-es6This.originXY);
     
     return es6This;
   }
