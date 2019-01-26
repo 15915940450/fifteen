@@ -8,7 +8,8 @@ class Fourier{
     this.ctx=this.eleFourier.getContext('2d');
 
     this.radius=130;  //圓半徑
-    this.arrSineWavePoint=[];
+    this.arrSineWavePoint=[]; //真正的正弦波點
+    this.arrSineWavePointOrigin=[];
   }
 
 
@@ -63,14 +64,22 @@ class Fourier{
     ctx.arc(x,y,5,0,Math.PI*2);
     ctx.fill();
 
-    //arrSineWavePoint
-    es6This.arrSineWavePoint.unshift({
-      x:-es6This.rad*es6This.radius/5+200,
+    //arrSineWavePointOrigin==>arrSineWavePoint
+    es6This.arrSineWavePointOrigin.unshift({
+      x:-es6This.rad*es6This.radius/5,
       y:y
     });
-    if(es6This.arrSineWavePoint.length>3500){
-      es6This.arrSineWavePoint.length=3500;
+    if(es6This.arrSineWavePointOrigin.length>3500){
+      es6This.arrSineWavePointOrigin.length=3500;
     }
+    //arrSineWavePoint首個元素x為0
+    var gap=es6This.arrSineWavePointOrigin[0].x;
+    es6This.arrSineWavePoint=es6This.arrSineWavePointOrigin.map(function(v){
+      return ({
+        x:v.x-gap+300,
+        y:v.y
+      });
+    });
 
     //畫連綫
     ctx.strokeStyle='darkviolet';
@@ -83,7 +92,7 @@ class Fourier{
 
     //畫sine wave
     ctx.beginPath();
-    // ctx.arc(es6This.rad*es6This.radius/10,y,3,0,Math.PI*2);
+    ctx.moveTo(es6This.arrSineWavePoint[0].x,es6This.arrSineWavePoint[0].y);
     for(var i=1;i<es6This.arrSineWavePoint.length;i++){
       ctx.lineTo(es6This.arrSineWavePoint[i].x,es6This.arrSineWavePoint[i].y);
     }
