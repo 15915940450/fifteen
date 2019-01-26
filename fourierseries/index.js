@@ -42,6 +42,7 @@ class Fourier{
     var rafCallback=function(){
       es6This.rad+=es6This.radSpeed;
       es6This.percent=(es6This.rad*100/es6This.largestRad).toFixed(6)+'%';
+      es6This.percent+=', n='+es6This.n+'.';
       if(es6This.rad<es6This.largestRad){
         // console.log(es6This.rad);
         es6This.draw();
