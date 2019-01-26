@@ -32,8 +32,8 @@ class Fourier{
     var es6This=this;
 
     var ctx=es6This.ctx;
-    ctx.fillStyle='snow';
-    ctx.strokeStyle='floralwhite';
+    ctx.fillStyle='antiquewhite';
+    ctx.strokeStyle='antiquewhite';
     ctx.font='20px serif';
     
     var rafCallback=function(){
@@ -60,7 +60,7 @@ class Fourier{
 
     ctx.translate(es6This.originXY,es6This.originXY);
 
-    //畫圓
+    //畫圓(圓心0，0)
     ctx.beginPath();
     ctx.arc(0,0,es6This.radius,0,Math.PI*2);
     // ctx.closePath();
@@ -72,6 +72,12 @@ class Fourier{
     var y=es6This.radius*Math.cos(es6This.rad);
     ctx.arc(x,y,5,0,Math.PI*2);
     ctx.fill();
+
+    //畫圓心到小圓點的連綫
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.lineTo(x,y);
+    ctx.stroke();
 
     //arrSineWavePointOrigin==>arrSineWavePoint
     es6This.arrSineWavePointOrigin.unshift({
@@ -90,14 +96,25 @@ class Fourier{
       });
     });
 
-    //畫連綫
+    //畫小圓點映射到正弦波的連綫
     ctx.strokeStyle='darkviolet';
     ctx.beginPath();
     ctx.moveTo(x,y);
     ctx.lineTo(es6This.arrSineWavePoint[0].x,es6This.arrSineWavePoint[0].y);
     ctx.stroke();
-    ctx.strokeStyle='floralwhite';
-    
+    ctx.strokeStyle='antiquewhite';
+
+    //小箭頭
+    ctx.translate(es6This.arrSineWavePoint[0].x,es6This.arrSineWavePoint[0].y);
+    ctx.fillStyle='darkviolet';
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.lineTo(-10,3);
+    ctx.lineTo(-10,-3);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle='antiquewhite';
+    ctx.translate(-es6This.arrSineWavePoint[0].x,-es6This.arrSineWavePoint[0].y);
 
     //畫sine wave
     ctx.beginPath();
