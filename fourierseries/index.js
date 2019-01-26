@@ -66,12 +66,14 @@ class Fourier{
     
     var x=0;
     var y=0;
+    var xSmall=0;
+    var ySmall=0;
 
     for(var i=0;i<2;i++){
       es6This.radius=100*4/(Math.PI*(i*2+1));
       //畫圓(圓心0，0)
       ctx.beginPath();
-      ctx.arc(0,0,es6This.radius,0,Math.PI*2);
+      ctx.arc(x,y,es6This.radius,0,Math.PI*2);
       // ctx.closePath();
       ctx.stroke();
 
@@ -79,13 +81,16 @@ class Fourier{
       ctx.beginPath();
       x=es6This.radius*Math.sin((i*2+1)*es6This.rad);
       y=es6This.radius*Math.cos((i*2+1)*es6This.rad);
-      ctx.arc(x,y,5,0,Math.PI*2);
+      xSmall+=x;
+      ySmall+=y;
+      ctx.arc(xSmall,ySmall,5,0,Math.PI*2);
       ctx.fill();
 
       //畫圓心到小圓點的連綫
       ctx.beginPath();
-      ctx.moveTo(0,0);
-      ctx.lineTo(x,y);
+      ctx.moveTo(xSmall,ySmall);
+      ctx.lineTo(xSmall-x,ySmall-y);
+      
       ctx.stroke();
     }
 
