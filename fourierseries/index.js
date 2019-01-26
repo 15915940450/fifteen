@@ -7,7 +7,7 @@ class Fourier{
     this.eleFourier=document.querySelector('#fourier');
     this.ctx=this.eleFourier.getContext('2d');
 
-    this.radius=100;  //圓半徑
+    this.radius=0;  //圓半徑
     this.radSpeed=0.02;
     this.largestRad=1e6;
     this.originXY=300;
@@ -16,7 +16,6 @@ class Fourier{
 
     this.arrSineWavePoint=[]; //真正的正弦波點
     this.arrSineWavePointOrigin=[];
-    this.currentN=0;
   }
 
 
@@ -26,7 +25,6 @@ class Fourier{
     es6This.eleFourier.width=es6This.CW;
     es6This.eleFourier.height=es6This.CH-4;
 
-    es6This.radius=es6This.radius*4/(Math.PI*(es6This.currentN*2+1));
     return es6This;
   }
 
@@ -63,24 +61,38 @@ class Fourier{
 
     ctx.translate(es6This.originXY,es6This.originXY);
 
-    //畫圓(圓心0，0)
-    ctx.beginPath();
-    ctx.arc(0,0,es6This.radius,0,Math.PI*2);
-    // ctx.closePath();
-    ctx.stroke();
+    
 
-    //畫小圓點
-    ctx.beginPath();
-    var x=es6This.radius*Math.sin((es6This.currentN*2+1)*es6This.rad);
-    var y=es6This.radius*Math.cos((es6This.currentN*2+1)*es6This.rad);
-    ctx.arc(x,y,5,0,Math.PI*2);
-    ctx.fill();
+    
+    var x=0;
+    var y=0;
 
-    //畫圓心到小圓點的連綫
-    ctx.beginPath();
-    ctx.moveTo(0,0);
-    ctx.lineTo(x,y);
-    ctx.stroke();
+    for(var i=0;i<2;i++){
+      es6This.radius=100*4/(Math.PI*(i*2+1));
+      //畫圓(圓心0，0)
+      ctx.beginPath();
+      ctx.arc(0,0,es6This.radius,0,Math.PI*2);
+      // ctx.closePath();
+      ctx.stroke();
+
+      //畫小圓點
+      ctx.beginPath();
+      x=es6This.radius*Math.sin((i*2+1)*es6This.rad);
+      y=es6This.radius*Math.cos((i*2+1)*es6This.rad);
+      ctx.arc(x,y,5,0,Math.PI*2);
+      ctx.fill();
+
+      //畫圓心到小圓點的連綫
+      ctx.beginPath();
+      ctx.moveTo(0,0);
+      ctx.lineTo(x,y);
+      ctx.stroke();
+    }
+
+
+    
+
+    
 
     //arrSineWavePointOrigin==>arrSineWavePoint
     es6This.arrSineWavePointOrigin.unshift({
