@@ -9,9 +9,9 @@ class Fourier{
     this.ctx=this.eleFourier.getContext('2d');
 
     this.radius=0;  //圓半徑
-    this.smallRadius=4;
+    this.smallRadius=3;
     this.radSpeed=1;
-    this.divideRad=1e3;
+    this.divideRad=2e2;
     this.largestRad=1e6;
     this.originXY={
       x:this.CW/4,
@@ -19,7 +19,7 @@ class Fourier{
     };
     this.maxLength=this.divideRad*8;
     this.percent='0.0000%';
-    this.n=4;
+    this.n=4;  //級數n
 
     this.arrSineWavePoint=[]; //真正的正弦波點
     this.arrSineWavePointOrigin=[];
@@ -79,13 +79,15 @@ class Fourier{
 
     for(i=0;i<es6This.n;i++){
       var n=i*2+1;
-      es6This.radius=es6This.CW*4/(Math.PI*n*10)>>0;
+      es6This.radius=es6This.CW*4/(Math.PI*n*10);
 
       //畫圓(圓心0，0)
+      ctx.strokeStyle='rgba(255,255,255,.4)';
       ctx.beginPath();
       ctx.arc(xSmall,ySmall,es6This.radius,0,Math.PI*2);
       // ctx.closePath();
       ctx.stroke();
+      ctx.strokeStyle='antiquewhite';
 
       //畫小圓點
       ctx.beginPath();
@@ -97,20 +99,23 @@ class Fourier{
       if(i===es6This.n-1){
         //最後一個點
         ctx.fillStyle='crimson';
-        ctx.arc(xSmall,ySmall,es6This.smallRadius,0,Math.PI*2);
-        ctx.fill();
-        ctx.fillStyle='antiquewhite';
       }else{
-        ctx.arc(xSmall,ySmall,es6This.smallRadius,0,Math.PI*2);
-        ctx.fill();
+        ctx.fillStyle='rgba(255,255,255,0.3)';
       }
+      ctx.arc(xSmall,ySmall,es6This.smallRadius,0,Math.PI*2);
+      ctx.fill();
+      ctx.fillStyle='antiquewhite';
 
       //畫圓心到小圓點的連綫
+      ctx.strokeStyle='crimson';
+      ctx.lineWidth=3;
       ctx.beginPath();
       ctx.moveTo(xSmall,ySmall);
       ctx.lineTo(xSmall-x,ySmall-y);
 
       ctx.stroke();
+      ctx.strokeStyle='antiquewhite';
+      ctx.lineWidth=1;
     }
 
 
