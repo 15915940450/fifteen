@@ -23,8 +23,8 @@ class Labyrinth{
 
     this.w=50;
     this.grid=[];
-    this.rows=4;
-    this.cols=4;
+    this.rows=10;
+    this.cols=10;
   }
 
   init(){
@@ -53,13 +53,28 @@ class Labyrinth{
     ctx.strokeStyle='snow';
     for(var i=0;i<es6This.grid.length;i++){
       var cell=es6This.grid[i];
-      console.log(cell);
+      // console.log(cell);
       ctx.beginPath();
-      ctx.moveTo(cell.col*es6This.w,cell.row*es6This.w);
-      ctx.lineTo((cell.col+1)*es6This.w,cell.row*es6This.w);
-      ctx.lineTo((cell.col+1)*es6This.w,(cell.row+1)*es6This.w);
-      ctx.lineTo(cell.col*es6This.w,(cell.row+1)*es6This.w);
-      ctx.lineTo(cell.col*es6This.w,cell.row*es6This.w);
+      if(cell.walls[0]){
+        //上邊
+        ctx.moveTo(cell.col*es6This.w,cell.row*es6This.w);
+        ctx.lineTo((cell.col+1)*es6This.w,cell.row*es6This.w);
+      }
+      if(cell.walls[1]){
+        //右邊
+        ctx.moveTo((cell.col+1)*es6This.w,cell.row*es6This.w);
+        ctx.lineTo((cell.col+1)*es6This.w,(cell.row+1)*es6This.w);
+      }
+      if(cell.walls[2]){
+        //下邊
+        ctx.moveTo((cell.col+1)*es6This.w,(cell.row+1)*es6This.w);
+        ctx.lineTo(cell.col*es6This.w,(cell.row+1)*es6This.w);
+      }
+      if(cell.walls[3]){
+        //左邊
+        ctx.moveTo(cell.col*es6This.w,(cell.row+1)*es6This.w);
+        ctx.lineTo(cell.col*es6This.w,cell.row*es6This.w);
+      }
       ctx.stroke();
     }
     // ctx.closePath();
