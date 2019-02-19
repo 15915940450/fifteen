@@ -22,15 +22,17 @@ class Labyrinth{
     this.CH=document.documentElement.clientHeight || document.body.clientHeight;
     this.ctx=this.eleMaze.getContext('2d');
 
-    this.w=50;
+    this.w=25;
     this.grid=[]; //網格(包含cell)
-    this.rows=10;
-    this.cols=10;
+    this.rows=30;
+    this.cols=30;
+    this.process=true;
 
     //STEP A1
     this.currentIndex=0;  //當前cell索引
     this.stack=[];
 
+    this.complete=false;
     this.n=0;
   }
 
@@ -40,16 +42,25 @@ class Labyrinth{
     es6This.eleMaze.width=es6This.CW;
     es6This.eleMaze.height=es6This.CH-4;
 
+
     for(var i=0;i<es6This.rows;i++){
       for(var j=0;j<es6This.cols;j++){
         // console.log(i*es6This.cols+j);
+        var falseFirst=true;
+        var falseLast=true;
+        if(i+j===0){
+          falseFirst=false;
+        }
+        if(i===es6This.rows-1 && j===es6This.cols-1){
+          falseLast=false;
+        }
         es6This.grid.push({
           index:i*es6This.cols+j,
           row:i,
           col:j,
           visited:false,  //是否訪問過
           neighbour:[], //鄰居
-          walls:[true,true,true,true] //上，右，下，左
+          walls:[true,falseLast,true,falseFirst] //上，右，下，左
         });
       }
     }
@@ -60,9 +71,8 @@ class Labyrinth{
   raf(){
     var es6This=this;
     var rafCallback=function(){
-      //also time
       es6This.n++;
-      if(es6This.n<1e4){
+      if(!es6This.complete){
         es6This.dealGrid();
         es6This.draw();
         window.requestAnimationFrame(rafCallback);
@@ -150,6 +160,11 @@ class Labyrinth{
       es6This.removeWall(currentCell,chosenCell);
       //STEP C4
       es6This.currentIndex=chosenCell.index;
+    }else if(es6This.stack.length){
+      es6This.currentIndex=es6This.stack.pop().index;
+    }else{
+      es6This.complete=true;
+      console.log(es6This.n);
     }
     return es6This;
   }
@@ -157,22 +172,31 @@ class Labyrinth{
   draw(){
     var es6This=this;
     var ctx=es6This.ctx;
-    ctx.translate(30.5,30.5);
-    ctx.clearRect(0,0,es6This.w*es6This.rows,es6This.w*es6This.cols);
+    ctx.translate(130.5,30.5);
+    ctx.clearRect(-4,-4,es6This.w*es6This.rows+14,es6This.w*es6This.cols+14);
     ctx.moveTo(0,0);
     ctx.strokeStyle='snow';
+    //完成時
+    var color='dimgray';
+    if(es6This.complete){
+      color='midnightblue';
+    }
     for(var i=0;i<es6This.grid.length;i++){
       var cell=es6This.grid[i];
       //已訪問
-      if(cell.visited){
-        ctx.fillStyle='dimgray';
+      if(cell.visited && es6This.process){
+        ctx.fillStyle=color;
         ctx.fillRect(cell.col*es6This.w,cell.row*es6This.w,es6This.w+1,es6This.w+1);
       }
-      if(cell.index===es6This.currentIndex){
-        ctx.fillStyle='blueviolet';
-        ctx.fillRect(cell.col*es6This.w+es6This.w/4,cell.row*es6This.w+es6This.w/4,es6This.w/2,es6This.w/2);
+      //當前
+      if(cell.index===es6This.currentIndex && es6This.process){
+        ctx.fillStyle='crimson';
+        ctx.beginPath();
+        ctx.arc(cell.col*es6This.w+es6This.w/2,cell.row*es6This.w+es6This.w/2,es6This.w/5,0,Math.PI*2);
+        ctx.closePath();
+        ctx.fill();
       }
-      ctx.fillStyle='dimgray';
+      ctx.fillStyle=color;
       // console.log(cell);
       ctx.beginPath();
       if(cell.walls[0]){
@@ -199,7 +223,7 @@ class Labyrinth{
 
     }
     // ctx.closePath();
-    ctx.translate(-30.5,-30.5);
+    ctx.translate(-130.5,-30.5);
     return es6This;
   }
 
