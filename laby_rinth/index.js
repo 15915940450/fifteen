@@ -97,25 +97,59 @@ class Labyrinth{
     }
     return arr;
   }
+  //移除墻體
+  removeWall(currentCell,chosenCell){
+    var es6This=this;
+    // console.log(chosenCell.row-currentCell.row);
+    // console.log(chosenCell.col-currentCell.col);
+    switch(chosenCell.row-currentCell.row){
+    case 1:
+      chosenCell.walls[0]=false;
+      currentCell.walls[2]=false;
+      break;
+    case -1:
+      chosenCell.walls[2]=false;
+      currentCell.walls[0]=false;
+      break;
+    default:
+
+    }
+
+    switch(chosenCell.col-currentCell.col){
+    case 1:
+      chosenCell.walls[3]=false;
+      currentCell.walls[1]=false;
+      break;
+    case -1:
+      chosenCell.walls[1]=false;
+      currentCell.walls[3]=false;
+      break;
+    default:
+    
+    }
+
+    return es6This;
+  }
   //處理grid數據
   dealGrid(){
     var es6This=this;
     //算法開始
+    var currentCell=es6This.grid[es6This.currentIndex]; //currentCell
     //STEP A1
-    es6This.grid[es6This.currentIndex].visited=true;
+    currentCell.visited=true;
     //STEP A2
     //STEP B1
-    es6This.grid[es6This.currentIndex].neighbour=es6This.checkNeighbour();
-    if(es6This.grid[es6This.currentIndex].neighbour.length){
+    currentCell.neighbour=es6This.checkNeighbour();
+    if(currentCell.neighbour.length){
       //STEP C1
-      var randomly=(Math.random()*es6This.grid[es6This.currentIndex].neighbour.length)>>0;
-      var randomlyOne=es6This.grid[es6This.currentIndex].neighbour[randomly];
+      var randomly=(Math.random()*currentCell.neighbour.length)>>0;
+      var chosenCell=currentCell.neighbour[randomly]; //chosenCell
       //STEP C2
-      es6This.stack.push(es6This.grid[es6This.currentIndex]);
+      es6This.stack.push(currentCell);
       //STEP C3
-
+      es6This.removeWall(currentCell,chosenCell);
       //STEP C4
-      es6This.currentIndex=randomlyOne.index;
+      es6This.currentIndex=chosenCell.index;
     }
     return es6This;
   }
@@ -132,11 +166,11 @@ class Labyrinth{
       //已訪問
       if(cell.visited){
         ctx.fillStyle='dimgray';
-        ctx.fillRect(cell.col*es6This.w,cell.row*es6This.w,es6This.w,es6This.w);
+        ctx.fillRect(cell.col*es6This.w,cell.row*es6This.w,es6This.w+1,es6This.w+1);
       }
       if(cell.index===es6This.currentIndex){
         ctx.fillStyle='blueviolet';
-        ctx.fillRect(cell.col*es6This.w,cell.row*es6This.w,es6This.w,es6This.w);
+        ctx.fillRect(cell.col*es6This.w+es6This.w/4,cell.row*es6This.w+es6This.w/4,es6This.w/2,es6This.w/2);
       }
       ctx.fillStyle='dimgray';
       // console.log(cell);
