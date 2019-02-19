@@ -15,6 +15,7 @@ https://en.wikipedia.org/wiki/Maze_generation_algorithm
 */
 
 class Labyrinth{
+  //basic要素
   constructor(){
     this.eleMaze=document.querySelector('#maze');
     this.CW=document.documentElement.clientWidth || document.body.clientWidth;
@@ -22,11 +23,14 @@ class Labyrinth{
     this.ctx=this.eleMaze.getContext('2d');
 
     this.w=50;
-    this.grid=[];
+    this.grid=[]; //網格(包含cell)
     this.rows=10;
     this.cols=10;
+
+    this.n=0;
   }
 
+  //初始化
   init(){
     var es6This=this;
     es6This.eleMaze.width=es6This.CW;
@@ -34,6 +38,7 @@ class Labyrinth{
 
     for(var i=0;i<es6This.rows;i++){
       for(var j=0;j<es6This.cols;j++){
+        // console.log(i*es6This.cols+j);
         es6This.grid.push({
           index:i*es6This.cols+j,
           row:i,
@@ -45,6 +50,21 @@ class Labyrinth{
     return es6This;
   }
 
+  //動畫
+  raf(){
+    var es6This=this;
+    var rafCallback=function(){
+      //also time
+      es6This.n++;
+      if(es6This.n<1e1){
+        es6This.draw();
+        window.requestAnimationFrame(rafCallback);
+      }
+    };
+    window.requestAnimationFrame(rafCallback);
+    return es6This;
+  }
+  //根據grid繪製canvas
   draw(){
     var es6This=this;
     var ctx=es6This.ctx;
@@ -78,13 +98,14 @@ class Labyrinth{
       ctx.stroke();
     }
     // ctx.closePath();
+    ctx.translate(-30.5,-30.5);
     return es6This;
   }
 
 } //class
 
 var obj=new Labyrinth();
-obj.init().draw();
+obj.init().raf();
 
 
 // var theNumber=50;
@@ -96,3 +117,5 @@ obj.init().draw();
 // };
 
 // console.log(theNumber.map([0,100],[0,365]));
+// var arr=[1,2,9];
+// console.log(arr[-1]);
