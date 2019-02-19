@@ -2,16 +2,16 @@
 /*
 * js注釋：
 https://en.wikipedia.org/wiki/Maze_generation_algorithm
-1.Make the initial cell the current cell and mark it as visited
-2.While there are unvisited cells
-  1.If the current cell has any neighbours which have not been visited
-    1.Choose randomly one of the unvisited neighbours
-    2.Push the current cell to the stack
-    3.Remove the wall between the current cell and the chosen cell
-    4.Make the chosen cell the current cell and mark it as visited
-  2.Else if stack is not empty
-    1.Pop a cell from the stack
-    2.Make it the current cell
+A1.Make the initial cell the current cell and mark it as visited
+A2.While there are unvisited cells
+  B1.If the current cell has any neighbours which have not been visited
+    C1.Choose randomly one of the unvisited neighbours
+    C2.Push the current cell to the stack
+    C3.Remove the wall between the current cell and the chosen cell
+    C4.Make the chosen cell the current cell and mark it as visited
+  B2.Else if stack is not empty
+    D1.Pop a cell from the stack
+    D2.Make it the current cell
 */
 
 class Labyrinth{
@@ -27,7 +27,9 @@ class Labyrinth{
     this.rows=10;
     this.cols=10;
 
+    //STEP A1
     this.currentIndex=0;  //當前cell索引
+    this.stack=[];
 
     this.n=0;
   }
@@ -60,7 +62,7 @@ class Labyrinth{
     var rafCallback=function(){
       //also time
       es6This.n++;
-      if(es6This.n<1e1){
+      if(es6This.n<1e4){
         es6This.dealGrid();
         es6This.draw();
         window.requestAnimationFrame(rafCallback);
@@ -98,8 +100,23 @@ class Labyrinth{
   //處理grid數據
   dealGrid(){
     var es6This=this;
+    //算法開始
+    //STEP A1
     es6This.grid[es6This.currentIndex].visited=true;
+    //STEP A2
+    //STEP B1
     es6This.grid[es6This.currentIndex].neighbour=es6This.checkNeighbour();
+    if(es6This.grid[es6This.currentIndex].neighbour.length){
+      //STEP C1
+      var randomly=(Math.random()*es6This.grid[es6This.currentIndex].neighbour.length)>>0;
+      var randomlyOne=es6This.grid[es6This.currentIndex].neighbour[randomly];
+      //STEP C2
+      es6This.stack.push(es6This.grid[es6This.currentIndex]);
+      //STEP C3
+
+      //STEP C4
+      es6This.currentIndex=randomlyOne.index;
+    }
     return es6This;
   }
   //根據grid繪製canvas
