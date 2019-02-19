@@ -27,6 +27,8 @@ class Labyrinth{
     this.rows=10;
     this.cols=10;
 
+    this.currentIndex=0;  //當前cell索引
+
     this.n=0;
   }
 
@@ -43,6 +45,8 @@ class Labyrinth{
           index:i*es6This.cols+j,
           row:i,
           col:j,
+          visited:false,  //是否訪問過
+          neighbour:[], //鄰居
           walls:[true,true,true,true] //上，右，下，左
         });
       }
@@ -57,6 +61,7 @@ class Labyrinth{
       //also time
       es6This.n++;
       if(es6This.n<1e1){
+        es6This.dealGrid();
         es6This.draw();
         window.requestAnimationFrame(rafCallback);
       }
@@ -64,15 +69,59 @@ class Labyrinth{
     window.requestAnimationFrame(rafCallback);
     return es6This;
   }
+  // 生成未訪問的鄰居數組
+  checkNeighbour(){
+    var es6This=this;
+    var arr=[];
+
+    //當前，上，右，下，左
+    var currentCell=es6This.grid[es6This.currentIndex];
+    var topNeighbour=es6This.grid[es6This.currentIndex-es6This.cols];
+    var rightNeighbour=es6This.grid[es6This.currentIndex+1];
+    var bottomNeighbour=es6This.grid[es6This.currentIndex+es6This.cols];
+    var leftNeighbour=es6This.grid[es6This.currentIndex-1];
+
+    if(currentCell.row && !topNeighbour.visited){
+      arr.push(topNeighbour);  //上
+    }
+    if(currentCell.col!==es6This.cols-1 && !rightNeighbour.visited){
+      arr.push(rightNeighbour);  //右
+    }
+    if(currentCell.row!==es6This.rows-1 && !bottomNeighbour.visited){
+      arr.push(bottomNeighbour);  //下
+    }
+    if(currentCell.col && !leftNeighbour.visited){
+      arr.push(leftNeighbour);  //左
+    }
+    return arr;
+  }
+  //處理grid數據
+  dealGrid(){
+    var es6This=this;
+    es6This.grid[es6This.currentIndex].visited=true;
+    es6This.grid[es6This.currentIndex].neighbour=es6This.checkNeighbour();
+    return es6This;
+  }
   //根據grid繪製canvas
   draw(){
     var es6This=this;
     var ctx=es6This.ctx;
     ctx.translate(30.5,30.5);
+    ctx.clearRect(0,0,es6This.w*es6This.rows,es6This.w*es6This.cols);
     ctx.moveTo(0,0);
     ctx.strokeStyle='snow';
     for(var i=0;i<es6This.grid.length;i++){
       var cell=es6This.grid[i];
+      //已訪問
+      if(cell.visited){
+        ctx.fillStyle='dimgray';
+        ctx.fillRect(cell.col*es6This.w,cell.row*es6This.w,es6This.w,es6This.w);
+      }
+      if(cell.index===es6This.currentIndex){
+        ctx.fillStyle='blueviolet';
+        ctx.fillRect(cell.col*es6This.w,cell.row*es6This.w,es6This.w,es6This.w);
+      }
+      ctx.fillStyle='dimgray';
       // console.log(cell);
       ctx.beginPath();
       if(cell.walls[0]){
@@ -96,6 +145,7 @@ class Labyrinth{
         ctx.lineTo(cell.col*es6This.w,cell.row*es6This.w);
       }
       ctx.stroke();
+
     }
     // ctx.closePath();
     ctx.translate(-30.5,-30.5);
