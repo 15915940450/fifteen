@@ -22,11 +22,11 @@ class Labyrinth{
     this.CH=document.documentElement.clientHeight || document.body.clientHeight;
     this.ctx=this.eleMaze.getContext('2d');
 
-    this.w=25;
+    this.w=20;
     this.grid=[]; //網格(包含cell)
-    this.rows=30;
-    this.cols=30;
-    this.process=true;
+    this.rows=(this.CH-100)/this.w>>0;
+    this.cols=(this.CW-300)/this.w>>0;
+    this.process=false;
 
     //STEP A1
     this.currentIndex=0;  //當前cell索引
@@ -76,6 +76,10 @@ class Labyrinth{
         es6This.dealGrid();
         es6This.draw();
         window.requestAnimationFrame(rafCallback);
+      }else{
+        window.setTimeout(function(){
+          window.location.reload(false);
+        },1e5);
       }
     };
     window.requestAnimationFrame(rafCallback);
@@ -173,11 +177,11 @@ class Labyrinth{
     var es6This=this;
     var ctx=es6This.ctx;
     ctx.translate(130.5,30.5);
-    ctx.clearRect(-4,-4,es6This.w*es6This.rows+14,es6This.w*es6This.cols+14);
+    ctx.clearRect(0,0,es6This.CW,es6This.CH);
     ctx.moveTo(0,0);
     ctx.strokeStyle='snow';
     //完成時
-    var color='dimgray';
+    var color='crimson';
     if(es6This.complete){
       color='midnightblue';
     }
@@ -190,7 +194,7 @@ class Labyrinth{
       }
       //當前
       if(cell.index===es6This.currentIndex && es6This.process){
-        ctx.fillStyle='crimson';
+        ctx.fillStyle='snow';
         ctx.beginPath();
         ctx.arc(cell.col*es6This.w+es6This.w/2,cell.row*es6This.w+es6This.w/2,es6This.w/5,0,Math.PI*2);
         ctx.closePath();
