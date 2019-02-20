@@ -1,6 +1,7 @@
 //https://www.bilibili.com/video/av4548773/?p=1
 /*
 * js注釋：
+The depth-first search algorithm of maze generation is frequently implemented using backtracking: 
 https://en.wikipedia.org/wiki/Maze_generation_algorithm
 A1.Make the initial cell the current cell and mark it as visited
 A2.While there are unvisited cells
@@ -26,7 +27,7 @@ class Labyrinth{
     this.grid=[]; //網格(包含cell)
     this.rows=(this.CH-100)/this.w>>0;
     this.cols=(this.CW-300)/this.w>>0;
-    this.process=false;
+    this.process=true;
 
     //STEP A1
     this.currentIndex=0;  //當前cell索引
