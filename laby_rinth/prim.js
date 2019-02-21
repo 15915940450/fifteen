@@ -9,6 +9,8 @@ http://weblog.jamisbuck.org/2011/1/10/maze-generation-prim-s-algorithm
 6.And finally, we mark the frontier cell as being “in” the maze (and add any of its outside neighbors to the frontier):
 7.And you’re done! 
 
+=========================================
+
 Randomized Prim's algorithm
 This algorithm is a randomized version of Prim's algorithm.
 
@@ -33,12 +35,12 @@ class Maze{
     this.CH=document.documentElement.clientHeight || document.body.clientHeight;
     this.ctx=this.eleMaze.getContext('2d');
 
-    this.w=100;
+    this.w=20;
     this.grid=[]; //網格(包含cell)
-    this.rows=3;
-    this.cols=3;
+    this.rows=(this.CH-100)/this.w>>0;
+    this.cols=(this.CW-300)/this.w>>0;
 
-    this.adjacentFrontier=[]; //sure is visited
+    this.adjacentFrontier=[]; //sure is visited(最重要的數據)
     this.complete=false;
 
     this.n=0;
@@ -75,9 +77,11 @@ class Maze{
     es6This.adjacentFrontier[0].visited=true;
     return es6This;
   }
+  //從數組中隨機選擇一個元素
   getRandomOne(arr){
     return (arr[Math.random()*arr.length>>0]);
   }
+  //檢測是否生成完成
   checkIsComplete(){
     var es6This=this;
     var isComplete=es6This.grid.every(function(v){
@@ -86,33 +90,34 @@ class Maze{
     return isComplete;
   }
   // 生成未訪問的鄰居數組
-  checkFrontier(randomAdjacentFrontierOne){
+  checkNeighbour(objCell){
     var es6This=this;
     var arr=[];
 
     //當前，上，右，下，左
-    var topNeighbour=es6This.grid[randomAdjacentFrontierOne.index-es6This.cols];
-    var rightNeighbour=es6This.grid[randomAdjacentFrontierOne.index+1];
-    var bottomNeighbour=es6This.grid[randomAdjacentFrontierOne.index+es6This.cols];
-    var leftNeighbour=es6This.grid[randomAdjacentFrontierOne.index-1];
+    var topNeighbour=es6This.grid[objCell.index-es6This.cols];
+    var rightNeighbour=es6This.grid[objCell.index+1];
+    var bottomNeighbour=es6This.grid[objCell.index+es6This.cols];
+    var leftNeighbour=es6This.grid[objCell.index-1];
 
-    if(randomAdjacentFrontierOne.row && !topNeighbour.visited){
+    if(objCell.row && !topNeighbour.visited){
       arr.push(topNeighbour);  //上
     }
-    if(randomAdjacentFrontierOne.col!==es6This.cols-1 && !rightNeighbour.visited){
+    if(objCell.col!==es6This.cols-1 && !rightNeighbour.visited){
       arr.push(rightNeighbour);  //右
     }
-    if(randomAdjacentFrontierOne.row!==es6This.rows-1 && !bottomNeighbour.visited){
+    if(objCell.row!==es6This.rows-1 && !bottomNeighbour.visited){
       arr.push(bottomNeighbour);  //下
     }
-    if(randomAdjacentFrontierOne.col && !leftNeighbour.visited){
+    if(objCell.col && !leftNeighbour.visited){
       arr.push(leftNeighbour);  //左
     }
     return arr;
   }
-  chooseRandomFrontier(randomAdjacentFrontierOne){
+  //隨機選擇frontier
+  chooseRandomFrontier(objCell){
     var es6This=this;
-    var neighbors=es6This.checkFrontier(randomAdjacentFrontierOne);
+    var neighbors=es6This.checkNeighbour(objCell);
     return (es6This.getRandomOne(neighbors));
   }
   //移除墻體
@@ -151,15 +156,19 @@ class Maze{
     // STEP2
     if(!es6This.checkIsComplete()){
       // STEP3&4
-      var randomAdjacentFrontierOne=es6This.getRandomOne(es6This.adjacentFrontier);
-      var randomFrontier=es6This.chooseRandomFrontier(randomAdjacentFrontierOne);
+      var randomAdjacent=es6This.getRandomOne(es6This.adjacentFrontier);
+      var randomFrontier=es6This.chooseRandomFrontier(randomAdjacent);
+      // STEP5
+      es6This.removeWall(randomAdjacent,randomFrontier);
+      // STEP6
       randomFrontier.visited=true;
       //can not just push
       es6This.adjacentFrontier.push(randomFrontier);
+      //need to filter
       es6This.adjacentFrontier=es6This.adjacentFrontier.filter(function(v){
-        return (es6This.checkFrontier(v).length);
+        return (es6This.checkNeighbour(v).length);
       });
-      es6This.removeWall(randomAdjacentFrontierOne,randomFrontier);
+      
     }else{
       es6This.complete=true;
     }
@@ -170,10 +179,13 @@ class Maze{
     var es6This=this;
     var rafCallback=function(){
       es6This.n++;
+      // console.log(es6This.n);
       if(!es6This.complete){
         es6This.dealGrid();
         es6This.draw();
         window.requestAnimationFrame(rafCallback);
+      }else{
+        console.log('complete');
       }
     };
     window.requestAnimationFrame(rafCallback);
@@ -187,12 +199,12 @@ class Maze{
     ctx.translate(130.5,30.5);
     ctx.clearRect(0,0,es6This.CW,es6This.CH);
     ctx.moveTo(0,0);
-    ctx.strokeStyle='snow';
+    ctx.strokeStyle='black';
     
-    var color='crimson';
+    var color='blanchedalmond';
     //完成時
     if(es6This.complete){
-      color='midnightblue';
+      color='snow';
     }
     
     for(var i=0;i<es6This.grid.length;i++){
@@ -203,18 +215,6 @@ class Maze{
         ctx.fillStyle=color;
         ctx.fillRect(cell.col*es6This.w,cell.row*es6This.w,es6This.w+1,es6This.w+1);
       }
-      /*
-
-      //當前
-      if(cell.index===es6This.currentIndex && es6This.process){
-        ctx.fillStyle='snow';
-        ctx.beginPath();
-        ctx.arc(cell.col*es6This.w+es6This.w/2,cell.row*es6This.w+es6This.w/2,es6This.w/5,0,Math.PI*2);
-        ctx.closePath();
-        ctx.fill();
-      }
-      ctx.fillStyle=color;
-      */
 
       // console.log(cell);
       ctx.beginPath();
