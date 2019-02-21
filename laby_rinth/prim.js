@@ -38,7 +38,7 @@ class Maze{
     this.rows=3;
     this.cols=3;
 
-    this.frontier=null;
+    this.adjacentFrontier=[]; //sure is visited
     this.complete=false;
 
     this.n=0;
@@ -71,19 +71,107 @@ class Maze{
     }
 
     //STEP1
-    var randomCell=es6This.getRandomOne(es6This.grid);
-    randomCell.visited=true;
+    es6This.adjacentFrontier.push(es6This.getRandomOne(es6This.grid));
+    es6This.adjacentFrontier[0].visited=true;
     return es6This;
   }
   getRandomOne(arr){
     return (arr[Math.random()*arr.length>>0]);
+  }
+  checkIsComplete(){
+    var es6This=this;
+    var isComplete=es6This.grid.every(function(v){
+      return (v.visited);
+    });
+    return isComplete;
+  }
+  // 生成未訪問的鄰居數組
+  checkFrontier(randomAdjacentFrontierOne){
+    var es6This=this;
+    var arr=[];
+
+    //當前，上，右，下，左
+    var topNeighbour=es6This.grid[randomAdjacentFrontierOne.index-es6This.cols];
+    var rightNeighbour=es6This.grid[randomAdjacentFrontierOne.index+1];
+    var bottomNeighbour=es6This.grid[randomAdjacentFrontierOne.index+es6This.cols];
+    var leftNeighbour=es6This.grid[randomAdjacentFrontierOne.index-1];
+
+    if(randomAdjacentFrontierOne.row && !topNeighbour.visited){
+      arr.push(topNeighbour);  //上
+    }
+    if(randomAdjacentFrontierOne.col!==es6This.cols-1 && !rightNeighbour.visited){
+      arr.push(rightNeighbour);  //右
+    }
+    if(randomAdjacentFrontierOne.row!==es6This.rows-1 && !bottomNeighbour.visited){
+      arr.push(bottomNeighbour);  //下
+    }
+    if(randomAdjacentFrontierOne.col && !leftNeighbour.visited){
+      arr.push(leftNeighbour);  //左
+    }
+    return arr;
+  }
+  chooseRandomFrontier(randomAdjacentFrontierOne){
+    var es6This=this;
+    var neighbors=es6This.checkFrontier(randomAdjacentFrontierOne);
+    return (es6This.getRandomOne(neighbors));
+  }
+  //移除墻體
+  removeWall(currentCell,chosenCell){
+    var es6This=this;
+    switch(chosenCell.row-currentCell.row){
+    case 1:
+      chosenCell.walls[0]=false;
+      currentCell.walls[2]=false;
+      break;
+    case -1:
+      chosenCell.walls[2]=false;
+      currentCell.walls[0]=false;
+      break;
+    default:
+
+    }
+
+    switch(chosenCell.col-currentCell.col){
+    case 1:
+      chosenCell.walls[3]=false;
+      currentCell.walls[1]=false;
+      break;
+    case -1:
+      chosenCell.walls[1]=false;
+      currentCell.walls[3]=false;
+      break;
+    default:
+    
+    }
+
+    return es6This;
+  }
+  dealGrid(){
+    var es6This=this;
+    // STEP2
+    if(!es6This.checkIsComplete()){
+      // STEP3&4
+      var randomAdjacentFrontierOne=es6This.getRandomOne(es6This.adjacentFrontier);
+      var randomFrontier=es6This.chooseRandomFrontier(randomAdjacentFrontierOne);
+      randomFrontier.visited=true;
+      //can not just push
+      es6This.adjacentFrontier.push(randomFrontier);
+      es6This.adjacentFrontier=es6This.adjacentFrontier.filter(function(v){
+        return (es6This.checkFrontier(v).length);
+      });
+      es6This.removeWall(randomAdjacentFrontierOne,randomFrontier);
+    }else{
+      es6This.complete=true;
+    }
+    return es6This;
   }
   //動畫
   raf(){
     var es6This=this;
     var rafCallback=function(){
       es6This.n++;
-      if(es6This.n<1e1){
+      if(!es6This.complete){
+        es6This.dealGrid();
         es6This.draw();
         window.requestAnimationFrame(rafCallback);
       }
