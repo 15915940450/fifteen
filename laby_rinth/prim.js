@@ -38,7 +38,9 @@ class Maze{
     this.rows=3;
     this.cols=3;
 
-    //STEP A1
+    this.frontier=null;
+    this.complete=false;
+
     this.n=0;
   }
 
@@ -57,24 +59,31 @@ class Maze{
         if(i===es6This.rows-1 && j===es6This.cols-1){
           falseLast=false;
         }
+
         es6This.grid.push({
           index:i*es6This.cols+j,
           row:i,
           col:j,
+          visited:false,
           walls:[true,falseLast,true,falseFirst] //上，右，下，左
         });
       }
     }
+
+    //STEP1
+    var randomCell=es6This.getRandomOne(es6This.grid);
+    randomCell.visited=true;
     return es6This;
   }
-
+  getRandomOne(arr){
+    return (arr[Math.random()*arr.length>>0]);
+  }
   //動畫
   raf(){
     var es6This=this;
     var rafCallback=function(){
       es6This.n++;
       if(es6This.n<1e1){
-        console.log(es6This.n);
         es6This.draw();
         window.requestAnimationFrame(rafCallback);
       }
@@ -91,22 +100,23 @@ class Maze{
     ctx.clearRect(0,0,es6This.CW,es6This.CH);
     ctx.moveTo(0,0);
     ctx.strokeStyle='snow';
-    /*
-    //完成時
+    
     var color='crimson';
+    //完成時
     if(es6This.complete){
       color='midnightblue';
     }
-    */
+    
     for(var i=0;i<es6This.grid.length;i++){
       var cell=es6This.grid[i];
-      /*
-
+      
       //已訪問
-      if(cell.visited && es6This.process){
+      if(cell.visited){
         ctx.fillStyle=color;
         ctx.fillRect(cell.col*es6This.w,cell.row*es6This.w,es6This.w+1,es6This.w+1);
       }
+      /*
+
       //當前
       if(cell.index===es6This.currentIndex && es6This.process){
         ctx.fillStyle='snow';
