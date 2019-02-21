@@ -1,6 +1,13 @@
 /*
 * js注釋：
 http://weblog.jamisbuck.org/2011/1/10/maze-generation-prim-s-algorithm
+1.You start by marking a random cell:
+2.Then, you simply iterate until the frontier set is empty:
+3.Within the loop, we choose a frontier cell at random:
+4.Then we choose a random “in” neighbor of that frontier cell:
+5.Then, we record a passage from the neighbor cell to the frontier cell:
+6.And finally, we mark the frontier cell as being “in” the maze (and add any of its outside neighbors to the frontier):
+7.And you’re done! 
 
 Randomized Prim's algorithm
 This algorithm is a randomized version of Prim's algorithm.
