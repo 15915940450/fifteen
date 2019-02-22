@@ -201,7 +201,7 @@ class Maze{
     ctx.moveTo(0,0);
     ctx.strokeStyle='black';
     
-    var color='blanchedalmond';
+    var color='lawngreen';
     //完成時
     if(es6This.complete){
       color='snow';
