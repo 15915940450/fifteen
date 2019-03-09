@@ -14,7 +14,7 @@ class Graph{
     es6This.initArrAdj();
     es6This.initMarked();
     // console.log(es6This.arrAdj);
-    es6This.findPathByDFS(0,4);
+    es6This.findPathByDFS(0,2);
     return es6This;
   }
   //初始化各個節點的訪問情況
@@ -40,7 +40,20 @@ class Graph{
   }
   //深度優先搜索
   findPathByDFS(v,w){
-    var es6This=this;
+    this.pathDFS.push(v);
+    if(v===w){
+      return (true);  //起點與終點重合
+    }
+    this.marked[v]=true;
+    for(var i=0;i<this.arrAdj[v].length;i++){
+      var nextV=this.arrAdj[v][i];
+      if(this.marked[nextV]){
+        continue;
+      }
+      this.findPathByDFS(nextV,w);
+      break;
+    }
+    return false;
 
   }
 } //class
