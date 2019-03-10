@@ -31,11 +31,10 @@ class Graph{
     for(i=0;i<f.gthV;i++){
       f.marked[i]=false;
     }
-    f.findPathByBFS(0,4);
     return f;
   }
   //深度優先搜索
-  findPathByDFS(v,w){
+  DFS(v,w){
     this.pathDFS.push(v);
     if(v===w){
       return (true);  //起點與終點重合
@@ -46,13 +45,13 @@ class Graph{
       if(this.marked[nextV]){
         continue;
       }
-      this.findPathByDFS(nextV,w);
+      this.DFS(nextV,w);
       break;
     }
     return false;
   }
   //廣度優先搜索
-  findPathByBFS(v,w){
+  BFS(v,w){
     var f=this;
     var i;
     if(w===undefined){
@@ -65,7 +64,6 @@ class Graph{
     //終止條件
     //if(!f.queue.length){
     if(f.queue.includes(w)){
-      console.log(f.edgeTo);
       return true;
     }
 
@@ -81,11 +79,24 @@ class Graph{
       }
     }
 
-    f.findPathByBFS(w);
+    f.BFS(w);
+    return false;
+  }
+  //查找路徑
+  findPath(v,w){
+    var f=this;
+    f.pathBFS.unshift(w);
+    if(v===w){
+      return true;
+    }
+    f.findPath(v,f.edgeTo[w])
     return false;
   }
 } //class
 
 var obj=new Graph();
 obj.init();
-console.log(obj.pathDFS);
+obj.BFS(0,4);
+obj.findPath(0,4);
+
+console.log(obj.pathBFS);
