@@ -18,7 +18,8 @@ class Graph{
     var i;
     //初始化圖
     f.adj=[
-      [1,2,5],  //0
+      //[1,2,5],  //0
+      [5,1,2],  //0
       [0,2],    //1
       [0,1,3,4],//2
       [2,4,5],  //3
@@ -34,6 +35,7 @@ class Graph{
     return f;
   }
   //深度優先搜索
+  /*
   DFS(v,w){
     this.pathDFS.push(v);
     if(v===w){
@@ -45,9 +47,43 @@ class Graph{
       if(this.marked[nextV]){
         continue;
       }
-      this.DFS(nextV,w);
-      break;
+      var b=this.DFS(nextV,w);
+      if(b){
+        return true;
+      }
     }
+    return false;
+  }
+  */
+  //LIFO
+  DFS(v,w){
+    var f=this;
+    var i;
+    if(w===undefined){
+      w=v;
+    }else{
+      f.stack.push(v);
+      f.edgeTo[v]=-1;
+    }
+    if(f.stack.includes(w)){
+      return true;
+    }
+    var currentV=f.stack[f.stack.length-1];
+    f.marked[currentV]=true;
+    for(i=0;i<f.adj[currentV].length;i++){
+      var vertex=f.adj[currentV][i];
+      if(!f.marked[vertex]){
+        f.stack.push(vertex);
+        f.marked[vertex]=true;
+        f.edgeTo[vertex]=currentV;
+        //when has found,return true and break the loop
+        var b=f.DFS(w);
+        if(b){
+          return true;
+        }
+      }
+    }
+    //when go here, it is running back
     return false;
   }
   //廣度優先搜索
@@ -83,20 +119,27 @@ class Graph{
     return false;
   }
   //查找路徑
-  findPath(v,w){
+  findPath(v,w,isDepth){
     var f=this;
-    f.pathBFS.unshift(w);
+    if(isDepth){
+      f.pathDFS.unshift(w);
+    }else{
+      f.pathBFS.unshift(w);
+    }
     if(v===w){
       return true;
     }
-    f.findPath(v,f.edgeTo[w])
+    f.findPath(v,f.edgeTo[w],isDepth)
     return false;
   }
 } //class
 
 var obj=new Graph();
 obj.init();
-obj.BFS(0,4);
-obj.findPath(0,4);
+obj.DFS(0,4);
+obj.findPath(0,4,true);
+//obj.BFS(0,4);
+//obj.findPath(0,4);
 
-console.log(obj.pathBFS);
+console.log(obj.pathDFS);
+//console.log(obj.pathBFS);
