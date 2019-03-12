@@ -44,26 +44,34 @@ class Maze{
     this.complete=false;
 
     this.n=0;
+
+    //尋路所需
+    this.startIndex=-1;
+    this.endIndex=-1;
+    this.queue=[];
+    this.pathBFS=[];
+    this.search0=true;
+
   }
 
   init(){
-    var es6This=this;
-    es6This.eleMaze.width=es6This.CW;
-    es6This.eleMaze.height=es6This.CH-4;
+    var f=this;
+    f.eleMaze.width=f.CW;
+    f.eleMaze.height=f.CH-4;
 
-    for(var i=0;i<es6This.rows;i++){
-      for(var j=0;j<es6This.cols;j++){
+    for(var i=0;i<f.rows;i++){
+      for(var j=0;j<f.cols;j++){
         var falseFirst=true;
         var falseLast=true;
         if(i+j===0){
           falseFirst=false;
         }
-        if(i===es6This.rows-1 && j===es6This.cols-1){
+        if(i===f.rows-1 && j===f.cols-1){
           falseLast=false;
         }
 
-        es6This.grid.push({
-          index:i*es6This.cols+j,
+        f.grid.push({
+          index:i*f.cols+j,
           row:i,
           col:j,
           visited:false,
@@ -72,10 +80,15 @@ class Maze{
       }
     }
 
+    f.startIndex=0;
+    f.endIndex=f.grid[f.grid.length-1].index;
+    this.queue.push(f.startIndex);
+    this.grid[f.startIndex].marked=true;
+
     //STEP1
-    es6This.adjacentFrontier.push(es6This.getRandomOne(es6This.grid));
-    es6This.adjacentFrontier[0].visited=true;
-    return es6This;
+    f.adjacentFrontier.push(f.getRandomOne(f.grid));
+    f.adjacentFrontier[0].visited=true;
+    return f;
   }
   //從數組中隨機選擇一個元素
   getRandomOne(arr){
@@ -83,30 +96,30 @@ class Maze{
   }
   //檢測是否生成完成
   checkIsComplete(){
-    var es6This=this;
-    var isComplete=es6This.grid.every(function(v){
+    var f=this;
+    var isComplete=f.grid.every(function(v){
       return (v.visited);
     });
     return isComplete;
   }
   // 生成未訪問的鄰居數組
   checkNeighbour(objCell){
-    var es6This=this;
+    var f=this;
     var arr=[];
 
     //當前，上，右，下，左
-    var topNeighbour=es6This.grid[objCell.index-es6This.cols];
-    var rightNeighbour=es6This.grid[objCell.index+1];
-    var bottomNeighbour=es6This.grid[objCell.index+es6This.cols];
-    var leftNeighbour=es6This.grid[objCell.index-1];
+    var topNeighbour=f.grid[objCell.index-f.cols];
+    var rightNeighbour=f.grid[objCell.index+1];
+    var bottomNeighbour=f.grid[objCell.index+f.cols];
+    var leftNeighbour=f.grid[objCell.index-1];
 
     if(objCell.row && !topNeighbour.visited){
       arr.push(topNeighbour);  //上
     }
-    if(objCell.col!==es6This.cols-1 && !rightNeighbour.visited){
+    if(objCell.col!==f.cols-1 && !rightNeighbour.visited){
       arr.push(rightNeighbour);  //右
     }
-    if(objCell.row!==es6This.rows-1 && !bottomNeighbour.visited){
+    if(objCell.row!==f.rows-1 && !bottomNeighbour.visited){
       arr.push(bottomNeighbour);  //下
     }
     if(objCell.col && !leftNeighbour.visited){
@@ -116,13 +129,13 @@ class Maze{
   }
   //隨機選擇frontier
   chooseRandomFrontier(objCell){
-    var es6This=this;
-    var neighbors=es6This.checkNeighbour(objCell);
-    return (es6This.getRandomOne(neighbors));
+    var f=this;
+    var neighbors=f.checkNeighbour(objCell);
+    return (f.getRandomOne(neighbors));
   }
   //移除墻體
   removeWall(currentCell,chosenCell){
-    var es6This=this;
+    var f=this;
     switch(chosenCell.row-currentCell.row){
     case 1:
       chosenCell.walls[0]=false;
@@ -149,101 +162,188 @@ class Maze{
     
     }
 
-    return es6This;
+    return f;
   }
   dealGrid(){
-    var es6This=this;
+    var f=this;
     // STEP2
-    if(!es6This.checkIsComplete()){
+    if(!f.checkIsComplete()){
       // STEP3&4
-      var randomAdjacent=es6This.getRandomOne(es6This.adjacentFrontier);
-      var randomFrontier=es6This.chooseRandomFrontier(randomAdjacent);
+      var randomAdjacent=f.getRandomOne(f.adjacentFrontier);
+      var randomFrontier=f.chooseRandomFrontier(randomAdjacent);
       // STEP5
-      es6This.removeWall(randomAdjacent,randomFrontier);
+      f.removeWall(randomAdjacent,randomFrontier);
       // STEP6
       randomFrontier.visited=true;
       //can not just push
-      es6This.adjacentFrontier.push(randomFrontier);
+      f.adjacentFrontier.push(randomFrontier);
       //need to filter
-      es6This.adjacentFrontier=es6This.adjacentFrontier.filter(function(v){
-        return (es6This.checkNeighbour(v).length);
+      f.adjacentFrontier=f.adjacentFrontier.filter(function(v){
+        return (f.checkNeighbour(v).length);
       });
       
     }else{
-      es6This.complete=true;
+      f.complete=true;
     }
-    return es6This;
+    return f;
+  }
+  addAdj(){
+    var f=this;
+    f.grid=f.grid.map(function(v){
+      v.adj=f.gAdj(v);
+      v.marked=false;
+      v.edgeTo=-1;
+      v.isPath=false;
+
+      return (v);
+    });
+    return f;
+  }
+  gAdj(v){
+    var objAdj,i,arr=[];
+    for(i=0;i<4;i++){
+      if(!v.walls[i]){
+        //沒有墻，連通
+        switch(i){
+        case 0:
+          objAdj=this.grid[v.index-this.cols];
+          break;
+        case 1:
+          objAdj=this.grid[v.index+1];
+          break;
+        case 2:
+          objAdj=this.grid[v.index+this.cols];
+          break;
+        case 3:
+          objAdj=this.grid[v.index-1];
+          break;
+        default:
+        
+        }
+        if(objAdj){
+          arr.push(objAdj.index);
+        }
+      }
+    }
+    
+    return arr;
+  }
+  dealGridSearch(){
+    var f=this,i;
+    var currentIndex=f.queue.shift();
+    for(i=0;i<f.grid[currentIndex].adj.length;i++){
+      var vertex=f.grid[f.grid[currentIndex].adj[i]];
+      if(!vertex.marked){
+        // 未訪問過
+        f.queue.push(vertex.index);
+        vertex.marked=true;
+        vertex.edgeTo=currentIndex;
+      }
+    }
+    return f;
+  }
+  findPath(w){
+    var f=this;
+    f.pathBFS.unshift(w);
+    if(w===f.startIndex){
+      return true;
+    }
+    var b=f.findPath(f.grid[w].edgeTo);
+    return b;
+  }
+  markedThePath(){
+    var f=this;
+    f.pathBFS.forEach(function(v){
+      f.grid[v].isPath=true;
+    });
+    return f;
   }
   //動畫
   raf(){
-    var es6This=this;
+    var f=this;
     var rafCallback=function(){
-      es6This.n++;
-      // console.log(es6This.n);
-      if(!es6This.complete){
-        es6This.dealGrid();
-        es6This.draw();
+      f.n++;
+      // console.log(f.n);
+      if(!f.complete){
+        f.dealGrid();
+        window.requestAnimationFrame(rafCallback);
+      }else if(!f.grid[f.endIndex].marked){
+        if(f.search0){
+          f.addAdj();
+          f.search0=false;
+        }
+        f.dealGridSearch();
         window.requestAnimationFrame(rafCallback);
       }else{
-        console.log('complete');
+        console.log('completeSearch');
+        f.findPath(f.endIndex);
+        f.markedThePath();
       }
+      f.draw();
     };
     window.requestAnimationFrame(rafCallback);
-    return es6This;
+    return f;
   }
 
   //根據grid繪製canvas
   draw(){
-    var es6This=this;
-    var ctx=es6This.ctx;
+    var f=this;
+    var ctx=f.ctx;
     ctx.translate(130.5,30.5);
-    ctx.clearRect(0,0,es6This.CW,es6This.CH);
+    ctx.clearRect(0,0,f.CW,f.CH);
     ctx.moveTo(0,0);
     ctx.strokeStyle='black';
     
-    var color='lawngreen';
-    //完成時
-    if(es6This.complete){
-      color='snow';
-    }
+    var color='blanchedalmond';
     
-    for(var i=0;i<es6This.grid.length;i++){
-      var cell=es6This.grid[i];
+    for(var i=0;i<f.grid.length;i++){
+      var cell=f.grid[i];
+      
       
       //已訪問
-      if(cell.visited){
+      if(cell.marked){
         ctx.fillStyle=color;
-        ctx.fillRect(cell.col*es6This.w,cell.row*es6This.w,es6This.w+1,es6This.w+1);
+        ctx.fillRect(cell.col*f.w,cell.row*f.w,f.w+1,f.w+1);
+      }
+      //是路徑
+      if(cell.isPath){
+        ctx.fillStyle='lawngreen';
+        ctx.fillRect(cell.col*f.w,cell.row*f.w,f.w+1,f.w+1);
+        ctx.fillStyle=color;
       }
 
       // console.log(cell);
       ctx.beginPath();
       if(cell.walls[0]){
         //上邊
-        ctx.moveTo(cell.col*es6This.w,cell.row*es6This.w);
-        ctx.lineTo((cell.col+1)*es6This.w,cell.row*es6This.w);
+        ctx.moveTo(cell.col*f.w,cell.row*f.w);
+        ctx.lineTo((cell.col+1)*f.w,cell.row*f.w);
       }
       if(cell.walls[1]){
         //右邊
-        ctx.moveTo((cell.col+1)*es6This.w,cell.row*es6This.w);
-        ctx.lineTo((cell.col+1)*es6This.w,(cell.row+1)*es6This.w);
+        ctx.moveTo((cell.col+1)*f.w,cell.row*f.w);
+        ctx.lineTo((cell.col+1)*f.w,(cell.row+1)*f.w);
       }
       if(cell.walls[2]){
         //下邊
-        ctx.moveTo((cell.col+1)*es6This.w,(cell.row+1)*es6This.w);
-        ctx.lineTo(cell.col*es6This.w,(cell.row+1)*es6This.w);
+        ctx.moveTo((cell.col+1)*f.w,(cell.row+1)*f.w);
+        ctx.lineTo(cell.col*f.w,(cell.row+1)*f.w);
       }
       if(cell.walls[3]){
         //左邊
-        ctx.moveTo(cell.col*es6This.w,(cell.row+1)*es6This.w);
-        ctx.lineTo(cell.col*es6This.w,cell.row*es6This.w);
+        ctx.moveTo(cell.col*f.w,(cell.row+1)*f.w);
+        ctx.lineTo(cell.col*f.w,cell.row*f.w);
       }
       ctx.stroke();
 
-    }
+      ctx.font='13px serif';
+      ctx.fillStyle='black';
+      ctx.fillText(cell.index,cell.col*f.w+f.w/2,cell.row*f.w+f.w/2);
+      ctx.fillStyle=color;
+    } //for
     // ctx.closePath();
     ctx.translate(-130.5,-30.5);
-    return es6This;
+    return f;
   }
 
 

@@ -23,8 +23,6 @@ class MazeSolvingAlgorithm{
     this.queue=[];
     this.pathBFS=[];
 
-    this.complete=false;
-
     this.n=0;
   }
 
@@ -126,15 +124,14 @@ class MazeSolvingAlgorithm{
       f.n++;
       if(!f.grid[f.endIndex].marked){
         f.dealGrid();
-        f.draw();
         window.requestAnimationFrame(rafCallback);
       }else{
         //終止條件:出口已被標志
         console.log('complete');
         f.findPath(f.endIndex);
         f.markedThePath();
-        f.draw();
       }
+      f.draw();
     };
     window.requestAnimationFrame(rafCallback);
     return f;
