@@ -10,16 +10,94 @@ class MazeSolvingAlgorithm{
 
     this.CW=document.documentElement.clientWidth || document.body.clientWidth;
     this.CH=document.documentElement.clientHeight || document.body.clientHeight;
+
+    this.rows=(this.CH-100)/this.w>>0;
+    this.cols=(this.CW-300)/this.w>>0;
+
+    // BFS
+    this.queue=[];
+    this.pathBFS=[];
+
+    this.complete=false;
+
+    this.n=0;
   }
 
   init(){
     var f=this;
-    f.grid=JSON.parse(f.grid);
+    
+    f.addAdj();
 
     f.eleMaze.width=f.CW;
     f.eleMaze.height=f.CH-4;
 
 
+    return f;
+  }
+  //解決方案
+  addAdj(){
+    var f=this;
+    f.grid=JSON.parse(f.grid);
+    f.grid=f.grid.map(function(v){
+      v.adj=f.gAdj(v);
+      v.marked=false;
+      v.edgeTo=-1;
+      delete v.visited;
+
+      return (v);
+    });
+    return f;
+  }
+  gAdj(v){
+    var objAdj,i,arr=[];
+    for(i=0;i<4;i++){
+      if(!v.walls[i]){
+        //沒有墻，連通
+        switch(i){
+        case 0:
+          objAdj=this.grid[v.index-this.cols];
+          break;
+        case 1:
+          objAdj=this.grid[v.index+1];
+          break;
+        case 2:
+          objAdj=this.grid[v.index+this.cols];
+          break;
+        case 3:
+          objAdj=this.grid[v.index-1];
+          break;
+        default:
+        
+        }
+        if(objAdj){
+          arr.push(objAdj.index);
+        }
+      }
+    }
+    
+    return arr;
+  }
+
+  dealGrid(){
+    var f=this;
+    
+    return f;
+  }
+
+  //動畫
+  raf(){
+    var f=this;
+    var rafCallback=function(){
+      f.n++;
+      if(f.n<10){
+        f.dealGrid();
+        f.draw();
+        window.requestAnimationFrame(rafCallback);
+      }else{
+        console.log('complete');
+      }
+    };
+    window.requestAnimationFrame(rafCallback);
     return f;
   }
   //根據grid繪製canvas
@@ -35,6 +113,8 @@ class MazeSolvingAlgorithm{
     
     for(var i=0;i<f.grid.length;i++){
       var cell=f.grid[i];
+      ctx.font='30px serif';
+      ctx.fillText(cell.index,cell.col*f.w+f.w/2,cell.row*f.w+f.w/2);
       
       //已訪問
       if(cell.visited){
@@ -75,4 +155,4 @@ class MazeSolvingAlgorithm{
 
 var obj=new MazeSolvingAlgorithm();
 obj.init();
-obj.draw();
+obj.raf();
