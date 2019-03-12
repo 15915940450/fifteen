@@ -1,4 +1,6 @@
 // Maze solving algorithm
+//迷宮尋路算法
+//廣度優先搜索
 // https://en.wikipedia.org/wiki/Maze_solving_algorithm
 class MazeSolvingAlgorithm{
   constructor(){
@@ -6,14 +8,17 @@ class MazeSolvingAlgorithm{
 
     this.eleMaze=document.querySelector('#maze');
     this.ctx=this.eleMaze.getContext('2d');
-    this.w=200;
+    this.w=150;
 
     this.CW=document.documentElement.clientWidth || document.body.clientWidth;
     this.CH=document.documentElement.clientHeight || document.body.clientHeight;
 
-    this.rows=(this.CH-100)/this.w>>0;
-    this.cols=(this.CW-300)/this.w>>0;
+    this.rows=4;
+    this.cols=4;
 
+
+    this.startIndex=-1;
+    this.endIndex=-1;
     // BFS
     this.queue=[];
     this.pathBFS=[];
@@ -26,11 +31,15 @@ class MazeSolvingAlgorithm{
   init(){
     var f=this;
     
-    f.addAdj();
-
     f.eleMaze.width=f.CW;
     f.eleMaze.height=f.CH-4;
 
+    obj.addAdj();
+
+    f.startIndex=0;
+    f.endIndex=f.grid[f.grid.length-1].index;
+    this.queue.push(f.startIndex);
+    this.grid[f.startIndex].marked=true;
 
     return f;
   }
@@ -42,6 +51,7 @@ class MazeSolvingAlgorithm{
       v.adj=f.gAdj(v);
       v.marked=false;
       v.edgeTo=-1;
+      v.isPath=false;
       delete v.visited;
 
       return (v);
@@ -77,10 +87,35 @@ class MazeSolvingAlgorithm{
     
     return arr;
   }
+  findPath(w){
+    var f=this;
+    f.pathBFS.unshift(w);
+    if(w===f.startIndex){
+      return true;
+    }
+    var b=f.findPath(f.grid[w].edgeTo);
+    return b;
+  }
+  markedThePath(){
+    var f=this;
+    f.pathBFS.forEach(function(v){
+      f.grid[v].isPath=true;
+    });
+    return f;
+  }
 
   dealGrid(){
-    var f=this;
-    
+    var f=this,i;
+    var currentIndex=f.queue.shift();
+    for(i=0;i<f.grid[currentIndex].adj.length;i++){
+      var vertex=f.grid[f.grid[currentIndex].adj[i]];
+      if(!vertex.marked){
+        // 未訪問過
+        f.queue.push(vertex.index);
+        vertex.marked=true;
+        vertex.edgeTo=currentIndex;
+      }
+    }
     return f;
   }
 
@@ -89,12 +124,16 @@ class MazeSolvingAlgorithm{
     var f=this;
     var rafCallback=function(){
       f.n++;
-      if(f.n<10){
+      if(!f.grid[f.endIndex].marked){
         f.dealGrid();
         f.draw();
         window.requestAnimationFrame(rafCallback);
       }else{
+        //終止條件:出口已被標志
         console.log('complete');
+        f.findPath(f.endIndex);
+        f.markedThePath();
+        f.draw();
       }
     };
     window.requestAnimationFrame(rafCallback);
@@ -109,17 +148,22 @@ class MazeSolvingAlgorithm{
     ctx.moveTo(0,0);
     ctx.strokeStyle='black';
     
-    var color='snow';
+    var color='blanchedalmond';
     
     for(var i=0;i<f.grid.length;i++){
       var cell=f.grid[i];
-      ctx.font='30px serif';
-      ctx.fillText(cell.index,cell.col*f.w+f.w/2,cell.row*f.w+f.w/2);
+      
       
       //已訪問
-      if(cell.visited){
+      if(cell.marked){
         ctx.fillStyle=color;
         ctx.fillRect(cell.col*f.w,cell.row*f.w,f.w+1,f.w+1);
+      }
+      //是路徑
+      if(cell.isPath){
+        ctx.fillStyle='lawngreen';
+        ctx.fillRect(cell.col*f.w,cell.row*f.w,f.w+1,f.w+1);
+        ctx.fillStyle=color;
       }
 
       // console.log(cell);
@@ -146,7 +190,11 @@ class MazeSolvingAlgorithm{
       }
       ctx.stroke();
 
-    }
+      ctx.font='13px serif';
+      ctx.fillStyle='black';
+      ctx.fillText(cell.index,cell.col*f.w+f.w/2,cell.row*f.w+f.w/2);
+      ctx.fillStyle=color;
+    } //for
     // ctx.closePath();
     ctx.translate(-130.5,-30.5);
     return f;
