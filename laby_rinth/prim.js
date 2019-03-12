@@ -35,7 +35,7 @@ class Maze{
     this.CH=document.documentElement.clientHeight || document.body.clientHeight;
     this.ctx=this.eleMaze.getContext('2d');
 
-    this.w=200;
+    this.w=30;
     this.grid=[]; //網格(包含cell)
     this.rows=(this.CH-100)/this.w>>0;
     this.cols=(this.CW-300)/this.w>>0;
@@ -51,13 +51,18 @@ class Maze{
     this.queue=[];
     this.pathBFS=[];
     this.search0=true;
+    this.completeSearch=false;
 
+    this.elePercent=document.querySelectorAll('.percent');
+    this.percentGeneration=0;
+    this.percentSolve=0;
+    this.allCells=0;
   }
 
   init(){
     var f=this;
     f.eleMaze.width=f.CW;
-    f.eleMaze.height=f.CH-4;
+    f.eleMaze.height=f.CH-90;
 
     for(var i=0;i<f.rows;i++){
       for(var j=0;j<f.cols;j++){
@@ -80,6 +85,7 @@ class Maze{
       }
     }
 
+    f.allCells=f.grid.length;
     f.startIndex=0;
     f.endIndex=f.grid[f.grid.length-1].index;
     this.queue.push(f.startIndex);
@@ -258,24 +264,50 @@ class Maze{
     });
     return f;
   }
+  calcPercent(isG){
+    var f=this;
+    if(isG){
+      f.percentGeneration=100*f.grid.filter(function(v){
+        return v.visited;
+      }).length/f.allCells;
+    }else{
+      f.percentSolve=100*f.grid.filter(function(v){
+        return v.marked;
+      }).length/f.allCells;
+    }
+    return f;
+  }
   //動畫
   raf(){
     var f=this;
+    var objNum;
     var rafCallback=function(){
       f.n++;
       // console.log(f.n);
       if(!f.complete){
+        //生成過程中
         f.dealGrid();
+        //percent
+        f.calcPercent(true);
+        objNum=new Number(f.percentGeneration);
+        f.elePercent[0].innerHTML=objNum.toFixed(3)+'%';
         window.requestAnimationFrame(rafCallback);
       }else if(!f.grid[f.endIndex].marked){
+        //尋路中
         if(f.search0){
           f.addAdj();
           f.search0=false;
         }
         f.dealGridSearch();
+        f.calcPercent(false);
+        objNum=new Number(f.percentSolve);
+        f.elePercent[1].innerHTML=objNum.toFixed(3)+'%';
         window.requestAnimationFrame(rafCallback);
       }else{
+        //程序結束
         console.log('completeSearch');
+        f.completeSearch=true;
+        f.elePercent[1].innerHTML='100.000%';
         f.findPath(f.endIndex);
         f.markedThePath();
       }
@@ -299,11 +331,16 @@ class Maze{
     for(var i=0;i<f.grid.length;i++){
       var cell=f.grid[i];
       
-      
-      //已訪問
-      if(cell.marked){
+      //已訪問(生成)
+      if(cell.visited){
         ctx.fillStyle=color;
         ctx.fillRect(cell.col*f.w,cell.row*f.w,f.w+1,f.w+1);
+      }
+      //已訪問(馴鹿)
+      if(cell.marked){
+        ctx.fillStyle='floralwhite';
+        ctx.fillRect(cell.col*f.w,cell.row*f.w,f.w+1,f.w+1);
+        ctx.fillStyle=color;
       }
       //是路徑
       if(cell.isPath){
@@ -336,10 +373,13 @@ class Maze{
       }
       ctx.stroke();
 
-      ctx.font='13px serif';
-      ctx.fillStyle='black';
-      ctx.fillText(cell.index,cell.col*f.w+f.w/2,cell.row*f.w+f.w/2);
-      ctx.fillStyle=color;
+      // 尋路時繪製網格編號
+      if(!f.completeSearch && f.complete){
+        ctx.font='9px serif';
+        ctx.fillStyle='black';
+        ctx.fillText(cell.index,cell.col*f.w+f.w/2-10,cell.row*f.w+f.w/2+5);
+        ctx.fillStyle=color;
+      }
     } //for
     // ctx.closePath();
     ctx.translate(-130.5,-30.5);
