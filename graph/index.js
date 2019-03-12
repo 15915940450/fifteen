@@ -55,6 +55,12 @@ class Graph{
     return false;
   }
   */
+  checkMarkedAll(){
+    var b=this.marked.every(function(v){
+      return v;
+    });
+    return b;
+  }
   //LIFO
   DFS(v,w){
     var f=this;
@@ -65,7 +71,8 @@ class Graph{
       f.stack.push(v);
       f.edgeTo[v]=-1;
     }
-    if(f.stack.includes(w)){
+    if(f.checkMarkedAll()){
+    // if(f.stack.includes(w)){
       return true;
     }
     var currentV=f.stack[f.stack.length-1];
@@ -129,15 +136,15 @@ class Graph{
     if(v===w){
       return true;
     }
-    f.findPath(v,f.edgeTo[w],isDepth)
+    f.findPath(v,f.edgeTo[w],isDepth);
     return false;
   }
 } //class
 
 var obj=new Graph();
 obj.init();
-obj.DFS(0,4);
-obj.findPath(0,4,true);
+obj.DFS(0,3);
+obj.findPath(0,3,true);
 //obj.BFS(0,4);
 //obj.findPath(0,4);
 
