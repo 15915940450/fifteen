@@ -110,27 +110,37 @@ class Maze{
   }
   // 生成未訪問的鄰居數組
   checkNeighbour(objCell){
-    var f=this;
+    var f=this,i,cellNeighbour;
     var arr=[];
+    for(i=0;i<4;i++){
+      cellNeighbour=f.grid[objCell.index+((i===3 || i===0)?-1:1)*Math.pow(f.cols,(i+1)&1)];
+      if(cellNeighbour && !cellNeighbour.visited){
+        if((i===3 && !objCell.col) || (i===1 && !cellNeighbour.col)){
+          //左或右
+          continue;
+        }
+        arr.push(cellNeighbour);
+      }
+    }
 
     //當前，上，右，下，左
-    var topNeighbour=f.grid[objCell.index-f.cols];
-    var rightNeighbour=f.grid[objCell.index+1];
-    var bottomNeighbour=f.grid[objCell.index+f.cols];
-    var leftNeighbour=f.grid[objCell.index-1];
+    // var topNeighbour=f.grid[objCell.index-f.cols];
+    // var rightNeighbour=f.grid[objCell.index+1];
+    // var bottomNeighbour=f.grid[objCell.index+f.cols];
+    // var leftNeighbour=f.grid[objCell.index-1];
 
-    if(objCell.row && !topNeighbour.visited){
-      arr.push(topNeighbour);  //上
-    }
-    if(objCell.col!==f.cols-1 && !rightNeighbour.visited){
-      arr.push(rightNeighbour);  //右
-    }
-    if(objCell.row!==f.rows-1 && !bottomNeighbour.visited){
-      arr.push(bottomNeighbour);  //下
-    }
-    if(objCell.col && !leftNeighbour.visited){
-      arr.push(leftNeighbour);  //左
-    }
+    // if(objCell.row && !topNeighbour.visited){
+    //   arr.push(topNeighbour);  //上
+    // }
+    // if(objCell.col!==f.cols-1 && !rightNeighbour.visited){
+    //   arr.push(rightNeighbour);  //右
+    // }
+    // if(objCell.row!==f.rows-1 && !bottomNeighbour.visited){
+    //   arr.push(bottomNeighbour);  //下
+    // }
+    // if(objCell.col && !leftNeighbour.visited){
+    //   arr.push(leftNeighbour);  //左
+    // }
     return arr;
   }
   //隨機選擇frontier
