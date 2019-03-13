@@ -220,25 +220,26 @@ class Maze{
     for(i=0;i<4;i++){
       if(!v.walls[i]){
         //沒有墻，連通
-        switch(i){
-        case 0:
-          objAdj=this.grid[v.index-this.cols];
-          break;
-        case 1:
-          objAdj=this.grid[v.index+1];
-          break;
-        case 2:
-          objAdj=this.grid[v.index+this.cols];
-          break;
-        case 3:
-          objAdj=this.grid[v.index-1];
-          break;
-        default:
+        // switch(i){
+        // case 0:
+        //   objAdj=this.grid[v.index-this.cols];
+        //   break;
+        // case 1:
+        //   objAdj=this.grid[v.index+1];
+        //   break;
+        // case 2:
+        //   objAdj=this.grid[v.index+this.cols];
+        //   break;
+        // case 3:
+        //   objAdj=this.grid[v.index-1];
+        //   break;
+        // default:
         
-        }
-        if(objAdj){
-          arr.push(objAdj.index);
-        }
+        // }
+        // if(objAdj){
+        // }
+        objAdj=this.grid[v.index+((i===3 || i===0)?-1:1)*Math.pow(this.cols,(i+1)&1)];
+        objAdj && arr.push(objAdj.index);
       }
     }
     
