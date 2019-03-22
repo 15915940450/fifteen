@@ -1,0 +1,160 @@
+class Prim{
+  constructor(){
+    this.adj=[];
+  }
+  // 132,5028,7563
+  // 159,9206,8574
+  init(){
+    this.adj=[
+      //v:0
+      [
+        {
+          vertex:4,
+          weight:38
+        },
+        {
+          vertex:2,
+          weight:26
+        },
+        {
+          vertex:7,
+          weight:16
+        },
+        {
+          vertex:6,
+          weight:58
+        }
+      ],
+      // v:1
+      [
+        {
+          vertex:5,
+          weight:32
+        },
+        {
+          vertex:7,
+          weight:19
+        },
+        {
+          vertex:2,
+          weight:36
+        },
+        {
+          vertex:3,
+          weight:29
+        }
+      ],
+      // v:2
+      [
+        {
+          vertex:1,
+          weight:36
+        },
+        {
+          vertex:3,
+          weight:17
+        },
+        {
+          vertex:7,
+          weight:34
+        },
+        {
+          vertex:0,
+          weight:26
+        },
+        {
+          vertex:6,
+          weight:40
+        }
+
+      ],
+      // v:3
+      [
+        {
+          vertex:1,
+          weight:29
+        },
+        {
+          vertex:2,
+          weight:17
+        }
+      ],
+      // v:4
+      [
+        {
+          vertex:5,
+          weight:35
+        },
+        {
+          vertex:7,
+          weight:37
+        },
+        {
+          vertex:0,
+          weight:38
+        },
+        {
+          vertex:6,
+          weight:93
+        }
+      ],
+      // v:5
+      [
+        {
+          vertex:4,
+          weight:35
+        },
+        {
+          vertex:1,
+          weight:32
+        },
+        {
+          vertex:7,
+          weight:28
+        }
+      ],
+      // v:6
+      [
+        {
+          vertex:4,
+          weight:93
+        },
+        {
+          vertex:0,
+          weight:58
+        },
+        {
+          vertex:2,
+          weight:40
+        }
+      ],
+      // v:7
+      [
+        {
+          vertex:5,
+          weight:28
+        },
+        {
+          vertex:4,
+          weight:37
+        },
+        {
+          vertex:0,
+          weight:16
+        },
+        {
+          vertex:2,
+          weight:34
+        },
+        {
+          vertex:1,
+          weight:19
+        }
+      ]
+
+    ];
+  }
+}
+
+var obj=new Prim();
+obj.init();
