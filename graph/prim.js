@@ -1,10 +1,10 @@
 class Prim{
   constructor(){
     this.n=-1;
-    this.interval=10;
+    this.interval=1;
     this.adj=[];
     this.marked=[];
-    this.currentV=-1; //當前頂點索引
+    this.currentV=0; //當前頂點索引
     this.queue=[];  //優先隊列
     this.MST=[];
   }
@@ -175,35 +175,49 @@ class Prim{
     var f=this;
     var rafCallback=function(){
       f.n++;
-      if(f.n<f.adj.length*f.interval){
+      if(f.n<(f.adj.length-1)*f.interval){
         if(!(f.n%f.interval)){
-          f.currentV=f.n/f.interval;
           f.doINeveryframe();
         }
         window.requestAnimationFrame(rafCallback);
+      }else{
+        f.success();
       }
     };
     window.requestAnimationFrame(rafCallback);
     return f;
   } //raf
+  success(){
+    var f=this;
+    console.log(JSON.stringify(f.MST));
+    //[{"edge":"0-7","weight":16},{"edge":"7-1","weight":19},{"edge":"0-2","weight":26},{"edge":"2-3","weight":17},{"edge":"7-5","weight":28},{"edge":"5-4","weight":35},{"edge":"2-6","weight":40}]
+    return f;
+  }
   doINeveryframe(){
     var f=this;
 
     // console.log(f.currentV);
     f.marked[f.currentV]=true;
+    //鄰接表
     f.adj[f.currentV].forEach(function(v){
-      var edge=v.vertex+'-'+f.currentV;
-      if(+f.currentV<+v.vertex){
-        edge=f.currentV+'-'+v.vertex;
+      //已訪問的不添加
+      if(!f.marked[v.vertex]){
+        var edge=f.currentV+'-'+v.vertex;
+
+        f.queue.push({
+          edge:edge,
+          weight:v.weight
+        }); //'0-7'
       }
-      f.queue.push({
-        edge:edge,
-        weight:v.weight
-      }); //'0-4'
+      
     });
     //優先隊列：去重，排序
-    f.sortANDuniq();
+    f.sortANDuniq().varify();
 
+    //最小生成樹
+    var currentEdge=f.queue.shift();
+    this.MST.push(currentEdge);
+    f.currentV=+currentEdge.edge.split('-')[1]; //7
     return f;
   }
   sortANDuniq(){
@@ -212,9 +226,26 @@ class Prim{
     f.queue.sort(function(a,b){
       return (a.weight-b.weight);
     });
-    console.log(JSON.stringify(f.queue));
-    //最小生成樹
-    this.MST.push(f.queue.shift());
+    
+    
+    return f;
+  }
+  //驗證隊列中的變是否有效
+  varify(){
+    var f=this;
+    f.queue=f.queue.filter(function(v){
+      //{"edge":"0-7","weight":16}
+      /* var v0=+v.edge.split('-')[0];
+      var v1=+v.edge.split('-')[1];
+      return !(f.marked[v0] && f.marked[v1]);*/
+      /*if(f.marked[v0] && f.marked[v1]){
+        console.log(v.edge);
+      }*/
+      return !(v.edge.split('-').every(function(vertex){
+        return (f.marked[vertex]);
+      }));
+    });
+    // console.log(JSON.stringify(f.queue));
     return f;
   }
   uniq(arr,k){
