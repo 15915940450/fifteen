@@ -19,7 +19,6 @@ class Fifteen{
     if(cell>8){
       //結束條件：cell>8
       console.log(this.arr);
-      //廣度優先還是深度優先
       // return true;
     }
 
@@ -105,7 +104,7 @@ class Shudu{
   solve(){
     this.tryGung().html();
   }
-  
+
   tryGung(){
     var es6This=this;
     //首先生成1，5，9這三個宮，索引是0，4，8
@@ -149,7 +148,7 @@ class Shudu{
     // es6This.for=0;
     //默認值：假定是可以生成成功的
     es6This.okay=true;
-    
+
     return es6This;
   }
 
@@ -229,7 +228,7 @@ class Shudu{
         es6This.checkIsNOTrepeat(arr);
       });
     }
-    
+
     return canType;
   }
   checkIsNOTrepeat(arr){
@@ -267,7 +266,7 @@ class Shudu{
       col:y
     });
   }
-  
+
   //變更arrCol使與arrRow相對應
   arrColfromarrRow(){
     var es6This=this;

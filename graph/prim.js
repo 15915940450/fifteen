@@ -165,6 +165,7 @@ class Prim{
     }
   }
 
+  //解決方案
   solve(){
     var f=this;
     // console.log(f.adj);
@@ -209,10 +210,10 @@ class Prim{
           weight:v.weight
         }); //'0-7'
       }
-      
+
     });
-    //優先隊列：去重，排序
-    f.sortANDuniq().varify();
+    //優先隊列：去重，排序,驗證有效性
+    f.sortANDuniq().check();
 
     //最小生成樹
     var currentEdge=f.queue.shift();
@@ -226,26 +227,24 @@ class Prim{
     f.queue.sort(function(a,b){
       return (a.weight-b.weight);
     });
-    
-    
+
+
     return f;
   }
-  //驗證隊列中的變是否有效
-  varify(){
+  //驗證隊列中的邊是否有效（這條邊的兩個頂點都已經訪問過：無效）
+  check(){
     var f=this;
     f.queue=f.queue.filter(function(v){
       //{"edge":"0-7","weight":16}
-      /* var v0=+v.edge.split('-')[0];
-      var v1=+v.edge.split('-')[1];
-      return !(f.marked[v0] && f.marked[v1]);*/
-      /*if(f.marked[v0] && f.marked[v1]){
-        console.log(v.edge);
-      }*/
+
       return !(v.edge.split('-').every(function(vertex){
         return (f.marked[vertex]);
       }));
+
+      /* var v0=+v.edge.split('-')[0];
+      var v1=+v.edge.split('-')[1];
+      return !(f.marked[v0] && f.marked[v1]);*/
     });
-    // console.log(JSON.stringify(f.queue));
     return f;
   }
   uniq(arr,k){
