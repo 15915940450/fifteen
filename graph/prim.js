@@ -190,7 +190,7 @@ class Prim{
   } //raf
   success(){
     var f=this;
-    var text=`success:MST:::(${f.MST.length})${JSON.stringify(f.MST)}============queue:::(${f.queue.length})${JSON.stringify(f.queue)}`;
+    var text=`success:MST:::(${f.MST.length})${JSON.stringify(f.MST)}======queue:::(${f.queue.length})${JSON.stringify(f.queue)}`;
     console.log(text);
     return f;
   }
@@ -226,27 +226,33 @@ class Prim{
 
     });
     //優先隊列：去重，排序,驗證有效性
-    f.sortANDuniq().check();
-
-    //最小生成樹
-    var currentEdge=f.queue.shift();
-    this.MST.push(currentEdge);
-    f.currentV=+currentEdge.edge.split('-')[1]; //7
-    return f;
-  }
-  sortANDuniq(){
-    var f=this;
-    f.queue=f.uniq(f.queue,'edge');
+    //f.sortANDuniq().check();
+    //即時版本只需要排序
     f.queue.sort(function(a,b){
       return (a.weight-b.weight);
     });
 
+    //最小生成樹,currentV是遞歸的關鍵
+    var currentEdge=f.queue.shift();
+    this.MST.push(currentEdge);
+    f.currentV=currentEdge.vertex;
+    return f;
+  }
+  //廢棄
+  sortANDuniq(){
+    var f=this;
+    f.queue=f.uniq(f.queue,'edge');
+    //console.log(JSON.stringify(f.queue));
+    f.queue.sort(function(a,b){
+      return (a.weight-b.weight);
+    });
 
     return f;
   }
-  //驗證隊列中的邊是否有效（這條邊的兩個頂點都已經訪問過：無效）
+  //廢棄：驗證隊列中的邊是否有效（這條邊的兩個頂點都已經訪問過：無效）
   check(){
     var f=this;
+    var len0=f.queue.length;
     f.queue=f.queue.filter(function(v){
       //{"edge":"0-7","weight":16}
 
@@ -258,6 +264,11 @@ class Prim{
       var v1=+v.edge.split('-')[1];
       return !(f.marked[v0] && f.marked[v1]);*/
     });
+    var len1=f.queue.length;
+    //看是否有效運行
+    if(len0!==len1){
+      console.log('run check');
+    }
     return f;
   }
   uniq(arr,k){
