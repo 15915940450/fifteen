@@ -6,7 +6,7 @@ class Prim{
     this.marked=[];
     this.currentV=0; //當前頂點索引
     this.queue=[];  //優先隊列
-    this.MST=[];
+    this.MST=[];  //最小生成樹
   }
   // 132,5028,7563
   // 159,9206,8574
@@ -168,7 +168,6 @@ class Prim{
   //解決方案
   solve(){
     var f=this;
-    // console.log(f.adj);
     f.raf();
     return f;
   }
@@ -176,6 +175,7 @@ class Prim{
     var f=this;
     var rafCallback=function(){
       f.n++;
+
       if(f.n<(f.adj.length-1)*f.interval){
         if(!(f.n%f.interval)){
           f.doINeveryframe();
@@ -190,25 +190,38 @@ class Prim{
   } //raf
   success(){
     var f=this;
-    console.log(JSON.stringify(f.MST));
-    //[{"edge":"0-7","weight":16},{"edge":"7-1","weight":19},{"edge":"0-2","weight":26},{"edge":"2-3","weight":17},{"edge":"7-5","weight":28},{"edge":"5-4","weight":35},{"edge":"2-6","weight":40}]
+    var text=`success:MST:::(${f.MST.length})${JSON.stringify(f.MST)}============queue:::(${f.queue.length})${JSON.stringify(f.queue)}`;
+    console.log(text);
     return f;
   }
   doINeveryframe(){
     var f=this;
 
-    // console.log(f.currentV);
     f.marked[f.currentV]=true;
     //鄰接表
     f.adj[f.currentV].forEach(function(v){
-      //已訪問的不添加
-      if(!f.marked[v.vertex]){
-        var edge=f.currentV+'-'+v.vertex;
+      if(!f.marked[v.vertex]){  //1.非樹頂點
+        var inQueue=f.queue.find(function(objQueue){
+          return (objQueue.vertex===v.vertex);
+        });
 
-        f.queue.push({
-          edge:edge,
-          weight:v.weight
-        }); //'0-7'
+        var edge=f.currentV+'-'+v.vertex;
+        if(inQueue){
+          //鄰接表的頂點 v 在隊列中
+          //inQueue:{ vertex: 4, edge: "0-4", weight: 38 }
+          //v:{ vertex: 4, weight: 37 }
+          if(v.weight<inQueue.weight){
+            inQueue.edge=edge;
+            inQueue.weight=v.weight;
+          }
+        }else{
+          //非樹頂點不在隊列中
+          f.queue.push({
+            vertex:v.vertex,
+            edge:edge,
+            weight:v.weight
+          });
+        }
       }
 
     });
