@@ -5,9 +5,12 @@ class Kruskal{
     this.currentStep=-1; //當前。。。
 
     this.adj=[];
+
+    this.queue=[];  //邊的隊列
   }
 
   init(){
+    //鄰接表
     this.adj=[
       //v:0
       [
@@ -154,8 +157,33 @@ class Kruskal{
           weight:19
         }
       ]
-
     ];
+
+    //優先隊列（邊）
+    for(var i=0;i<this.adj.length;i++){
+      for(var j=0;j<this.adj[i].length;j++){
+        var v=this.adj[i][j];
+        this.queue.push({
+          weight:v.weight,
+          edge:i+'-'+v.vertex
+        });
+      }
+    } //for
+
+    //優先隊列（去重）
+    this.queue=this.uniq(this.queue,function(v){
+      var v0=+v.edge.split('-')[0];
+      var v1=+v.edge.split('-')[1];
+      var edge=v0+'-'+v1;
+      if(v0>v1){
+        edge=v1+'-'+v0;
+      }
+      return (edge);
+    });
+    //優先隊列（排序）
+    this.queue.sort(function(a,b){
+      return (a.weight-b.weight);
+    });
   }
 
   // 算法
@@ -185,8 +213,28 @@ class Kruskal{
   //每一幀你要做點什麽？
   doINeveryframe(){
     var f=this;
-    console.log(f.currentStep);
+    console.log(f.queue);
     return f;
+  }
+
+  //fun:生成hash[x]=true中的x
+  uniq(arr,fun){
+    var arrTemp=[],hash={},i;
+
+    for(i=0;i<arr.length;i++){
+      var hashKey=arr[i];
+      
+      //若果傳入了key生成函數
+      if(fun){
+        hashKey=fun(arr[i]);
+      }
+      if(!hash[hashKey]){
+        arrTemp.push(arr[i]);
+        hash[hashKey]=true;
+      }
+    }
+
+    return arrTemp;
   }
 
 } //class
