@@ -1,16 +1,22 @@
-// 132,5028,7563
-// 159,9206,8574
 class Dijkstra{
   constructor(){
     this.n=-1;  //raf多少次
-    this.interval=10; //每幀的間隔
+    this.interval=1; //每幀的間隔
     this.currentStep=-1; //當前。。。
 
+    this.startV=0;
+    this.endV=6;
     this.adj=[];
+
+    this.queue=[];
+    this.distTo=[];
+
+    this.SPT=[];
   }
 
   init(){
-    this.adj=[
+    var f=this;
+    f.adj=[
       // vertex:0
       [
         {
@@ -96,6 +102,20 @@ class Dijkstra{
         }
       ]
     ];
+
+    for(var i=0;i<f.adj.length;i++){
+      f.distTo[i]=Infinity;
+    }
+
+    f.distTo[f.startV]=0;
+    //將頂點2，4加入優先隊列
+    f.adj[f.startV].forEach(function(v){
+      v.edgeFrom=f.startV;
+      f.queue.push(v);
+      f.distTo[v.vertex]=v.distance;
+    });
+
+    
   }
 
   // 算法
@@ -110,22 +130,51 @@ class Dijkstra{
     var rafCallback=function(){
       f.n++;
       //動畫終止條件
-      if(f.n<1e1*f.interval){
+      if(f.queue.length){
         if(!(f.n%f.interval)){
           //若n加了10, currentStep加了1
           f.currentStep=f.n/f.interval;
           f.doINeveryframe();
         }
         window.requestAnimationFrame(rafCallback);
+      }else{
+        f.success();
       }
     };
     window.requestAnimationFrame(rafCallback);
     return f;
   } //raf
+  success(){
+    var f=this;
+    console.log(JSON.stringify(f.SPT));
+    return f;
+  }
   //每一幀你要做點什麽？
   doINeveryframe(){
     var f=this;
-    console.log(f.adj);
+    //從優先隊列中刪除頂點2
+    var currentV=f.queue.shift();
+
+    //將0-2添加到樹中
+    f.SPT.push(currentV.edgeFrom+'-'+currentV.vertex);
+
+    //將頂點7加入優先隊列
+    f.adj[currentV.vertex].forEach(function(v){
+      /*{
+        vertex:7,
+        distance:34
+      }*/
+      var distance=f.distTo[currentV.vertex]+v.distance;
+      if(distance<f.distTo[v.vertex]){
+        //放鬆邊
+        f.distTo[v.vertex]=distance;
+        v.edgeFrom=currentV.vertex;
+        f.queue.push(v);
+      }else{
+        // console.log(currentV.vertex+'-'+v.vertex,distance,f.distTo[v.vertex]);
+      }
+    });
+
     return f;
   }
 
