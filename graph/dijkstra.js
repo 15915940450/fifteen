@@ -16,6 +16,7 @@ class Dijkstra{
 
   init(){
     var f=this;
+    //初始化鄰接表
     f.adj=[
       // vertex:0
       [
@@ -103,16 +104,15 @@ class Dijkstra{
       ]
     ];
 
+    //初始化distTo
     for(var i=0;i<f.adj.length;i++){
       f.distTo[i]=Infinity;
     }
-
     f.distTo[f.startV]=0;
-    //將頂點2，4加入優先隊列
-    f.adj[f.startV].forEach(function(v){
-      v.edgeFrom=f.startV;
-      f.queue.push(v);
-      f.distTo[v.vertex]=v.distance;
+    //初始化優先隊列
+    f.queue.push({
+      vertex:f.startV,
+      distance:0
     });
 
     
@@ -152,26 +152,19 @@ class Dijkstra{
   //每一幀你要做點什麽？
   doINeveryframe(){
     var f=this;
-    //從優先隊列中刪除頂點2
+    //從優先隊列中刪除頂點0
     var currentV=f.queue.shift();
 
-    //將0-2添加到樹中
-    f.SPT.push(currentV.edgeFrom+'-'+currentV.vertex);
 
-    //將頂點7加入優先隊列
+    //將頂點2，4加入優先隊列
     f.adj[currentV.vertex].forEach(function(v){
-      /*{
-        vertex:7,
-        distance:34
-      }*/
       var distance=f.distTo[currentV.vertex]+v.distance;
       if(distance<f.distTo[v.vertex]){
         //放鬆邊
         f.distTo[v.vertex]=distance;
-        v.edgeFrom=currentV.vertex;
         f.queue.push(v);
-      }else{
-        // console.log(currentV.vertex+'-'+v.vertex,distance,f.distTo[v.vertex]);
+        //將0-2添加到樹中
+        f.SPT.push(currentV.vertex+'-'+v.vertex);
       }
     });
 
