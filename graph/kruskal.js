@@ -235,38 +235,41 @@ class Kruskal{
 
     //檢測當前邊
     if(f.check()){
-      //連通分量union_find:https://www.jb51.net/article/77331.htm
-      var minV=+Math.min.apply(null,f.currentEdge.edge.split('-'));
-      var maxV=+Math.max.apply(null,f.currentEdge.edge.split('-'));
-
-      if(f.union_find[minV]===-1 && f.union_find[maxV]===-1){
-        f.union_find[minV]=minV;
-        f.union_find[maxV]=minV;
-      }
-      if(f.union_find[minV]===-1 && f.union_find[maxV]!==-1){
-        f.union_find[minV]=f.union_find[maxV];
-      }
-      if(f.union_find[minV]!==-1 && f.union_find[maxV]===-1){
-        f.union_find[maxV]=f.union_find[minV];
-      }
-      if(f.union_find[minV]!==-1 && f.union_find[maxV]!==-1){
-        f.union_find=f.union_find.map(function(v){
-          if(v===f.union_find[maxV]){
-            v=f.union_find[minV];
-          }
-          return (v);
-        });
-      }
-      
-
-      //檢測失效的邊,也可在當前邊生成時進行校驗
-      // f.queue=f.check();
+      //更新union_find數組
+      f.updateUnionFind();
 
       //最小生成樹
       f.MST.push(f.currentEdge);
     }
 
     
+    return f;
+  }
+  updateUnionFind(){
+    var f=this;
+    //連通分量union_find:https://www.jb51.net/article/77331.htm
+    var minV=+Math.min.apply(null,f.currentEdge.edge.split('-'));
+    var maxV=+Math.max.apply(null,f.currentEdge.edge.split('-'));
+    var union_find_min=f.union_find[minV];
+    var union_find_max=f.union_find[maxV];
+
+    if(union_find_min===-1 && union_find_max===-1){
+      f.union_find[minV]=minV;
+      f.union_find[maxV]=minV;
+    }
+    if(union_find_min===-1 && union_find_max!==-1){
+      f.union_find[minV]=union_find_max;
+    }
+    if(union_find_min!==-1 && union_find_max===-1){
+      f.union_find[maxV]=union_find_min;
+    }
+    if(union_find_min!==-1 && union_find_max!==-1){
+      f.union_find.forEach(function(v,i){
+        if(v===union_find_max){
+          f.union_find[i]=union_find_min;
+        }
+      });
+    }
     return f;
   }
   //過濾掉失效的邊
