@@ -1,15 +1,19 @@
 class Kruskal{
   constructor(){
     this.n=-1;  //raf多少次
-    this.interval=10; //每幀的間隔
+    this.interval=1; //每幀的間隔
     this.currentStep=-1; //當前。。。
 
     this.adj=[];
 
     this.queue=[];  //邊的隊列
+    this.MST=[];
+    this.currentEdge='';
+    this.union_find=[];
   }
 
   init(){
+    var i,j;
     //鄰接表
     this.adj=[
       //v:0
@@ -160,8 +164,10 @@ class Kruskal{
     ];
 
     //優先隊列（邊）
-    for(var i=0;i<this.adj.length;i++){
-      for(var j=0;j<this.adj[i].length;j++){
+    for(i=0;i<this.adj.length;i++){
+      //union find
+      this.union_find[i]=-1;
+      for(j=0;j<this.adj[i].length;j++){
         var v=this.adj[i][j];
         this.queue.push({
           weight:v.weight,
@@ -198,23 +204,86 @@ class Kruskal{
     var rafCallback=function(){
       f.n++;
       //動畫終止條件
-      if(f.n<1e1*f.interval){
+      //直到樹中含有V-1條邊爲止
+      if(f.MST.length<f.adj.length-1){
         if(!(f.n%f.interval)){
           //若n加了10, currentStep加了1
           f.currentStep=f.n/f.interval;
           f.doINeveryframe();
         }
         window.requestAnimationFrame(rafCallback);
+      }else{
+        f.success();
       }
     };
     window.requestAnimationFrame(rafCallback);
     return f;
   } //raf
+  success(){
+    var f=this;
+    console.log(JSON.stringify(f.MST));
+    return f;
+  }
   //每一幀你要做點什麽？
   doINeveryframe(){
     var f=this;
-    console.log(f.queue);
+
+    //當前邊
+    f.currentEdge=f.queue.shift();
+
+    
+
+    //檢測當前邊
+    if(f.check()){
+      //連通分量union_find:https://www.jb51.net/article/77331.htm
+      var minV=+Math.min.apply(null,f.currentEdge.edge.split('-'));
+      var maxV=+Math.max.apply(null,f.currentEdge.edge.split('-'));
+
+      if(f.union_find[minV]===-1 && f.union_find[maxV]===-1){
+        f.union_find[minV]=minV;
+        f.union_find[maxV]=minV;
+      }
+      if(f.union_find[minV]===-1 && f.union_find[maxV]!==-1){
+        f.union_find[minV]=f.union_find[maxV];
+      }
+      if(f.union_find[minV]!==-1 && f.union_find[maxV]===-1){
+        f.union_find[maxV]=f.union_find[minV];
+      }
+      if(f.union_find[minV]!==-1 && f.union_find[maxV]!==-1){
+        f.union_find=f.union_find.map(function(v){
+          if(v===f.union_find[maxV]){
+            v=f.union_find[minV];
+          }
+          return (v);
+        });
+      }
+      
+
+      //檢測失效的邊,也可在當前邊生成時進行校驗
+      // f.queue=f.check();
+
+      //最小生成樹
+      f.MST.push(f.currentEdge);
+    }
+
+    
     return f;
+  }
+  //過濾掉失效的邊
+  check(){
+    var f=this;
+    //過濾
+    /*f.queue=f.queue.filter(function(v){
+
+    });*/
+    // 檢測當前邊的兩個頂點是否擁有相同的分量id
+    var arrVertex=f.currentEdge.edge.split('-');
+    var b=arrVertex.some(function(v){
+      return (f.union_find[v]===-1);
+    });
+
+    //當前邊有效
+    return (b || f.union_find[arrVertex[0]]!==f.union_find[arrVertex[1]]);
   }
 
   //fun:生成hash[x]=true中的x
