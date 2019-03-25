@@ -4,7 +4,7 @@ class Basic{
   constructor(){
     this.n=-1;  //raf多少次
     this.interval=10; //每幀的間隔
-    this.currentV=-1; //當前。。。
+    this.currentStep=-1; //當前。。。
   }
 
   init(){
@@ -25,8 +25,8 @@ class Basic{
       //動畫終止條件
       if(f.n<1e1*f.interval){
         if(!(f.n%f.interval)){
-          //若n加了10, currentV加了1
-          f.currentV=f.n/f.interval;
+          //若n加了10, currentStep加了1
+          f.currentStep=f.n/f.interval;
           f.doINeveryframe();
         }
         window.requestAnimationFrame(rafCallback);
@@ -38,7 +38,7 @@ class Basic{
   //每一幀你要做點什麽？
   doINeveryframe(){
     var f=this;
-    console.log(f.currentV);
+    console.log(f.currentStep);
     return f;
   }
 
