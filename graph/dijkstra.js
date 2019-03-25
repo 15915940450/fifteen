@@ -21,12 +21,12 @@ class Dijkstra{
       // vertex:0
       [
         {
-          vertex:2,
-          distance:26
-        },
-        {
           vertex:4,
           distance:38
+        },
+        {
+          vertex:2,
+          distance:26
         }
       ],
       // vertex:1
@@ -115,7 +115,7 @@ class Dijkstra{
       distance:0
     });
 
-    
+
   }
 
   // 算法
@@ -160,11 +160,15 @@ class Dijkstra{
     f.adj[currentV.vertex].forEach(function(v){
       var distance=f.distTo[currentV.vertex]+v.distance;
       if(distance<f.distTo[v.vertex]){
+        var edge=currentV.vertex+'-'+v.vertex;
+        if(f.distTo[v.vertex]!==Infinity){
+          console.log(edge);
+        }
         //放鬆邊
         f.distTo[v.vertex]=distance;
         f.queue.push(v);
         //將0-2添加到樹中
-        f.SPT.push(currentV.vertex+'-'+v.vertex);
+        f.SPT.push(edge);
       }
     });
 
