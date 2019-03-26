@@ -111,13 +111,154 @@ function A_Star(start, goal)
 */
 
 class Astar{
-  constructor(){}
-  init(){
-    console.log('Astar');
+  constructor(){
+    this.CW=document.documentElement.clientWidth || document.body.clientWidth;
+    this.CH=document.documentElement.clientHeight || document.body.clientHeight;
+    this.eleCanvas=document.querySelector('#canvas');
+    this.ctx=this.eleCanvas.getContext('2d');
+    this.color='#0077ee';
+    this.gridWidth=50;
+
+    this.n=-1;  //raf多少次
+    this.interval=10; //每幀的間隔
+    this.currentStep=-1; //當前。。。
+    this.rows=15;
+    this.cols=15;
+
+    this.adj=[];
   }
-}
+  init(){
+    this.eleCanvas.width=this.CW;
+    this.eleCanvas.height=this.CH-4;
+    this.initAdj();
+  }
+
+  initAdj(){
+    var f=this;
+    for(var i=0;i<f.rows;i++){
+      for(var j=0;j<f.cols;j++){
+        var index=f.ij2index(i,j);
+        var objV={
+          index:index,
+          row:i,
+          col:j,
+          neighbor:f.addNeighbor(i,j)
+        };
+        f.adj[index]=objV;
+      }
+    }
+    return f;
+  }
+  ij2index(i,j){
+    var f=this;
+    if(i<0 || j<0 || i>f.rows-1 || j>f.cols-1){
+      return (-1);
+    }
+    return (i*f.cols+j);
+  }
+  index2ij(index){
+    var f=this;
+    if(index<0 || index>f.rows*f.cols-1){
+      return (-1);
+    }
+    return ({
+      i:index/f.cols>>0,
+      j:index%f.cols
+    });
+  }
+  addNeighbor(i,j){
+    var f=this;
+
+    //八個方向
+    var arrDerection=[];
+    //上
+    arrDerection[0]=f.ij2index(i-1,j); //-1,0,1,2...
+    //上-右
+    arrDerection[1]=f.ij2index(i-1,j+1);
+    //右
+    arrDerection[2]=f.ij2index(i,j+1);
+    //下-右
+    arrDerection[3]=f.ij2index(i+1,j+1);
+    //下
+    arrDerection[4]=f.ij2index(i+1,j);
+    //下-左
+    arrDerection[5]=f.ij2index(i+1,j-1);
+    //左
+    arrDerection[6]=f.ij2index(i,j-1);
+    //上-左
+    arrDerection[7]=f.ij2index(i-1,j-1);
+
+    //過濾掉-1
+    arrDerection=arrDerection.filter(function(v){
+      return (v+1 && Math.random()<.8);
+    });
+
+
+
+    return arrDerection;
+  }
+  
+
+  // 算法
+  solve(){
+    var f=this;
+    f.raf();
+    return f;
+  }
+  //執行動畫
+  raf(){
+    var f=this;
+    var rafCallback=function(){
+      f.n++;
+      //動畫終止條件
+      if(f.n<1e1*f.interval){
+        if(!(f.n%f.interval)){
+          //若n加了10, currentStep加了1
+          f.currentStep=f.n/f.interval;
+          f.doINeveryframe();
+        }
+        window.requestAnimationFrame(rafCallback);
+      }
+    };
+    window.requestAnimationFrame(rafCallback);
+    return f;
+  } //raf
+  //每一幀你要做點什麽？
+  doINeveryframe(){
+    var f=this;
+    console.log(f.currentStep);
+    f.draw();
+    return f;
+  }
+  draw(){
+    var f=this;
+    f.ctx.clearRect(0,0,f.CW,f.CH);
+    f.ctx.translate(10.5,10.5);
+    f.ctx.fillStyle=f.color;
+    f.ctx.strokeStyle='dimgray';
+    f.ctx.font='11px serif';
+
+    for(var i=0;i<f.adj.length;i++){
+      // f.ctx.moveTo(f.gridWidth/2,f.gridWidth/2);
+      f.ctx.beginPath();
+      
+      var x=f.gridWidth*f.adj[i].col+f.gridWidth/2;
+      var y=f.gridWidth*f.adj[i].row+f.gridWidth/2;
+      //arc(x, y, radius, startAngle, endAngle, anticlockwise)
+      f.ctx.arc(x,y,f.gridWidth/4,0,2*Math.PI,true);
+      f.ctx.fillText(i,x-5,y+3);
+
+      f.ctx.closePath();
+      f.ctx.stroke();
+    }
+
+    f.ctx.translate(-10.5,-10.5);
+    return f;
+  }
+
+} //class
 
 var obj =new Astar();
 obj.init();
-
+obj.solve();
 
