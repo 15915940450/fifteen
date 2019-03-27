@@ -113,6 +113,7 @@ class Astar{
 
     this.adj=[];  //鄰接表
 
+    this.result=[];
     this.SPT=[];  //最短路徑樹
     this.s=0; //開始位置
     this.w=this.rows*this.cols-1; //結束位置
@@ -279,22 +280,22 @@ class Astar{
   success(){
     var f=this;
     f.findPath();
+    f.draw();
     return f;
   }
   //尋找路徑
   findPath(){
     var f=this;
     var end=f.w;
-    var result=[];
     for(var i=f.SPT.length-1;i>=0;i--){
       var arrVertex=f.SPT[i].split('-');
       if(+arrVertex[1]===end){
-        result.unshift(end);
+        f.result.unshift(end);
         end=+arrVertex[0];
       }
     }
-    result.unshift(f.s);
-    console.log(result);
+    f.result.unshift(f.s);
+    console.log(f.result);
     return f;
   }
   //每一幀你要做點什麽？
@@ -378,6 +379,7 @@ class Astar{
     f.ctx.translate(10.5,10.5);
     f.ctx.fillStyle=f.colorDefault;
     f.ctx.strokeStyle=f.colorDefault;
+    f.ctx.lineWidth=1;
     f.ctx.font='11px serif';
 
     for(i=0;i<f.adj.length;i++){
@@ -393,6 +395,10 @@ class Astar{
   drawVertex(index){
     var f=this;
     f.ctx.beginPath();
+    if(f.complete && f.result.includes(index)){
+      f.ctx.fillStyle=f.colorSPT;
+      f.ctx.strokeStyle=f.colorSPT;
+    }
 
     //arc(x, y, radius, startAngle, endAngle, anticlockwise)
     f.ctx.arc(f.index2center(index).x,f.index2center(index).y,4,0,2*Math.PI,true);
@@ -401,6 +407,11 @@ class Astar{
 
     f.ctx.closePath();
     f.ctx.stroke();
+
+    if(f.complete && f.result.includes(index)){
+      f.ctx.fillStyle=f.colorDefault;
+      f.ctx.strokeStyle=f.colorDefault;
+    }
   }
   drawEdge(index){
     var f=this;
@@ -409,10 +420,20 @@ class Astar{
       //避免重複繪製
       if(index<v){
         f.ctx.beginPath();
+        if(f.complete && f.result.includes(index) && f.result.includes(v)){
+          f.ctx.lineWidth=3;
+          f.ctx.fillStyle=f.colorSPT;
+          f.ctx.strokeStyle=f.colorSPT;
+        }
         f.ctx.moveTo(f.index2center(index).x,f.index2center(index).y);
         f.ctx.lineTo(f.index2center(v).x,f.index2center(v).y);
         f.ctx.closePath();
         f.ctx.stroke();
+        if(f.complete && f.result.includes(index) && f.result.includes(v)){
+          f.ctx.fillStyle=f.colorDefault;
+          f.ctx.strokeStyle=f.colorDefault;
+          f.ctx.lineWidth=1;
+        }
       }
     });
     return f;
