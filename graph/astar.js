@@ -99,22 +99,25 @@ class Astar{
     this.CH=document.documentElement.clientHeight || document.body.clientHeight;
     this.eleCanvas=document.querySelector('#canvas');
     this.ctx=this.eleCanvas.getContext('2d');
-    this.color='#0077ee';
+    this.colorDefault='dimgray';
+    this.colorSPT='#0077ee';
+    this.colorClosedSet='mistyrose';
+    this.colorOpenSet='blanchedalmond';
     this.d=30;  //網格單位長度
 
     this.n=-1;  //raf多少次
-    this.interval=10; //每幀的間隔
+    this.interval=1; //每幀的間隔
     this.currentStep=-1; //當前。。。
-    this.rows=13;
+    this.rows=10;
     this.cols=13;
 
-    this.adj=[];
+    this.adj=[];  //鄰接表
 
+    this.SPT=[];  //最短路徑樹
     this.s=0; //開始位置
     this.w=this.rows*this.cols-1; //結束位置
     this.closedSet=[];
-    this.openSet=[this.s];
-    this.SPT=[];
+    this.openSet=[];
     this.gScore=[];
     this.fScore=[];
 
@@ -123,9 +126,13 @@ class Astar{
   init(){
     this.eleCanvas.width=this.CW;
     this.eleCanvas.height=this.CH-4;
+
     this.initAdj();
+    this.openSet.push(this.s);
+
     //無向圖
     this.doubleNeighbor();
+
     for(var i=0;i<=this.w;i++){
       this.gScore[i]=Infinity;
       this.fScore[i]=Infinity;
@@ -150,6 +157,7 @@ class Astar{
   funHeuristic(index){
     return (this.calcDist(index,this.w));
   }
+  //計算兩點之間的距離
   calcDist(v,w){
     var f=this;
     var x0=f.index2center(v).x;
@@ -160,6 +168,7 @@ class Astar{
     return (d);
   }
 
+  //初始化鄰接表
   initAdj(){
     var f=this;
     for(var i=0;i<f.rows;i++){
@@ -176,6 +185,7 @@ class Astar{
     }
     return f;
   }
+  //已知i，j求index（不存在則為-1）
   ij2index(i,j){
     var f=this;
     if(i<0 || j<0 || i>f.rows-1 || j>f.cols-1){
@@ -183,16 +193,18 @@ class Astar{
     }
     return (i*f.cols+j);
   }
+  //已知index求i，j,不存在則爲null
   index2ij(index){
     var f=this;
     if(index<0 || index>f.w){
-      return (-1);
+      return null;
     }
     return ({
       i:index/f.cols>>0,
       j:index%f.cols
     });
   }
+  //已知index求該頂點的中心點坐標
   index2center(index){
     var f=this;
     return ({
@@ -200,6 +212,7 @@ class Astar{
       y:f.d*f.adj[index].row+f.d/2
     });
   }
+  //查找該頂點的所有鄰居
   findAllNeighbor(i,j){
     var f=this;
     //八個方向
@@ -221,15 +234,14 @@ class Astar{
     //上-左
     arrDerection[7]=f.ij2index(i-1,j-1);
 
+    //過濾掉-1
     return (arrDerection.filter(function(v){
       return (v+1);
     }));
   }
+  //隨機添加鄰居（有向）
   addNeighbor(i,j){
-    var f=this;
-
-    //過濾掉-1
-    var arrDerection=f.findAllNeighbor(i,j).filter(function(v){
+    var arrDerection=this.findAllNeighbor(i,j).filter(function(){
       return (Math.random()<.4);
     });
 
@@ -263,16 +275,34 @@ class Astar{
     window.requestAnimationFrame(rafCallback);
     return f;
   } //raf
+  //成功時尋找路徑
   success(){
     var f=this;
-    console.log(JSON.stringify(f.SPT));
+    f.findPath();
+    return f;
+  }
+  //尋找路徑
+  findPath(){
+    var f=this;
+    var end=f.w;
+    var result=[];
+    for(var i=f.SPT.length-1;i>=0;i--){
+      var arrVertex=f.SPT[i].split('-');
+      if(+arrVertex[1]===end){
+        result.unshift(end);
+        end=+arrVertex[0];
+      }
+    }
+    result.unshift(f.s);
+    console.log(result);
     return f;
   }
   //每一幀你要做點什麽？
   doINeveryframe(){
     var f=this;
-    console.log(f.currentStep);
+    //處理openSet
     f.watchOpenSet();
+    //繪製
     f.draw();
     return f;
   }
@@ -283,20 +313,17 @@ class Astar{
       return false;
     }
     var f=this,tentativeGScore;
+
     //最低fScore分數的頂點
     f.openSet.sort(function(a,b){
       return (f.fScore[a]-f.fScore[b]); //a-b升序
     });
+
     var current=f.openSet.shift();
-    if(current===f.w){
-      //追蹤路徑,結束算法
-      this.complete=true;
-      return true;
-    }
+    
     f.closedSet.push(current);
 
     for(var i=0;i<f.adj[current].neighbor.length;i++){
-
       var neighbor=f.adj[current].neighbor[i];
 
       if(f.closedSet.includes(neighbor)){
@@ -315,6 +342,11 @@ class Astar{
       f.gScore[neighbor]=tentativeGScore;
       f.fScore[neighbor]=f.gScore[neighbor]+f.funHeuristic(neighbor);
 
+      //已經到達終點，結束算法
+      if(neighbor===f.w){
+        this.complete=true;
+        return true;
+      }
 
     }
     /*f.adj[current].neighbor.forEach(function(v){
@@ -339,12 +371,13 @@ class Astar{
 
     return f;
   }
+
   draw(){
     var f=this,i;
     f.ctx.clearRect(0,0,f.CW,f.CH);
     f.ctx.translate(10.5,10.5);
-    f.ctx.fillStyle=f.color;
-    f.ctx.strokeStyle='dimgray';
+    f.ctx.fillStyle=f.colorDefault;
+    f.ctx.strokeStyle=f.colorDefault;
     f.ctx.font='11px serif';
 
     for(i=0;i<f.adj.length;i++){
@@ -373,11 +406,14 @@ class Astar{
     var f=this;
     //畫邊
     f.adj[index].neighbor.forEach(function(v){
-      f.ctx.beginPath();
-      f.ctx.moveTo(f.index2center(index).x,f.index2center(index).y);
-      f.ctx.lineTo(f.index2center(v).x,f.index2center(v).y);
-      f.ctx.closePath();
-      f.ctx.stroke();
+      //避免重複繪製
+      if(index<v){
+        f.ctx.beginPath();
+        f.ctx.moveTo(f.index2center(index).x,f.index2center(index).y);
+        f.ctx.lineTo(f.index2center(v).x,f.index2center(v).y);
+        f.ctx.closePath();
+        f.ctx.stroke();
+      }
     });
     return f;
   }
