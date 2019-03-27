@@ -112,7 +112,7 @@ class Astar{
     // this.cols=3;
     this.rows=(this.CH-50)/this.d>>0;
     this.cols=(this.CW-50)/this.d>>0;
-    this.rate=.2;
+    this.rate=.3;
     this.SPTw=3;
 
     this.adj=[];  //鄰接表
@@ -168,7 +168,7 @@ class Astar{
   }
   //啓發函數
   funHeuristic(index){
-    return (2*this.calcDist(index,this.V-1)>>0);
+    return (3*this.calcDist(index,this.V-1)>>0);
   }
   //計算兩點之間的距離
   calcDist(v,w){
@@ -381,9 +381,9 @@ class Astar{
           }
         }
 
-        
+
       }
-      
+
 
     });*/
 
@@ -484,5 +484,3 @@ class Astar{
 var obj =new Astar();
 obj.init();
 obj.solve();
-
-
