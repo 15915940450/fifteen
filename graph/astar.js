@@ -101,15 +101,16 @@ class Astar{
     this.ctx=this.eleCanvas.getContext('2d');
     this.colorDefault='dimgray';
     this.colorSPT='#0077ee';
-    this.colorClosedSet='mistyrose';
-    this.colorOpenSet='blanchedalmond';
-    this.d=30;  //網格單位長度
+    this.colorOpenSet='lawngreen';
+    this.colorClosedSet='black';
+    this.d=20;  //網格單位長度
 
     this.n=-1;  //raf多少次
     this.interval=1; //每幀的間隔
     this.currentStep=-1; //當前。。。
-    this.rows=10;
-    this.cols=13;
+    this.rows=30;
+    this.cols=50;
+    this.rate=.3;
 
     this.adj=[];  //鄰接表
 
@@ -156,7 +157,7 @@ class Astar{
   }
   //啓發函數
   funHeuristic(index){
-    return (this.calcDist(index,this.w));
+    return (2*this.calcDist(index,this.w)>>0);
   }
   //計算兩點之間的距離
   calcDist(v,w){
@@ -242,8 +243,9 @@ class Astar{
   }
   //隨機添加鄰居（有向）
   addNeighbor(i,j){
-    var arrDerection=this.findAllNeighbor(i,j).filter(function(){
-      return (Math.random()<.4);
+    var f=this;
+    var arrDerection=f.findAllNeighbor(i,j).filter(function(){
+      return (Math.random()<f.rate);
     });
 
     return arrDerection;
@@ -272,6 +274,9 @@ class Astar{
       }else{
         f.success();
       }
+
+      //每一幀都要繪圖
+      f.draw();
     };
     window.requestAnimationFrame(rafCallback);
     return f;
@@ -280,13 +285,13 @@ class Astar{
   success(){
     var f=this;
     f.findPath();
-    f.draw();
+    console.log('complete');
     return f;
   }
   //尋找路徑
-  findPath(){
+  findPath(end){
     var f=this;
-    var end=f.w;
+    end=end || f.w;
     for(var i=f.SPT.length-1;i>=0;i--){
       var arrVertex=f.SPT[i].split('-');
       if(+arrVertex[1]===end){
@@ -295,7 +300,7 @@ class Astar{
       }
     }
     f.result.unshift(f.s);
-    console.log(f.result);
+    // console.log(f.result);
     return f;
   }
   //每一幀你要做點什麽？
@@ -303,8 +308,6 @@ class Astar{
     var f=this;
     //處理openSet
     f.watchOpenSet();
-    //繪製
-    f.draw();
     return f;
   }
   //openSet不爲空
@@ -321,7 +324,7 @@ class Astar{
     });
 
     var current=f.openSet.shift();
-    
+
     f.closedSet.push(current);
 
     for(var i=0;i<f.adj[current].neighbor.length;i++){
@@ -395,20 +398,30 @@ class Astar{
   drawVertex(index){
     var f=this;
     f.ctx.beginPath();
+    if(f.openSet.includes(index)){
+      f.ctx.fillStyle=f.colorOpenSet;
+      f.ctx.strokeStyle=f.colorOpenSet;
+    }
+    
+    if(f.closedSet.includes(index)){
+      f.ctx.fillStyle=f.colorClosedSet;
+      f.ctx.strokeStyle=f.colorClosedSet;
+    }
     if(f.complete && f.result.includes(index)){
       f.ctx.fillStyle=f.colorSPT;
       f.ctx.strokeStyle=f.colorSPT;
     }
 
+
     //arc(x, y, radius, startAngle, endAngle, anticlockwise)
-    f.ctx.arc(f.index2center(index).x,f.index2center(index).y,4,0,2*Math.PI,true);
+    f.ctx.arc(f.index2center(index).x,f.index2center(index).y,3,0,2*Math.PI,true);
     f.ctx.fill();
     //f.ctx.fillText(index,f.index2center(index).x-5,f.index2center(index).y+3);
 
     f.ctx.closePath();
     f.ctx.stroke();
 
-    if(f.complete && f.result.includes(index)){
+    if(f.openSet.includes(index) || f.closedSet.includes(index)){
       f.ctx.fillStyle=f.colorDefault;
       f.ctx.strokeStyle=f.colorDefault;
     }
