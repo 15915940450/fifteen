@@ -122,15 +122,39 @@ class Astar{
     this.n=-1;  //raf多少次
     this.interval=10; //每幀的間隔
     this.currentStep=-1; //當前。。。
-    this.rows=15;
-    this.cols=25;
+    this.rows=3;
+    this.cols=3;
 
     this.adj=[];
+
+    this.s=0; //開始位置
+    this.w=this.rows*this.cols-1; //結束位置
+    this.closedSet=[];
+    this.openSet=[this.s];
+    this.SPT=[];
+    this.gScore=[];
+    this.fScore=[];
   }
   init(){
     this.eleCanvas.width=this.CW;
     this.eleCanvas.height=this.CH-4;
     this.initAdj();
+    for(var i=0;i<=this.w;i++){
+      this.gScore[i]=Infinity;
+      this.fScore[i]=Infinity;
+    }
+    this.gScore[this.s]=0;
+    this.fScore[this.s]=this.funHeuristic(this.s);
+  }
+  //啓發函數
+  funHeuristic(index){
+    var f=this;
+    var x1=f.index2center(f.w).x;
+    var y1=f.index2center(f.w).y;
+    var x0=f.index2center(index).x;
+    var y0=f.index2center(index).y;
+    var d=Math.sqrt(Math.pow(x1-x0,2),Math.pow(y1-y0,2));
+    return (d);
   }
 
   initAdj(){
@@ -158,7 +182,7 @@ class Astar{
   }
   index2ij(index){
     var f=this;
-    if(index<0 || index>f.rows*f.cols-1){
+    if(index<0 || index>f.w){
       return (-1);
     }
     return ({
@@ -238,17 +262,17 @@ class Astar{
     return f;
   }
   draw(){
-    var f=this;
+    var f=this,i;
     f.ctx.clearRect(0,0,f.CW,f.CH);
     f.ctx.translate(10.5,10.5);
     f.ctx.fillStyle=f.color;
     f.ctx.strokeStyle='dimgray';
     f.ctx.font='11px serif';
 
-    for(var i=0;i<f.adj.length;i++){
+    for(i=0;i<f.adj.length;i++){
       f.drawEdge(i);
     }
-    for(var i=0;i<f.adj.length;i++){
+    for(i=0;i<f.adj.length;i++){
       f.drawVertex(i);
     }
 
