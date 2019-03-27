@@ -105,8 +105,8 @@ class Astar{
     this.n=-1;  //raf多少次
     this.interval=10; //每幀的間隔
     this.currentStep=-1; //當前。。。
-    this.rows=3;
-    this.cols=3;
+    this.rows=13;
+    this.cols=13;
 
     this.adj=[];
 
@@ -124,12 +124,27 @@ class Astar{
     this.eleCanvas.width=this.CW;
     this.eleCanvas.height=this.CH-4;
     this.initAdj();
+    //無向圖
+    this.doubleNeighbor();
     for(var i=0;i<=this.w;i++){
       this.gScore[i]=Infinity;
       this.fScore[i]=Infinity;
     }
     this.gScore[this.s]=0;
     this.fScore[this.s]=this.funHeuristic(this.s);
+  }
+  doubleNeighbor(){
+    var f=this;
+    f.adj.forEach(function(v,index){
+      f.findAllNeighbor(v.row,v.col).forEach(function(neighborIndex){
+        var neightborHasV=f.adj[neighborIndex].neighbor.includes(index);
+        var vNOThasNeighbor=!v.neighbor.includes(neighborIndex);
+        if(neightborHasV && vNOThasNeighbor){
+          v.neighbor.push(neighborIndex);
+        }
+      });
+    });
+    return f;
   }
   //啓發函數
   funHeuristic(index){
@@ -185,9 +200,8 @@ class Astar{
       y:f.d*f.adj[index].row+f.d/2
     });
   }
-  addNeighbor(i,j){
+  findAllNeighbor(i,j){
     var f=this;
-
     //八個方向
     var arrDerection=[];
     //上
@@ -207,12 +221,17 @@ class Astar{
     //上-左
     arrDerection[7]=f.ij2index(i-1,j-1);
 
+    return (arrDerection.filter(function(v){
+      return (v+1);
+    }));
+  }
+  addNeighbor(i,j){
+    var f=this;
+
     //過濾掉-1
-    arrDerection=arrDerection.filter(function(v){
-      return (v+1 && Math.random()<.4);
+    var arrDerection=f.findAllNeighbor(i,j).filter(function(v){
+      return (Math.random()<.4);
     });
-
-
 
     return arrDerection;
   }
@@ -266,9 +285,8 @@ class Astar{
     var f=this,tentativeGScore;
     //最低fScore分數的頂點
     f.openSet.sort(function(a,b){
-      return (f.fScore[a]-f.fScore[b]);
+      return (f.fScore[a]-f.fScore[b]); //a-b升序
     });
-    // return false;
     var current=f.openSet.shift();
     if(current===f.w){
       //追蹤路徑,結束算法
