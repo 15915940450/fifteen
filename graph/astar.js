@@ -20,23 +20,6 @@
         This is often referred to as the heuristic, which isnothing but a kind of smart guess. We really don’t know the actual distance until we find the path, because all sorts of things can be in the way (walls, water, etc.). There can be many ways to calculate this ‘h’ which are discussed in the later sections.
 
 
-  算法步驟
-  * 初始化open_set和close_set；
-  * 将起点加入open_set中，并设置优先级为0（优先级最高）；
-  * 如果open_set不为空，则从open_set中选取优先级最高的节点n：
-      * 如果节点n为终点，则：
-          * 从终点开始逐步追踪parent节点，一直达到起点；
-          * 返回找到的结果路径，算法结束；
-      * 如果节点n不是终点，则：
-          * 将节点n从open_set中删除，并加入close_set中；
-          * 遍历节点n所有的邻近节点：
-              * 如果邻近节点m在close_set中，则：
-                  * 跳过，选取下一个邻近节点
-              * 如果邻近节点m也不在open_set中，则：
-                  * 设置节点m的parent为节点n
-                  * 计算节点m的优先级
-                  * 将节点m加入open_set中
-
   The following pseudocode describes the algorithm:
   function reconstruct_path(cameFrom, current)
       total_path := {current}
@@ -134,6 +117,8 @@ class Astar{
     this.SPT=[];
     this.gScore=[];
     this.fScore=[];
+
+    this.complete=false;
   }
   init(){
     this.eleCanvas.width=this.CW;
@@ -148,12 +133,15 @@ class Astar{
   }
   //啓發函數
   funHeuristic(index){
+    return (this.calcDist(index,this.w));
+  }
+  calcDist(v,w){
     var f=this;
-    var x1=f.index2center(f.w).x;
-    var y1=f.index2center(f.w).y;
-    var x0=f.index2center(index).x;
-    var y0=f.index2center(index).y;
-    var d=Math.sqrt(Math.pow(x1-x0,2),Math.pow(y1-y0,2));
+    var x0=f.index2center(v).x;
+    var y0=f.index2center(v).y;
+    var x1=f.index2center(w).x;
+    var y1=f.index2center(w).y;
+    var d=Math.sqrt(Math.pow(x1-x0,2)+Math.pow(y1-y0,2));
     return (d);
   }
 
@@ -242,23 +230,95 @@ class Astar{
     var rafCallback=function(){
       f.n++;
       //動畫終止條件
-      if(f.n<1e1*f.interval){
+      if(!f.complete){
         if(!(f.n%f.interval)){
           //若n加了10, currentStep加了1
           f.currentStep=f.n/f.interval;
           f.doINeveryframe();
         }
         window.requestAnimationFrame(rafCallback);
+      }else{
+        f.success();
       }
     };
     window.requestAnimationFrame(rafCallback);
     return f;
   } //raf
+  success(){
+    var f=this;
+    console.log(JSON.stringify(f.SPT));
+    return f;
+  }
   //每一幀你要做點什麽？
   doINeveryframe(){
     var f=this;
     console.log(f.currentStep);
+    f.watchOpenSet();
     f.draw();
+    return f;
+  }
+  //openSet不爲空
+  watchOpenSet(){
+    if(!this.openSet.length){
+      this.complete=true;
+      return false;
+    }
+    var f=this,tentativeGScore;
+    //最低fScore分數的頂點
+    f.openSet.sort(function(a,b){
+      return (f.fScore[a]-f.fScore[b]);
+    });
+    // return false;
+    var current=f.openSet.shift();
+    if(current===f.w){
+      //追蹤路徑,結束算法
+      this.complete=true;
+      return true;
+    }
+    f.closedSet.push(current);
+
+    for(var i=0;i<f.adj[current].neighbor.length;i++){
+
+      var neighbor=f.adj[current].neighbor[i];
+
+      if(f.closedSet.includes(neighbor)){
+        continue;
+      }
+
+      tentativeGScore=f.gScore[current]+f.calcDist(current,neighbor);
+
+      if(!f.openSet.includes(neighbor)){
+        f.openSet.push(neighbor);
+      }else if(tentativeGScore>=f.gScore[neighbor]){
+        continue;
+      }
+
+      f.SPT.push(current+'-'+neighbor);
+      f.gScore[neighbor]=tentativeGScore;
+      f.fScore[neighbor]=f.gScore[neighbor]+f.funHeuristic(neighbor);
+
+
+    }
+    /*f.adj[current].neighbor.forEach(function(v){
+      if(!f.closedSet.includes(v)){
+        tentativeGScore=f.gScore[current]+f.calcDist(current,v);
+
+        if(!f.openSet.includes(v)){
+          f.openSet.push(v);
+          if(tentativeGScore<f.gScore[v]){
+            f.SPT[v]=current;
+            f.gScore[v]=tentativeGScore;
+            f.fScore[v]=f.gScore[v]+f.funHeuristic(v);
+          }
+        }
+
+        
+      }
+      
+
+    });*/
+
+
     return f;
   }
   draw(){
@@ -309,3 +369,5 @@ class Astar{
 var obj =new Astar();
 obj.init();
 obj.solve();
+
+
