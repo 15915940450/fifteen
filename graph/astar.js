@@ -99,7 +99,7 @@ class Astar{
     this.CH=document.documentElement.clientHeight || document.body.clientHeight;
     this.eleCanvas=document.querySelector('#canvas');
     this.ctx=this.eleCanvas.getContext('2d');
-    this.colorDefault='dimgray';
+    this.colorDefault='silver';
     this.colorSPT='#0077ee';
     this.colorOpenSet='lawngreen';
     this.colorClosedSet='black';
@@ -108,24 +108,29 @@ class Astar{
     this.n=-1;  //raf多少次
     this.interval=1; //每幀的間隔
     this.currentStep=-1; //當前。。。
-    this.rows=30;
-    this.cols=50;
-    this.rate=.3;
+    // this.rows=3;
+    // this.cols=3;
+    this.rows=(this.CH-50)/this.d>>0;
+    this.cols=(this.CW-50)/this.d>>0;
+    this.rate=.2;
+    this.SPTw=3;
 
     this.adj=[];  //鄰接表
 
     this.result=[];
     this.SPT=[];  //最短路徑樹
     this.s=0; //開始位置
-    this.w=this.rows*this.cols-1; //結束位置
     this.closedSet=[];
     this.openSet=[];
     this.gScore=[];
     this.fScore=[];
+    this.V=this.rows*this.cols; //頂點數
+    this.E=0; //邊數
 
     this.complete=false;
   }
   init(){
+    var i;
     this.eleCanvas.width=this.CW;
     this.eleCanvas.height=this.CH-4;
 
@@ -135,12 +140,18 @@ class Astar{
     //無向圖
     this.doubleNeighbor();
 
-    for(var i=0;i<=this.w;i++){
+    for(i=0;i<this.V;i++){
       this.gScore[i]=Infinity;
       this.fScore[i]=Infinity;
     }
     this.gScore[this.s]=0;
     this.fScore[this.s]=this.funHeuristic(this.s);
+
+    //計算邊數
+    for(i=0;i<this.V;i++){
+      this.E+=this.adj[i].neighbor.length;
+    }
+    this.E=this.E/2;
   }
   doubleNeighbor(){
     var f=this;
@@ -157,7 +168,7 @@ class Astar{
   }
   //啓發函數
   funHeuristic(index){
-    return (2*this.calcDist(index,this.w)>>0);
+    return (2*this.calcDist(index,this.V-1)>>0);
   }
   //計算兩點之間的距離
   calcDist(v,w){
@@ -198,7 +209,7 @@ class Astar{
   //已知index求i，j,不存在則爲null
   index2ij(index){
     var f=this;
-    if(index<0 || index>f.w){
+    if(index<0 || index>f.V-1){
       return null;
     }
     return ({
@@ -216,25 +227,25 @@ class Astar{
   }
   //查找該頂點的所有鄰居
   findAllNeighbor(i,j){
-    var f=this;
     //八個方向
     var arrDerection=[];
+
     //上
-    arrDerection[0]=f.ij2index(i-1,j); //-1,0,1,2...
+    arrDerection[0]=this.ij2index(i-1,j); //-1,0,1,2...
     //上-右
-    arrDerection[1]=f.ij2index(i-1,j+1);
+    arrDerection[1]=this.ij2index(i-1,j+1);
     //右
-    arrDerection[2]=f.ij2index(i,j+1);
+    arrDerection[2]=this.ij2index(i,j+1);
     //下-右
-    arrDerection[3]=f.ij2index(i+1,j+1);
+    arrDerection[3]=this.ij2index(i+1,j+1);
     //下
-    arrDerection[4]=f.ij2index(i+1,j);
+    arrDerection[4]=this.ij2index(i+1,j);
     //下-左
-    arrDerection[5]=f.ij2index(i+1,j-1);
+    arrDerection[5]=this.ij2index(i+1,j-1);
     //左
-    arrDerection[6]=f.ij2index(i,j-1);
+    arrDerection[6]=this.ij2index(i,j-1);
     //上-左
-    arrDerection[7]=f.ij2index(i-1,j-1);
+    arrDerection[7]=this.ij2index(i-1,j-1);
 
     //過濾掉-1
     return (arrDerection.filter(function(v){
@@ -285,13 +296,14 @@ class Astar{
   success(){
     var f=this;
     f.findPath();
-    console.log('complete');
+    console.log('complete:::'+JSON.stringify(f.result));
     return f;
   }
   //尋找路徑
   findPath(end){
     var f=this;
-    end=end || f.w;
+    end=end || f.V-1;
+    f.result=[];
     for(var i=f.SPT.length-1;i>=0;i--){
       var arrVertex=f.SPT[i].split('-');
       if(+arrVertex[1]===end){
@@ -300,7 +312,6 @@ class Astar{
       }
     }
     f.result.unshift(f.s);
-    // console.log(f.result);
     return f;
   }
   //每一幀你要做點什麽？
@@ -313,6 +324,7 @@ class Astar{
   //openSet不爲空
   watchOpenSet(){
     if(!this.openSet.length){
+      console.error('fail');
       this.complete=true;
       return false;
     }
@@ -346,8 +358,11 @@ class Astar{
       f.gScore[neighbor]=tentativeGScore;
       f.fScore[neighbor]=f.gScore[neighbor]+f.funHeuristic(neighbor);
 
+
+      f.findPath(neighbor);
+
       //已經到達終點，結束算法
-      if(neighbor===f.w){
+      if(neighbor===f.V-1){
         this.complete=true;
         return true;
       }
@@ -379,11 +394,11 @@ class Astar{
   draw(){
     var f=this,i;
     f.ctx.clearRect(0,0,f.CW,f.CH);
-    f.ctx.translate(10.5,10.5);
+    f.ctx.translate(25.5,25.5);
     f.ctx.fillStyle=f.colorDefault;
     f.ctx.strokeStyle=f.colorDefault;
     f.ctx.lineWidth=1;
-    f.ctx.font='11px serif';
+    f.ctx.font='13px "Microsoft JhengHei"';
 
     for(i=0;i<f.adj.length;i++){
       f.drawEdge(i);
@@ -392,17 +407,28 @@ class Astar{
       f.drawVertex(i);
     }
 
-    f.ctx.translate(-10.5,-10.5);
+    //繪製文字(頂點數以及邊數)
+    f.ctx.fillStyle=f.colorClosedSet;
+    var strVE=`頂點數V: ${f.V}, 邊數E: ${f.E}`;
+    if(f.complete){
+      strVE+='===> complete';
+    }
+    f.ctx.fillText(strVE,f.CW/2-2e2,-8);
+    f.ctx.fill();
+    f.ctx.fillStyle=f.colorDefault;
+
+    f.ctx.translate(-25.5,-25.5);
     return f;
   }
   drawVertex(index){
     var f=this;
     f.ctx.beginPath();
+
+    /*
     if(f.openSet.includes(index)){
       f.ctx.fillStyle=f.colorOpenSet;
       f.ctx.strokeStyle=f.colorOpenSet;
     }
-    
     if(f.closedSet.includes(index)){
       f.ctx.fillStyle=f.colorClosedSet;
       f.ctx.strokeStyle=f.colorClosedSet;
@@ -411,30 +437,31 @@ class Astar{
       f.ctx.fillStyle=f.colorSPT;
       f.ctx.strokeStyle=f.colorSPT;
     }
+    */
 
 
     //arc(x, y, radius, startAngle, endAngle, anticlockwise)
-    f.ctx.arc(f.index2center(index).x,f.index2center(index).y,3,0,2*Math.PI,true);
+    f.ctx.arc(f.index2center(index).x,f.index2center(index).y,f.SPTw-1,0,2*Math.PI,true);
     f.ctx.fill();
-    //f.ctx.fillText(index,f.index2center(index).x-5,f.index2center(index).y+3);
 
     f.ctx.closePath();
     f.ctx.stroke();
 
-    if(f.openSet.includes(index) || f.closedSet.includes(index)){
+    /*if(f.openSet.includes(index) || f.closedSet.includes(index)){
       f.ctx.fillStyle=f.colorDefault;
       f.ctx.strokeStyle=f.colorDefault;
-    }
+    }*/
   }
   drawEdge(index){
     var f=this;
+
     //畫邊
     f.adj[index].neighbor.forEach(function(v){
       //避免重複繪製
       if(index<v){
         f.ctx.beginPath();
-        if(f.complete && f.result.includes(index) && f.result.includes(v)){
-          f.ctx.lineWidth=3;
+        if(f.result.includes(index) && f.result.includes(v)){
+          f.ctx.lineWidth=f.SPTw;
           f.ctx.fillStyle=f.colorSPT;
           f.ctx.strokeStyle=f.colorSPT;
         }
@@ -442,7 +469,7 @@ class Astar{
         f.ctx.lineTo(f.index2center(v).x,f.index2center(v).y);
         f.ctx.closePath();
         f.ctx.stroke();
-        if(f.complete && f.result.includes(index) && f.result.includes(v)){
+        if(f.result.includes(index) && f.result.includes(v)){
           f.ctx.fillStyle=f.colorDefault;
           f.ctx.strokeStyle=f.colorDefault;
           f.ctx.lineWidth=1;
