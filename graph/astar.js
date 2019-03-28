@@ -112,7 +112,7 @@ class Astar{
     // this.cols=3;
     this.rows=(this.CH-50)/this.d>>0;
     this.cols=(this.CW-50)/this.d>>0;
-    this.rate=.3;
+    this.rate=.2;
     this.SPTw=3;
 
     this.adj=[];  //鄰接表
@@ -424,7 +424,7 @@ class Astar{
     var f=this;
     f.ctx.beginPath();
 
-    /*
+    
     if(f.openSet.includes(index)){
       f.ctx.fillStyle=f.colorOpenSet;
       f.ctx.strokeStyle=f.colorOpenSet;
@@ -437,7 +437,7 @@ class Astar{
       f.ctx.fillStyle=f.colorSPT;
       f.ctx.strokeStyle=f.colorSPT;
     }
-    */
+    
 
 
     //arc(x, y, radius, startAngle, endAngle, anticlockwise)
@@ -447,10 +447,10 @@ class Astar{
     f.ctx.closePath();
     f.ctx.stroke();
 
-    /*if(f.openSet.includes(index) || f.closedSet.includes(index)){
+    if(f.openSet.includes(index) || f.closedSet.includes(index)){
       f.ctx.fillStyle=f.colorDefault;
       f.ctx.strokeStyle=f.colorDefault;
-    }*/
+    }
   }
   drawEdge(index){
     var f=this;
