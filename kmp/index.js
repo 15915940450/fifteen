@@ -6,8 +6,8 @@ class KMP{
     this.interval=1; //每幀的間隔
     this.currentStep=-1; //當前。。。
 
-    this.S='abaacababcacKMP算法是一种改进的字符串匹配算法，由D.E.Knuth，J.H.Morris和V.R.Pratt同时发现，因此人们称它为克努特——莫里斯——普拉特操作（简称KMP算法）。KMP算法的关键是利用匹配失败后的信息，尽量减少模式串与主串的匹配次数以达到快速匹配的目的。具体实现就是实现一个next()函数，函数本身包含了模式串的局部匹配信息。时间复杂度O(m+n)。';
-    this.P='ababc';
+    this.S='abaabaaababababcabbabaaabaabbabaab KMP算法是一种改进的字符串匹配算法，由D.E.Knuth，J.H.Morris和V.R.Pratt同时发现，因此人们称它为克努特——莫里斯——普拉特操作（简称KMP算法）。KMP算法的关键是利用匹配失败后的信息，尽量减少模式串与主串的匹配次数以达到快速匹配的目的。具体实现就是实现一个next()函数，函数本身包含了模式串的局部匹配信息。时间复杂度O(m+n)。';
+    this.P='abababca';
     this.M=this.S.length;
     this.N=this.P.length;
     this.prefix=[];
@@ -74,10 +74,12 @@ class KMP{
   } //raf
   //每一幀你要做點什麽？
   doINeveryframe(){
+    console.log('moving');
     var f=this;
     var iVal=this.S.charAt(this.i);
     var jVal=this.P.charAt(this.j);
-    if(iVal===jVal || this.prefix[this.j]===-1){
+    if(iVal===jVal){
+      //匹配完成
       if(this.j===this.N-1){
         this.result=this.i-this.j;
 
@@ -90,9 +92,17 @@ class KMP{
       this.j++;
     }else{
       this.j=this.prefix[this.j];
+      if(this.j===-1){
+        this.i++;
+        this.j=0;
+      }
     }
 
-
+    //沒找到
+    if(this.i===this.M){
+      console.log('not found');
+      this.complete=true;
+    }
 
     return f;
   }
