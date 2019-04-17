@@ -1,6 +1,12 @@
 new Vue({
   el:'#container',
   data:{
-    show:true
+    items:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+  },
+  methods:{
+    shuffle:function(){
+      this.items=_.shuffle(this.items);
+      // console.table(this.items);
+    }
   }
 });
