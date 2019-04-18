@@ -38,7 +38,7 @@
   }
 
   .flip-grid-move {
-    transition: transform 1s;
+    transition: transform .3s ease-out;
   }
 </style>
 </head>
@@ -58,7 +58,7 @@
     <div 
       v-for="item in items" 
       :key="item.index"
-      :class="{mistyrose:item.value,snow:!item.value,tan:true}">
+      :class="{mistyrose:item.value,snow:!item.value,tan:item.isNew}">
       {{item.value || ''}}
     </div>
   </transition-group>
