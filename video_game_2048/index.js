@@ -82,6 +82,17 @@ var obj=new Vue({
       arrResult=arrMissing.concat(arrResult);
       return arrResult;
     },
+    combine:function(arr){
+      for(var i=3;i>0;i--){
+        // console.log(i); //3,2,1
+        if(arr[i].value===arr[i-1].value){
+          arr[i].value*=2;
+          arr[i-1].value=0;
+        }
+      }
+      // console.log(JSON.stringify(arr));
+      return (arr);
+    },
     //轉換為二維數組
     to2Drow:function(arr){
       return (_.chunk(arr,4));
@@ -98,6 +109,14 @@ var obj=new Vue({
         //1.轉換為二位數組
         var x=f.to2Drow(f.items);
         //2.每一行（4個元素）右滑
+        x=x.map(function(row){
+          return (f.slide(row));
+        });
+        //3.每一行（4個元素）化合
+        x=x.map(function(row){
+          return (f.combine(row));
+        });
+        //4.每一行（4個元素）右滑
         x=x.map(function(row){
           return (f.slide(row));
         });
