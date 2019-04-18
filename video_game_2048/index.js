@@ -54,7 +54,7 @@ var obj=new Vue({
       
     },
     //取消標志新瓷磚
-    cancelNew(){
+    cancelNew:function(){
       this.items=this.items.map(function(v){
         v.isNew=false;
         return (v);
@@ -68,7 +68,7 @@ var obj=new Vue({
       });
     },
     //行列推出索引
-    ij2index(i,j){
+    ij2index:function(i,j){
       return (i*4+j);
     },
     //滑動(right)
@@ -87,8 +87,11 @@ var obj=new Vue({
       return (_.chunk(arr,4));
     },
     //監聽上下左右鍵(38,39,40,37)
-    handleKey(keyCode){
+    handleKey:function(keyCode){
       var f=this;
+
+      var stringifyItems=JSON.stringify(f.items);
+
       switch(+keyCode){
       case 39:
         f.cancelNew();
@@ -100,17 +103,30 @@ var obj=new Vue({
         });
         //設置items
         f.items=_.flatten(x);
+        var isDiff=f.checkDiff(stringifyItems);
 
-        //半秒之後新增一個數字
-        window.setTimeout(function(){
-          f.addNumber();
-        },3e2);
+        if(isDiff){
+          //如果有變化，新增一個數字
+          window.setTimeout(function(){
+            f.addNumber();
+          },3e2);
+        }
+        
         break;
       case -1:
         break;
       default:
         // console.log(keyCode);
       }
+    },
+    checkDiff:function(stringifyItems){
+      var prev=JSON.parse(stringifyItems);
+      for(var i=0;i<prev.length;i++){
+        if(prev[i].value!==this.items[i].value){
+          return true;
+        }
+      }
+      return false;
     },
     //從數組中隨機選出一個元素
     pickRandom:function(arr){
