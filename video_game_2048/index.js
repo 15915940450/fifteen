@@ -14,7 +14,12 @@ var obj=new Vue({
       }
       return arrItems;
     })(),
-    initN:5
+    keyCodeEnable:[38,75,39,76,40,74,37,72],
+    keyCode1:[39,76,40,74],
+    keyCodeRotate:[38,75,40,74],
+    initN:5,
+    complete:false,
+    target:32
   },
   methods:{
     //洗牌
@@ -35,6 +40,7 @@ var obj=new Vue({
       });
 
       var randomOne=this.pickRandom(items_value0);
+      //有空餘的tile
       if(randomOne){
         var index=randomOne.index;
         this.items=this.items.map(function(v){
@@ -48,10 +54,7 @@ var obj=new Vue({
           }
           return (v);
         });
-      }else{
-        console.log('沒有空餘的tile');
       }
-      
     },
     //取消標志新瓷磚
     cancelNew:function(){
@@ -87,10 +90,10 @@ var obj=new Vue({
       }
       return arrResult;
     },
+    //結合(right)
     combine:function(arr,type){
       if(type===-1){
         for(var i=0;i<3;i++){
-          // console.log(i); //3,2,1
           if(arr[i].value===arr[i+1].value){
             arr[i].value*=2;
             arr[i+1].value=0;
@@ -98,96 +101,62 @@ var obj=new Vue({
         }
       }else{
         for(var i=3;i>0;i--){
-          // console.log(i); //3,2,1
           if(arr[i].value===arr[i-1].value){
             arr[i].value*=2;
             arr[i-1].value=0;
           }
         }
       }
-      // console.log(JSON.stringify(arr));
       return (arr);
     },
-    
-    //監聽上下左右鍵(38,39,40,37)
+
+    //監聽上右下左鍵(38/75,39/76,40/74,37/72)
     handleKey:function(keyCode){
       var f=this;
 
-      var stringifyItems=JSON.stringify(f.items);
-      f.cancelNew();
-
-      switch(+keyCode){
-      case 39:
-        //1.轉換為二位數組
-        var x=f.to2Drow(f.items);
-        //2.每一行（4個元素）右滑
-        x=x.map(function(row){
-          return (f.slide(row,1));
-        });
-        //3.每一行（4個元素）化合
-        x=x.map(function(row){
-          return (f.combine(row,1));
-        });
-        //4.每一行（4個元素）右滑
-        x=x.map(function(row){
-          return (f.slide(row,1));
-        });
-        //設置items
-        f.items=_.flatten(x);
-        break;
-      case 37:
-        //1.轉換為二位數組
-        var x=f.to2Drow(f.items);
-        //2.每一行（4個元素）右滑
-        x=x.map(function(row){
-          return (f.slide(row,-1));
-        });
-        //3.每一行（4個元素）化合
-        x=x.map(function(row){
-          return (f.combine(row,-1));
-        });
-        //4.每一行（4個元素）右滑
-        x=x.map(function(row){
-          return (f.slide(row,-1));
-        });
-        //設置items
-        f.items=_.flatten(x);
-        break;
-      case 38:
-        //1.轉換為二位數組
-        x=f.to2Drow(f.items);
-        x=f.rotate(x);
-        //2.每一行（4個元素）右滑
-        x=x.map(function(row){
-          return (f.slide(row,-1));
-        });
-        //3.每一行（4個元素）化合
-        x=x.map(function(row){
-          return (f.combine(row,-1));
-        });
-        //4.每一行（4個元素）右滑
-        x=x.map(function(row){
-          return (f.slide(row,-1));
-        });
-        x=f.rotate(x);
-        this.items=_.flatten(x);
-        break;
-      case 40:
-        //1.轉換為二位數組
-        x=f.to2Drow(f.items);
-        x=f.rotate(x);
-        //2.每一行（4個元素）右滑
-        x=x.map(function(row){
-          return (f.slide(f.combine(f.slide(row,1),1),1));
-        });
-        x=f.rotate(x);
-        this.items=_.flatten(x);
-        break;
-      default:
-        // console.log(keyCode);
+      if(!f.keyCodeEnable.includes(+keyCode) || f.complete){
+        return false;
       }
 
-      //是否結束游戲
+      var type=-1,needRotate=false;
+      if(f.keyCode1.includes(+keyCode)){
+        type=1;
+      }
+      if(f.keyCodeRotate.includes(+keyCode)){
+        needRotate=true;
+      }
+
+      //以備查看是否有變更
+      var stringifyItems=JSON.stringify(f.items);
+
+      //取消標志新
+      f.cancelNew();
+
+      //1.轉換為二位數組
+      x=f.to2Darr(f.items);
+
+      if(needRotate){
+        x=f.rotate(x);
+      }
+      //3.slide combine slide
+      x=x.map(function(row){
+        return (f.slide(f.combine(f.slide(row,type),type),type));
+      });
+      if(needRotate){
+        x=f.rotate(x);
+      }
+
+      //5.更新items
+      this.items=_.flatten(x);
+
+
+      //是否達到2048
+      if(f.checkWin()){
+        console.log('win');
+        f.complete=true;
+        return true;
+      }
+
       var isDiff=f.checkDiff(stringifyItems);
       if(isDiff){
         //如果有變化，新增一個數字
@@ -195,13 +164,44 @@ var obj=new Vue({
           f.addNumber();
         },3e2);
       }else{
-        console.log('game over');
+        //是否結束游戲
+        if(f.checkOver()){
+          console.log('game over');
+          f.complete=true;
+          return false;
+        }
       }
     },
+    checkOver:function(){
+      var isOver=false;
+      var has0=this.items.some(function(v){
+        return (!+v.value);
+      });
+      if(has0){
+        return (false);
+      }
+      var x=this.to2Darr(this.items);
+      var y=this.rotate(x);
+      for(var i=0;i<4;i++){
+        for(var j=0;j<3;j++){
+          if(x[i][j].value===x[i][j+1].value || y[i][j].value===y[i][j+1].value){
+            return (false);
+          }
+        }
+      }
+      return true;
+    },
+    checkWin:function(){
+      var f=this;
+      return (this.items.some(function(v){
+        return (+v.value===f.target);
+      }));
+    },
     //轉換為二維數組
-    to2Drow:function(arr){
+    to2Darr:function(arr){
       return (_.chunk(arr,4));
     },
+    //翻轉數組
     rotate:function(arr){
       var arrResult=[];
       for(var i=0;i<4;i++){
@@ -212,6 +212,7 @@ var obj=new Vue({
       }
       return arrResult;
     },
+    //檢查是否有變化
     checkDiff:function(stringifyItems){
       var prev=JSON.parse(stringifyItems);
       for(var i=0;i<prev.length;i++){
@@ -232,6 +233,6 @@ var obj=new Vue({
 });
 
 
-document.onkeydown=function(ev){
+document.addEventListener('keydown',function(ev){
   obj.handleKey(ev.keyCode);
-};
+});
