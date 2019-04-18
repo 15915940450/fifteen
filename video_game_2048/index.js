@@ -19,7 +19,7 @@ var obj=new Vue({
     keyCodeRotate:[38,75,40,74],
     initN:5,
     complete:false,
-    target:32
+    target:2048
   },
   methods:{
     //洗牌

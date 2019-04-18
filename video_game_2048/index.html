@@ -37,6 +37,9 @@
   .thistle{
     background: thistle;
   }
+  .crimson{
+    background:crimson;
+  }
 
   .flip-grid-move {
     transition: transform .2s ease-out;
@@ -59,7 +62,7 @@
     <div
       v-for="item in items"
       :key="item.index"
-      :class="{mistyrose:item.value,snow:!item.value,thistle:item.isNew}">
+      :class="{mistyrose:item.value,snow:!item.value,thistle:item.isNew,crimson:item.value===2048}">
       {{item.value || ''}}
     </div>
   </transition-group>
