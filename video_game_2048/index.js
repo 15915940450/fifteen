@@ -72,22 +72,37 @@ var obj=new Vue({
       return (i*4+j);
     },
     //滑動(right)
-    slide:function(arr){
+    slide:function(arr,type){
       var arrResult=arr.filter(function(v){
         return (+v.value);
       });
       var arrMissing=arr.filter(function(v){
         return (!+v.value);
       });
-      arrResult=arrMissing.concat(arrResult);
+      //向左
+      if(type===-1){
+        arrResult=arrResult.concat(arrMissing);
+      }else{
+        arrResult=arrMissing.concat(arrResult);
+      }
       return arrResult;
     },
-    combine:function(arr){
-      for(var i=3;i>0;i--){
-        // console.log(i); //3,2,1
-        if(arr[i].value===arr[i-1].value){
-          arr[i].value*=2;
-          arr[i-1].value=0;
+    combine:function(arr,type){
+      if(type===-1){
+        for(var i=0;i<3;i++){
+          // console.log(i); //3,2,1
+          if(arr[i].value===arr[i+1].value){
+            arr[i].value*=2;
+            arr[i+1].value=0;
+          }
+        }
+      }else{
+        for(var i=3;i>0;i--){
+          // console.log(i); //3,2,1
+          if(arr[i].value===arr[i-1].value){
+            arr[i].value*=2;
+            arr[i-1].value=0;
+          }
         }
       }
       // console.log(JSON.stringify(arr));
@@ -102,40 +117,58 @@ var obj=new Vue({
       var f=this;
 
       var stringifyItems=JSON.stringify(f.items);
+      f.cancelNew();
 
       switch(+keyCode){
       case 39:
-        f.cancelNew();
         //1.轉換為二位數組
         var x=f.to2Drow(f.items);
         //2.每一行（4個元素）右滑
         x=x.map(function(row){
-          return (f.slide(row));
+          return (f.slide(row,1));
         });
         //3.每一行（4個元素）化合
         x=x.map(function(row){
-          return (f.combine(row));
+          return (f.combine(row,1));
         });
         //4.每一行（4個元素）右滑
         x=x.map(function(row){
-          return (f.slide(row));
+          return (f.slide(row,1));
         });
         //設置items
         f.items=_.flatten(x);
-        var isDiff=f.checkDiff(stringifyItems);
-
-        if(isDiff){
-          //如果有變化，新增一個數字
-          window.setTimeout(function(){
-            f.addNumber();
-          },3e2);
-        }
-        
         break;
-      case -1:
+      case 37:
+        //1.轉換為二位數組
+        var x=f.to2Drow(f.items);
+        //2.每一行（4個元素）右滑
+        x=x.map(function(row){
+          return (f.slide(row,-1));
+        });
+        //3.每一行（4個元素）化合
+        x=x.map(function(row){
+          return (f.combine(row,-1));
+        });
+        //4.每一行（4個元素）右滑
+        x=x.map(function(row){
+          return (f.slide(row,-1));
+        });
+        //設置items
+        f.items=_.flatten(x);
         break;
       default:
         // console.log(keyCode);
+      }
+
+      //是否結束游戲
+      var isDiff=f.checkDiff(stringifyItems);
+      if(isDiff){
+        //如果有變化，新增一個數字
+        window.setTimeout(function(){
+          f.addNumber();
+        },3e2);
+      }else{
+        console.log('game over');
       }
     },
     checkDiff:function(stringifyItems){
