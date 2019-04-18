@@ -108,10 +108,7 @@ var obj=new Vue({
       // console.log(JSON.stringify(arr));
       return (arr);
     },
-    //轉換為二維數組
-    to2Drow:function(arr){
-      return (_.chunk(arr,4));
-    },
+    
     //監聽上下左右鍵(38,39,40,37)
     handleKey:function(keyCode){
       var f=this;
@@ -156,6 +153,36 @@ var obj=new Vue({
         //設置items
         f.items=_.flatten(x);
         break;
+      case 38:
+        //1.轉換為二位數組
+        x=f.to2Drow(f.items);
+        x=f.rotate(x);
+        //2.每一行（4個元素）右滑
+        x=x.map(function(row){
+          return (f.slide(row,-1));
+        });
+        //3.每一行（4個元素）化合
+        x=x.map(function(row){
+          return (f.combine(row,-1));
+        });
+        //4.每一行（4個元素）右滑
+        x=x.map(function(row){
+          return (f.slide(row,-1));
+        });
+        x=f.rotate(x);
+        this.items=_.flatten(x);
+        break;
+      case 40:
+        //1.轉換為二位數組
+        x=f.to2Drow(f.items);
+        x=f.rotate(x);
+        //2.每一行（4個元素）右滑
+        x=x.map(function(row){
+          return (f.slide(f.combine(f.slide(row,1),1),1));
+        });
+        x=f.rotate(x);
+        this.items=_.flatten(x);
+        break;
       default:
         // console.log(keyCode);
       }
@@ -170,6 +197,20 @@ var obj=new Vue({
       }else{
         console.log('game over');
       }
+    },
+    //轉換為二維數組
+    to2Drow:function(arr){
+      return (_.chunk(arr,4));
+    },
+    rotate:function(arr){
+      var arrResult=[];
+      for(var i=0;i<4;i++){
+        arrResult[i]=[];
+        for(var j=0;j<4;j++){
+          arrResult[i][j]=arr[j][i];
+        }
+      }
+      return arrResult;
     },
     checkDiff:function(stringifyItems){
       var prev=JSON.parse(stringifyItems);
