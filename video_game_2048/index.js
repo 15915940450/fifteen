@@ -19,6 +19,7 @@ var obj=new Vue({
     keyCodeRotate:[38,75,40,74],
     initN:5,
     complete:false,
+    base:2,
     target:2048
   },
   methods:{
@@ -35,6 +36,7 @@ var obj=new Vue({
 
     //產生新數字
     addNumber:function(notMarkNew){
+      var f=this;
       var items_value0=this.items.filter(function(v){
         return !(+v.value);
       });
@@ -46,7 +48,7 @@ var obj=new Vue({
         this.items=this.items.map(function(v){
           v.isNew=false;
           if(v.index===index){
-            v.value=Math.random()>.2?2:4;
+            v.value=Math.random()>.2?f.base:f.base*2;
             if(!notMarkNew){
               //是新瓷磚（參數為false或不傳入）
               v.isNew=true;
@@ -92,15 +94,16 @@ var obj=new Vue({
     },
     //結合(right)
     combine:function(arr,type){
+      var i;
       if(type===-1){
-        for(var i=0;i<3;i++){
+        for(i=0;i<3;i++){
           if(arr[i].value===arr[i+1].value){
             arr[i].value*=2;
             arr[i+1].value=0;
           }
         }
       }else{
-        for(var i=3;i>0;i--){
+        for(i=3;i>0;i--){
           if(arr[i].value===arr[i-1].value){
             arr[i].value*=2;
             arr[i-1].value=0;
@@ -132,8 +135,8 @@ var obj=new Vue({
       //取消標志新
       f.cancelNew();
 
-      //1.轉換為二位數組
-      x=f.to2Darr(f.items);
+      //1.轉換為二維數組
+      var x=f.to2Darr(f.items);
 
       if(needRotate){
         x=f.rotate(x);
@@ -173,7 +176,6 @@ var obj=new Vue({
       }
     },
     checkOver:function(){
-      var isOver=false;
       var has0=this.items.some(function(v){
         return (!+v.value);
       });
