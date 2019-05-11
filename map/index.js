@@ -95,7 +95,7 @@ class M{
         return pathData.path;
       },
       getHoverTitle: function(pathData, pathIndex, pointIndex) {
-        console.log(pathData);
+        // console.log(pathData);
         if(pointIndex===0){
           return '起点：'+pathData.startPlaceName;
         }
@@ -133,6 +133,9 @@ class M{
   }
   setData(data){
     var f=this;
+    
+
+
     if(data.data.length===0){
       pathSimplifierIns.setData(null);
       return false;
@@ -142,12 +145,12 @@ class M{
       arrPath=data.data.map(function(v){
         return (v.location.split(',').reverse());
       });
-      console.log(arrPath);
+      var name=$('.distance_select option:selected').text().trim().split('-');
 
       var dataSet=[{
         name:'車輛轨迹',
-        startPlaceName:'abc',
-        endPlaceName:'lll',
+        startPlaceName:name[0],
+        endPlaceName:name[1],
         path:arrPath
       }];
 
@@ -208,13 +211,28 @@ class M{
           dataType:'json',
           success:function(data){
             // console.log(data);
-            var strDistance=data.data.map(function(v){
-              return (`<option value="${v.distance_id}">
-                  ${v.ignite_latitude} - ${v.misfire_longitude}
-                </option>`);
-            }).join('');
-            // console.log(strDistance);
-            $('.distance_select').html(strDistance);
+            var longlats=[];
+            data.data.forEach(function(v){
+              longlats.push([v.ignite_longitude,v.ignite_latitude].reverse());
+              longlats.push([v.misfire_longitude,v.misfire_latitude].reverse());
+            });
+            geocoder.getAddress(longlats,function(status,result){
+              if(status==='complete'){
+                // console.log(result);
+                f.geo=result;
+                var strDistance=data.data.map(function(v,i){
+                  return (`<option value="${v.distance_id}">
+                      ${result.regeocodes[i*2].formattedAddress} - ${result.regeocodes[i*2+1].formattedAddress}
+                    </option>`);
+                  
+                }).join('');
+                // console.log(strDistance);
+                $('.distance_select').html(strDistance);
+
+              }
+            });
+
+            
           }
         });
       }else{
