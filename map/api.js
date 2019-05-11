@@ -1,9 +1,9 @@
 /* eslint-disable */
 var api={
-  ecadminjs:'/statistics/total__1',
+  carpoints:'/car/loadLatLon?distanceId=',
+  tripDetail:'/car/tripDetail?carId=',
 
-
-  getCar:'/car/list'
+  carlist:'/car/list'
 };
 
 //以上是api接口列表=====================================================

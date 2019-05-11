@@ -8,12 +8,28 @@
 <meta name="author" content="Thilina Fong" />
 <meta name="description" content="" />
 <link rel="stylesheet" href="../bootstrap.css" />
+<link rel="stylesheet" href="./style.css" />
+<script type="text/javascript" src="//webapi.amap.com/maps?v=1.4.1&key=811057a9445721e5246bc5e006505f71"></script>
+<script src="//webapi.amap.com/ui/1.0/main.js?v=1.0.11"></script>
 </head>
 <body>
 
-<div id="container">
+<div id="container" class="container">
   <div class="row">
-    <div class="col"></div>
+    <form class="col-md-2">
+      <select class="form-control car_select">
+        <option value="">請選擇</option>
+      </select>
+      <select class="form-control distance_select">
+        <option value="">請選擇</option>
+      </select>
+
+      <button type="submit" class="btn btn-primary submit_button">查詢</button>
+    </form>
+    <div class="col-md-10">
+      <div id="a-map" class="a_map" style="min-height:690px;">
+      </div>
+    </div>
   </div>
 </div>  <!--container-->
 <script src="../jquery.min.js" charset="utf-8"></script>
