@@ -17,12 +17,21 @@
 <div id="container" class="container">
   <div class="row">
     <form class="col-md-2">
-      <select class="form-control car_select">
+      車輛：
+      <select class="form-control car_select mt" required="required">
         <option value="">請選擇</option>
       </select>
-      <select class="form-control distance_select">
+
+      行程：
+      <select class="form-control distance_select mt" required="required">
         <option value="">請選擇</option>
       </select>
+
+      範圍中心點：
+      <input type="text" name="place" class="form-control mt" placeholder="請在地圖上點選位置" readonly="readonly" required="required" />
+
+      半径（米）：
+      <input name="radius" type="text" class="form-control mt" placeholder="1000" value="1000" pattern="\d+" />
 
       <button type="submit" class="btn btn-primary submit_button">查詢</button>
     </form>
