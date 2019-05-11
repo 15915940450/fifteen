@@ -11,7 +11,7 @@ var api={
 
 
 _.forEach(api,function(v,k){
-  api[k]='http://192.168.2.201:8089'+v;
+  api[k]='http://120.77.61.77:8089'+v;
 });
 
 
