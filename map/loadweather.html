@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>load weather</title>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<meta name="author" content="Thilina Fong" />
+<meta name="description" content="" />
+<link rel="stylesheet" href="../bootstrap.css" />
+<link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+
+<div id="container" class="container">
+  <form>
+    <div class="mt">
+      <input class="form-control" placeholder="請錄入日期，2018-09-27" type="date" required="required" />
+    </div>
+
+    <button type="submit" class="btn btn-primary mt submit_button">查詢</button>
+  </form>
+  <table class="table table-sm hidden weather_table">
+    <thead>
+      <tr>
+        <td>地區</td>
+        <td>degree</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>粵A</td>
+        <td>9</td>
+      </tr>
+    </tbody>
+  </table>
+</div>  <!--container-->
+<script src="../jquery.min.js" charset="utf-8"></script>
+<script src="../lodash.ili.js" charset="utf-8"></script>
+<script src="./api.js"></script>
+<script src="./loadweather.js"></script>
+</body>
+</html>
