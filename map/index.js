@@ -3,10 +3,14 @@ var pathSimplifierIns,name,longitude,latitude,place,radius,map,marker,circle,inf
 class M{
   constructor(){
     this.result=false;  //不在安全範圍
+    this.center=null;
   }
 
   init(){
     var f=this;
+    radius=1000;
+    $('input[name=radius]').val(radius);
+    $('input[name=place]').val('');
     return f;
   }
 
@@ -48,6 +52,8 @@ class M{
           longitude=ev.lnglat.lng;
           latitude=ev.lnglat.lat;
 
+          f.center=ev.lnglat;
+          $('input[name=place]').val(place);
           circle.setCenter(ev.lnglat);
           info.setContent('<div class="circle-info">'+place+'</div>');
           if(!info.getIsOpen()){
@@ -55,7 +61,6 @@ class M{
           }else{
             info.setPosition(ev.lnglat);
           }
-          f.setInputValue();
           map.setFitView();
         }else{
           $('input[name=place]').val('无法获取地址');
@@ -176,6 +181,7 @@ class M{
   circle(){
     var f=this;
     var center=map.getCenter();
+    f.center=map.getCenter();
     circle=new AMap.Circle({
       center:[center.lng,center.lat],
       radius:radius?radius:1000,
@@ -256,9 +262,31 @@ class M{
         success:function(data){
           //console.log(data);
           f.setData(data);
+          f.calcData(data);
         }
       });
     });
+    return f;
+  }
+  calcData(data){
+    var f=this;
+    //var p1 = new AMap.LngLat(116.434027, 39.941037);
+    //var p2 =new AMap.LngLat(116.461665, 39.941564);
+    //// 返回 p1 到 p2 间的地面距离，单位：米
+    //var dis=p1.distance(p2);
+    //console.log(radius);
+    f.result=data.data.every(function(v){
+      var p1=new AMap.LngLat(v.location.split(',')[1],v.location.split(',')[0]);
+      var distance=p1.distance(f.center);
+      return (distance<radius);
+    });
+
+    $('form p').removeClass('hidden');
+    if(f.result){
+      $('form p strong').html('合法');
+    }else{
+      $('form p strong').html('不合法');
+    }
     return f;
   }
 
