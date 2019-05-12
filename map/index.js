@@ -2,14 +2,14 @@ var pathSimplifierIns,name,longitude,latitude,place,radius,map,marker,circle,inf
 
 class M{
   constructor(){
-
+    this.result=false;  //不在安全範圍
   }
 
   init(){
     var f=this;
     return f;
   }
-  
+
   getData(){
     var f=this;
     $.ajax({
@@ -131,16 +131,14 @@ class M{
     pathSimplifierIns.setData(null);
     return f;
   }
+  //畫軌跡
   setData(data){
     var f=this;
-    
-
-
     if(data.data.length===0){
       pathSimplifierIns.setData(null);
       return false;
     }else{
-      // 中控轨迹
+      //轨迹
       var arrPath=[];
       arrPath=data.data.map(function(v){
         return (v.location.split(',').reverse());
@@ -224,7 +222,7 @@ class M{
                   return (`<option value="${v.distance_id}">
                       ${result.regeocodes[i*2].formattedAddress} - ${result.regeocodes[i*2+1].formattedAddress}
                     </option>`);
-                  
+
                 }).join('');
                 // console.log(strDistance);
                 $('.distance_select').html(strDistance);
@@ -232,16 +230,17 @@ class M{
               }
             });
 
-            
+
           }
         });
       }else{
         $('.distance_select').html('<option value="">請選擇</option>');
       }
-      
+
     });
     return f;
   }
+  //提交表單，查詢：在範圍内(合法行爲)或外
   handleSubmit(){
     var f=this;
     $('.points_form').on('submit',function(ev){
@@ -255,7 +254,7 @@ class M{
         method:'POST',
         dataType:'json',
         success:function(data){
-          console.log(data);
+          //console.log(data);
           f.setData(data);
         }
       });
