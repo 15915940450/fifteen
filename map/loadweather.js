@@ -2,8 +2,17 @@ class Weather{
   constructor(){}
 
   init(){}
-  loadWeather(){
+  test(){
     var f=this;
+      $.ajax({
+        url:api.loadSpeed+'?startTime=2018-09-27 23:41:44&endTime=2018-09-27 23:55:44',
+        method:'POST',
+        dataType:'json',
+        success:function(data){
+          console.log(data);
+        }
+      });
+
     return f;
   }
   handleSubmit(){
@@ -35,4 +44,5 @@ class Weather{
 
 var obj=new Weather();
 obj.init();
+obj.test();
 obj.handleSubmit();

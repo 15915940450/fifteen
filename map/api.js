@@ -3,6 +3,7 @@ var api={
   carpoints:'/car/loadLatLon?distanceId=',
   tripDetail:'/car/tripDetail?carId=',
   loadWeather:'/car/loadWeather?time=',
+  loadSpeed:'/car/loadSpeed',
 
   carlist:'/car/list'
 };
