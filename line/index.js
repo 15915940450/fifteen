@@ -18,10 +18,20 @@ class Line{
 
     this.ctx=this.el.getContext('2d');
 
+    this.arrLines=[];
+    for(var i=0;i<this.arrPoints.length-1;i++){
+      this.arrLines.push({
+        startPoint:[this.arrPoints[i][0],this.arrPoints[i][1]],
+        endPoint:[this.arrPoints[i+1][0],this.arrPoints[i+1][1]],
+        dir:this.arrPoints[i+1][0]-this.arrPoints[i][0]>0?1:-1
+      });
+    }
+
 
     this.currentPoint={
       x:this.arrPoints[0][0],
-      y:this.arrPoints[0][1]
+      y:this.arrPoints[0][1],
+      inLine:0
     };
 
     // this.test();
@@ -61,10 +71,41 @@ class Line{
   doInEveryStep(){
     var f=this;
     var ctx=f.ctx;
-    var currentPoint=f.currentPoint;
+    var dx=2; //遞增量
+    var arrLines=f.arrLines;
 
-    ctx.lineTo();
+    var x=f.currentPoint.x;
+    var y=f.currentPoint.y;
+    var lineIndex=f.currentPoint.inLine;
+
+    // 下一點
+    x=x+dx*arrLines[lineIndex].dir;
+    y=f.calcY(x,lineIndex);
+    // console.log(x);
+
+    f.currentPoint={
+      x:x,
+      y:y,
+      inLine:lineIndex
+    };
+
+    ctx.lineTo(x,y);
+    ctx.strokeStyle='white';
+    ctx.stroke();
     return f;
+  }
+  calcY(x,lineIndex){
+    var y;
+    //(y-y1)/(y2-y1)=(x-x1)/(x2-x1)
+    var arrLines=this.arrLines;
+    var y1=arrLines[lineIndex].startPoint[1];
+    var y2=arrLines[lineIndex].endPoint[1];
+    var x1=arrLines[lineIndex].startPoint[0];
+    var x2=arrLines[lineIndex].endPoint[0];
+
+    y=(x-x1)*(y2-y1)/(x2-x1)+y1;
+
+    return y;
   }
 }
 
