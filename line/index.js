@@ -68,6 +68,10 @@ class Line{
     window.requestAnimationFrame(rafCallback);
     return f;
   }
+  hitLineEnd(x,lineIndex){
+    var f=this;
+    return (x===f.arrLines[lineIndex].endPoint[0]);
+  }
   doInEveryStep(){
     var f=this;
     var ctx=f.ctx;
@@ -82,6 +86,20 @@ class Line{
     x=x+dx*arrLines[lineIndex].dir;
     y=f.calcY(x,lineIndex);
     // console.log(x);
+
+    //到達拐點
+    if(f.hitLineEnd(x,lineIndex)){
+      // console.log('okay');
+      lineIndex++;
+      //到達整段折綫的終點
+      if(lineIndex===this.arrLines.length){
+        lineIndex=0;
+        x=this.arrPoints[0][0];
+        y=this.arrPoints[0][1];
+        ctx.clearRect(0,0,this.CW,this.CH);
+        ctx.beginPath();
+      }
+    }
 
     f.currentPoint={
       x:x,
