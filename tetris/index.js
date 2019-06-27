@@ -13,11 +13,61 @@ class TETRIS{
     this.W=10;
     this.H=20;
     this.cell=30;
+
+    this.rule=[
+      {
+        level:18,
+        removeLine:130,
+        frame:3
+      },
+      {
+        level:[19,20,21,22,23,24,25,26,27,28],
+        removeLine:10,
+        frame:2
+      }
+    ];
+    this.tetrisScore=[
+      {
+        name:'single',
+        value:40
+      },
+      {
+        name:'double',
+        value:100
+      },
+      {
+        name:'triple',
+        value:300
+      },
+      {
+        name:'tetris',
+        value:1200
+      }
+    ];
   }
 
   init(){
     this.initArrTetris();
     this.render();
+    this.raf();
+  }
+
+  raf(){
+    var f=this;
+    var iRAF=0;
+    var t0=new Date().getTime();
+    var rafCallback=function(){
+      iRAF++;
+      // if(){}
+      var t=new Date().getTime()-t0;  
+      if(t>1000 && t<2000){
+
+        console.log('x'); //每秒60幀
+      }
+      window.requestAnimationFrame(rafCallback);
+    };
+    window.requestAnimationFrame(rafCallback);
+    return f;
   }
 
   //初始化遊戲板數據
@@ -65,3 +115,5 @@ class TETRIS{
 
 var obj=new TETRIS();
 obj.init();
+
+
