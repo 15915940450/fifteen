@@ -1,18 +1,27 @@
 /*
+**電子遊戲： 俄羅斯方塊
+**Video Games: Tetris
 *12-3-6-9
 *Artificial Intelligence
-shapes:
 */
 class TETRIS{
   constructor(){
     this.arrTetris=[];  //10*20
 
+    /*界面設置*/
     this.eleCanvas=document.querySelector('canvas');
     this.ctx=this.eleCanvas.getContext('2d');
+    this.W=10;  //寬度：10
+    this.H=20;  //高度：20
+    this.cell=30; //每個格子大小
 
-    this.W=10;
-    this.H=20;
-    this.cell=30;
+    /*遊戲中的狀態*/
+    this.score=0; //遊戲得分
+    this.HiScore=0; //歷史最高分
+    this.next='I0';  //下一個方塊
+    this.level=18;  //18級
+    this.lines=0; //已消除的行數
+
 
     this.rule=[
       {
@@ -25,7 +34,8 @@ class TETRIS{
         removeLine:10,
         frame:2
       }
-    ];
+    ];  //級數規則
+
     this.tetrisScore=[
       {
         name:'single',
@@ -43,13 +53,14 @@ class TETRIS{
         name:'tetris',
         value:1200
       }
-    ];
+    ];  //消除行數得分
+
   }
 
   init(){
     this.initArrTetris();
     this.render();
-    this.raf();
+    this.raf(); //動畫：每秒60幀
   }
 
   raf(){
