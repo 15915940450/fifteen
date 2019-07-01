@@ -60,7 +60,7 @@ class TETRIS{
   init(){
     this.initArrTetris();
     this.render();
-    this.raf(); //動畫：每秒60幀
+    // this.raf(); //動畫：每秒60幀
   }
 
   raf(){
@@ -99,15 +99,25 @@ class TETRIS{
   render(){
     var f=this;
     var ctx=f.ctx;
+    var w=f.cell;
+    var arrBCC=[0.5,5,9];
 
     ctx.clearRect(0,0,300,600);
-    ctx.fillStyle='dimgray';
+    
 
     ctx.beginPath();
     for(var i=0;i<f.W;i++){
       for(var j=0;j<f.H;j++){
         if(f.arrTetris[i][j]){
-          ctx.rect(f.cell*i,f.cell*j,f.cell,f.cell);
+          ctx.fillStyle='white';
+          ctx.fillRect(w*i,w*j,w,w);
+
+          ctx.fillStyle='black';
+          ctx.fillRect(w*i+arrBCC[0],w*j+arrBCC[0],w,w);
+
+          ctx.clearRect(w*i+arrBCC[1],w*j+arrBCC[1],w-2*arrBCC[1],w-2*arrBCC[1]);
+
+          ctx.fillRect(w*i+arrBCC[2],w*j+arrBCC[2],w-2*arrBCC[2],w-2*arrBCC[2]);
         }
       }
 
