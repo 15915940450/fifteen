@@ -19,7 +19,7 @@ class TETRIS{
     /*遊戲中的狀態*/
     this.score=0; //遊戲得分
     this.HiScore=0; //歷史最高分
-    this.next='I0';  //下一個方塊
+    this.next=['I',0];  //下一個方塊
     this.level=18;  //18級
     this.lines=0; //已消除的行數
 
@@ -61,7 +61,7 @@ class TETRIS{
       }
     ];  //消除行數得分
 
-    //定義方塊形狀(4*4)(IJLOSTZ)
+    //定義方塊形狀(4*4)(IJLOSTZ)(four times four)
     this.f_f={
       'I':[
         [4,4,4,4],[0,15,0,0]
@@ -134,6 +134,14 @@ class TETRIS{
   //繪製canvas
   render(){
     var f=this;
+    f.renderCanvasMain();
+    f.renderCanvasNext();
+
+    return f;
+  }
+  //畫主canvas
+  renderCanvasMain(){
+    var f=this;
     var ctx=f.ctx;
     var w=f.cell;
     var arrBCC=[1,4];
@@ -168,8 +176,58 @@ class TETRIS{
     
     
     
+    return f;
+  }
+  //畫下一個
+  renderCanvasNext(){
+    var f=this;
+    var next=f.f_f[f.next[0]][f.next[1]];
+    //[4,4,4,4]
+    var ctx=f.eleCanvasNext.getContext('2d');
+    var w=f.cell;
+    var arrBCC=[1,4];
+    ctx.clearRect(0,0,120,120);
+    ctx.beginPath();
+    var i=1;
+
+
+    
+
+    ctx.fillStyle='dimgray';
+    ctx.fillRect(w*i+arrBCC[0],w*i+arrBCC[0],w-2,w-2);
+
+    //主要的顏色
+    var arrColor=['#fffeff','#ca4679','#2eb788'];
+    ctx.fillStyle=arrColor[0];
+    ctx.fillRect(w*i+arrBCC[1],w*i+arrBCC[1],w-2*arrBCC[1],w-2*arrBCC[1]);
+f.F2([0,1,7,0]);
 
     return f;
+  }
+  //[4,4,4,4] ==> [[0,0,1,0],[0,0,1,0],[0,0,1,0],[0,0,1,0]]
+  F2(arrLETTER){
+    var arr=arrLETTER.map(function(v){
+      var arr01=[];
+
+      // 15>>4(0) 15>>3(1) 15>>2(3) 15>>1(7) 15>>0(15)
+      // 2<<0(2) 2<<1(4) 2<<2(8) 2<<3(16)
+      // 4>>4(0) 4>>3(0) 4>>2(1) 4>>1(2) 4>>0(4)
+      for(var bit=3;bit>=0;bit--){
+        if(v>>bit){
+          //該位有值
+          arr01.unshift(1);
+          //減去該位餘值繼續檢測
+          v=v-(2<<(bit-1));
+        }else{
+          arr01.unshift(0);
+        }
+      }
+      return (arr01);
+    });
+
+
+console.log(arr);
+    return arr;
   }
 
 } //class
