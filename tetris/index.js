@@ -62,7 +62,7 @@ class TETRIS{
     ];  //消除行數得分
 
     //定義方塊形狀(4*4)(IJLOSTZ)(four times four)
-    this.f_f={
+    /*this.f_f={
       'I':[
         [4,4,4,4],[0,15,0,0]
       ],
@@ -84,7 +84,16 @@ class TETRIS{
       'Z':[
         [0,3,6,0],[4,6,2,0]
       ]
-    };
+    };*/
+    this.f_f={
+      I:['4_4_4_4','0_15_0_0'],
+      J:['4_4_6_0','0_1_7_0','6_2_2_0','0_7_4_0'],
+      L:['2_2_6_0','0_7_1_0','6_4_4_0','0_4_7_0'],
+      O:['0_6_6_0'],
+      S:['0_6_3_0','2_6_4_0'],
+      T:['0_7_2_0','4_6_4_0','0_2_7_0','2_6_2_0'],
+      Z:['0_3_6_0','4_6_2_0'],
+    }
 
   }
 
@@ -182,7 +191,7 @@ class TETRIS{
   renderCanvasNext(){
     var f=this;
     var next=f.f_f[f.next[0]][f.next[1]];
-    //[4,4,4,4]
+    //'4_4_4_4'
     var ctx=f.eleCanvasNext.getContext('2d');
     var w=f.cell;
     var arrBCC=[1,4];
@@ -200,13 +209,13 @@ class TETRIS{
     var arrColor=['#fffeff','#ca4679','#2eb788'];
     ctx.fillStyle=arrColor[0];
     ctx.fillRect(w*i+arrBCC[1],w*i+arrBCC[1],w-2*arrBCC[1],w-2*arrBCC[1]);
-f.F2([0,1,7,0]);
+f.F2('0_7_1_0');
 
     return f;
   }
-  //[4,4,4,4] ==> [[0,0,1,0],[0,0,1,0],[0,0,1,0],[0,0,1,0]]
-  F2(arrLETTER){
-    var arr=arrLETTER.map(function(v){
+  //'4_4_4_4' ==> [[0,0,1,0],[0,0,1,0],[0,0,1,0],[0,0,1,0]]
+  F2(LETTER){
+    var arr=LETTER.split('_').map(function(v){
       var arr01=[];
 
       // 15>>4(0) 15>>3(1) 15>>2(3) 15>>1(7) 15>>0(15)
