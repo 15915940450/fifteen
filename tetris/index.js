@@ -9,7 +9,8 @@ class TETRIS{
     this.arrTetris=[];  //10*20
 
     /*界面設置*/
-    this.eleCanvas=document.querySelector('canvas');
+    this.eleCanvas=document.querySelector('.canvas_main');
+    this.eleCanvasNext=document.querySelector('.canvas_next');
     this.ctx=this.eleCanvas.getContext('2d');
     this.W=10;  //寬度：10
     this.H=20;  //高度：20
@@ -24,6 +25,11 @@ class TETRIS{
 
 
     this.rule=[
+      {
+        level:0,
+        removeLine:10,
+        frame:48
+      },
       {
         level:18,
         removeLine:130,
@@ -89,7 +95,12 @@ class TETRIS{
         this.arrTetris[i]=[];
       }
       for(var j=0;j<f.H;j++){
-        this.arrTetris[i][j]=Math.random()>.5?0:1;
+        if(j>=12){
+          //最後8行(13,20)
+          this.arrTetris[i][j]=Math.random()>.4?0:1;
+        }else{
+          this.arrTetris[i][j]=0;
+        }
       }
     }
     return f;
@@ -100,7 +111,8 @@ class TETRIS{
     var f=this;
     var ctx=f.ctx;
     var w=f.cell;
-    var arrBCC=[0.5,5,9];
+    var arrBCC=[1,4];
+    // var arrBCC=[1,5,9];
 
     ctx.clearRect(0,0,300,600);
     
@@ -109,15 +121,18 @@ class TETRIS{
     for(var i=0;i<f.W;i++){
       for(var j=0;j<f.H;j++){
         if(f.arrTetris[i][j]){
-          ctx.fillStyle='white';
+          ctx.fillStyle='black';
           ctx.fillRect(w*i,w*j,w,w);
 
-          ctx.fillStyle='black';
-          ctx.fillRect(w*i+arrBCC[0],w*j+arrBCC[0],w,w);
+          ctx.fillStyle='dimgray';
+          ctx.fillRect(w*i+arrBCC[0],w*j+arrBCC[0],w-2,w-2);
 
-          ctx.clearRect(w*i+arrBCC[1],w*j+arrBCC[1],w-2*arrBCC[1],w-2*arrBCC[1]);
+          //主要的顏色
+          var arrColor=['#fffeff','#ca4679','#2eb788'];
+          ctx.fillStyle=arrColor[0];
+          ctx.fillRect(w*i+arrBCC[1],w*j+arrBCC[1],w-2*arrBCC[1],w-2*arrBCC[1]);
 
-          ctx.fillRect(w*i+arrBCC[2],w*j+arrBCC[2],w-2*arrBCC[2],w-2*arrBCC[2]);
+          // ctx.fillRect(w*i+arrBCC[2],w*j+arrBCC[2],w-2*arrBCC[2],w-2*arrBCC[2]);
         }
       }
 

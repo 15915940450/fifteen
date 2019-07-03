@@ -9,13 +9,47 @@
 <meta name="description" content="" />
 <style>
 canvas{
-  background:whitesmoke;
-  border: 2px solid black;
+  background:black;
+  border: 2px solid #95ccd2;
+}
+.flex_wrap{
+  display: flex;
+}
+.status{
+  padding-left: 20px;
+}
+.status p{
+  border-bottom: 1px solid black;
+}
+.status h4{
+  margin: 0;
+  padding: 0;
+}
+.canvas_next{
+  
+}
+
+
+.hidden{
+  display: none;
 }
 </style>
 </head>
 <body>
-<canvas width="300" height="600"></canvas>
+<div class="flex_wrap">
+  <canvas class="canvas_main" width="300" height="600"></canvas>
+  <div class="status">
+    <p>score</p>
+    <h4>20</h4>
+    <p>level</p>
+    <h4>18</h4>
+    <p>lines</p>
+    <h4>124</h4>
+    <p>next</p>
+    <h4 class="hidden">I0</h4>
+    <canvas class="canvas_next" width="120" height="120"></canvas>
+  </div>
+</div>
 <script src="../lodash.ili.js" charset="utf-8"></script>
 <script src="./index.js"></script>
 </body>
