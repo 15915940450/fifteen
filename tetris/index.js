@@ -62,13 +62,34 @@ class TETRIS{
 
     //定義方塊形狀(4*4)(IJLOSTZ)(four times four)
     this.f_f={
-      I:['4_4_4_4','0_15_0_0'],
-      J:['4_4_6_0','0_1_7_0','6_2_2_0','0_7_4_0'],
-      L:['2_2_6_0','0_7_1_0','6_4_4_0','0_4_7_0'],
-      O:['0_6_6_0'],
-      S:['0_6_3_0','2_6_4_0'],
-      T:['0_7_2_0','4_6_4_0','0_2_7_0','2_6_2_0'],
-      Z:['0_3_6_0','4_6_2_0']
+      I:{
+        color:'#fffeff',
+        form:['4_4_4_4','0_15_0_0']
+      },
+      J:{
+        color:'#ca4679',
+        form:['4_4_6_0','0_1_7_0','6_2_2_0','0_7_4_0']
+      },
+      L:{
+        color:'#2eb788',
+        form:['2_2_6_0','0_7_1_0','6_4_4_0','0_4_7_0']
+      },
+      O:{
+        color:'#fffeff',
+        form:['0_6_6_0']
+      },
+      S:{
+        color:'#ca4679',
+        form:['0_6_3_0','2_6_4_0']
+      },
+      T:{
+        color:'#2eb788',
+        form:['0_7_2_0','4_6_4_0','0_2_7_0','2_6_2_0']
+      },
+      Z:{
+        color:'#fffeff',
+        form:['0_3_6_0','4_6_2_0']
+      }
     };
 
   }
@@ -80,7 +101,7 @@ class TETRIS{
   }
 
   // 動畫
-  raf(){
+  /*raf(){
     var f=this;
     var iRAF=0;
     var t0=new Date().getTime();
@@ -96,7 +117,7 @@ class TETRIS{
     };
     window.requestAnimationFrame(rafCallback);
     return f;
-  }
+  }*/
 
   //初始化遊戲板數據
   initArrTetris(){
@@ -108,9 +129,15 @@ class TETRIS{
       for(var j=0;j<f.W;j++){
         if(row>=12){
           //最後8行(13,20)
-          this.arrTetris[row][j]=Math.random()>.4?0:1;
+          this.arrTetris[row][j]={
+            color:'#fffeff',
+            v:Math.random()>.4?0:1
+          };
         }else{
-          this.arrTetris[row][j]=0;
+          this.arrTetris[row][j]={
+            color:'#fffeff',
+            v:0
+          };
         }
       }
     }
@@ -121,7 +148,7 @@ class TETRIS{
   render(){
     var f=this;
     f.renderCanvas(f.eleCanvas.getContext('2d'),f.arrTetris,f.cell);
-    f.renderCanvas(f.eleCanvasNext.getContext('2d'),f.F2(f.f_f[f.next[0]][f.next[1]]),22);
+    // f.renderCanvas(f.eleCanvasNext.getContext('2d'),f.F2(f.f_f[f.next[0]][f.next[1]]),22);
     return f;
   }
   //由二維數組繪製成canvas
@@ -132,13 +159,12 @@ class TETRIS{
     ctx.beginPath();
     for(var row=0;row<arr.length;row++){
       for(var j=0;j<arr[0].length;j++){
-        if(arr[row][j]){
+        if(arr[row][j].v){
           ctx.fillStyle='dimgray';
           ctx.fillRect(perW*j+arrBCC[0],perW*row+arrBCC[0],perW-2,perW-2);
 
-          //主要的顏色
-          var arrColor=['#fffeff','#ca4679','#2eb788'];
-          ctx.fillStyle=arrColor[0];
+          //格子的顏色
+          ctx.fillStyle=arr[row][j].color;
           ctx.fillRect(perW*j+arrBCC[1],perW*row+arrBCC[1],perW-2*arrBCC[1],perW-2*arrBCC[1]);
         }
       }
@@ -148,7 +174,9 @@ class TETRIS{
     return f;
   }
 
-  //將字母轉化為01二維數組 ('4_4_4_4' ==> [[0,0,1,0],[0,0,1,0],[0,0,1,0],[0,0,1,0]])
+  /*
+  將字母轉化為01二維數組 ('4_4_4_4' ==> [[0,0,1,0],[0,0,1,0],[0,0,1,0],[0,0,1,0]])
+  */
   F2(LETTER){
     var arr=LETTER.split('_').map(function(v){
       var arr01=[];
