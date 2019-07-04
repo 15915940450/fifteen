@@ -16,10 +16,12 @@ class TETRIS{
     this.cell=30; //每個格子大小
 
     /*遊戲中的狀態*/
+    this.active=null;  //下一個方塊
+    this.activeForm=null;  //下一個方塊形態索引
+    this.next=null;  //下一個方塊
+    this.nextForm=null;  //下一個方塊形態索引
     this.score=0; //遊戲得分
     this.HiScore=0; //歷史最高分
-    this.next='J';  //下一個方塊
-    this.nextForm=0;  //下一個方塊形態索引
     this.level=18;  //18級
     this.lines=0; //已消除的行數
 
@@ -123,6 +125,7 @@ class TETRIS{
   //初始化遊戲板數據
   initArrTetris(){
     var f=this;
+    //初始雜亂數據
     for(var row=0;row<f.H;row++){
       if(!this.arrTetris[row]){
         this.arrTetris[row]=[];
@@ -131,26 +134,34 @@ class TETRIS{
         if(row>=12){
           //最後8行(13,20)
           this.arrTetris[row][j]={
-            color:'#fffeff',
+            color:'crimson',
             v:Math.random()>.4?0:1
           };
         }else{
           this.arrTetris[row][j]={
-            color:'#fffeff',
+            color:'black',
             v:0
           };
         }
       }
     }
+    //第一個當前活動的方塊
+    var active=f.gLETTER();
+    f.active=active.LETTER;
+    f.activeForm=active.form;
+
     return f;
   }
 
   //繪製canvas
   render(){
     var f=this;
+    f.addActiveLETTER();
     f.renderCanvas(f.eleCanvas.getContext('2d'),f.arrTetris,f.cell);
     //從該形狀中隨機選取一個
-    f.nextForm=_.random(f.f_f[f.next].form.length-1);
+    var next=f.gLETTER();
+    f.next=next.LETTER;
+    f.nextForm=next.form;
     f.renderCanvas(f.eleCanvasNext.getContext('2d'),f.F2(f.next,f.nextForm),22);
     return f;
   }
@@ -176,9 +187,28 @@ class TETRIS{
     ctx.fill();
     return f;
   }
+  //隨機生成字母
+  gLETTER(){
+    var f=this;
+    var LETTER=_.sample('IJLOSTZ'.split(''));
+    var form=_.random(f.f_f[LETTER].form.length-1);
+    return ({
+      LETTER:LETTER,
+      form:form
+    });
+  }
+  addActiveLETTER(){
+    var f=this;
+    var arr=f.F2(f.active,f.activeForm);
+    console.log(arr);
+    console.log(f.arrTetris);
+    return f;
+  }
 
   /*
-  將字母轉化為01二維數組 ('4_4_4_4' ==> [[0,0,1,0],[0,0,1,0],[0,0,1,0],[0,0,1,0]])
+  將字母轉化為01二維數組 ('4_4_4_4')
+  next:下一個字母，比如'J'
+  nextForm:下一個字母的形態序號，比如1
   */
   F2(next,nextForm){
     var f=this;
