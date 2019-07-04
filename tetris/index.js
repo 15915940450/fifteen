@@ -16,8 +16,12 @@ class TETRIS{
     this.cell=30; //每個格子大小
 
     /*遊戲中的狀態*/
-    this.active=null;  //下一個方塊
-    this.activeForm=null;  //下一個方塊形態索引
+    this.active=null;  //當前方塊
+    this.activeForm=null;  //當前方塊形態索引
+    this.activePosition={ //當前方塊的位置
+      row:0,
+      j:3  //列
+    };  //下一個方塊
     this.next=null;  //下一個方塊
     this.nextForm=null;  //下一個方塊形態索引
     this.score=0; //遊戲得分
@@ -197,11 +201,21 @@ class TETRIS{
       form:form
     });
   }
+  //數據添加當前活動方塊數據
   addActiveLETTER(){
     var f=this;
-    var arr=f.F2(f.active,f.activeForm);
-    console.log(arr);
-    console.log(f.arrTetris);
+    var LETTER01=f.F2(f.active,f.activeForm);
+    
+    //偏移量
+    var row=f.activePosition.row;
+    var j=f.activePosition.j;
+
+    for(var rowLETTER=0;rowLETTER<LETTER01.length;rowLETTER++){
+      for(var k=0;k<LETTER01[0].length;k++){
+        f.arrTetris[row+rowLETTER][j+k]=LETTER01[rowLETTER][k];
+      }
+    }
+
     return f;
   }
 
