@@ -19,7 +19,7 @@ class TETRIS{
     this.active=null;  //當前方塊
     this.activeForm=null;  //當前方塊形態索引
     this.activePosition={ //當前方塊的位置
-      row:0,
+      row:null,
       j:3  //列
     };  //下一個方塊
     this.next=null;  //下一個方塊
@@ -151,11 +151,34 @@ class TETRIS{
     }
     //第一個當前活動的方塊
     var active=f.gLETTER();
+    // f.active='I';
+    // f.activeForm=0;
+
     f.active=active.LETTER;
     f.activeForm=active.form;
+    
+    f.activePosition.row=f.calcAppearRow();
+    // f.activePosition.row=-2;  //0,1,2,3,4
 
     return f;
   }
+  //計算當前活動方塊出現的行數值
+  calcAppearRow(){
+    var f=this;
+    var row=-3;
+    var activeLETTER=f.f_f[f.active].form[f.activeForm].split('_').reverse();
+    console.log(activeLETTER);
+    for(var i=0;i<activeLETTER.length;i++){
+      if(!+activeLETTER[i]){
+        row++;
+      }else{
+        //跳出
+        break;
+      }
+    }
+    return (row);
+  }
+
 
   //繪製canvas
   render(){
@@ -205,6 +228,7 @@ class TETRIS{
   addActiveLETTER(){
     var f=this;
     var LETTER01=f.F2(f.active,f.activeForm);
+    // console.log(LETTER01);
     
     //偏移量
     var row=f.activePosition.row;
@@ -212,7 +236,10 @@ class TETRIS{
 
     for(var rowLETTER=0;rowLETTER<LETTER01.length;rowLETTER++){
       for(var k=0;k<LETTER01[0].length;k++){
-        f.arrTetris[row+rowLETTER][j+k]=LETTER01[rowLETTER][k];
+        //出現在視野中
+        if(row+rowLETTER>=0){
+          f.arrTetris[row+rowLETTER][j+k]=LETTER01[rowLETTER][k];
+        }
       }
     }
 
