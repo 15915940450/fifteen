@@ -18,7 +18,8 @@ class TETRIS{
     /*遊戲中的狀態*/
     this.score=0; //遊戲得分
     this.HiScore=0; //歷史最高分
-    this.next=['Z',1];  //下一個方塊
+    this.next='J';  //下一個方塊
+    this.nextForm=0;  //下一個方塊形態索引
     this.level=18;  //18級
     this.lines=0; //已消除的行數
 
@@ -148,7 +149,9 @@ class TETRIS{
   render(){
     var f=this;
     f.renderCanvas(f.eleCanvas.getContext('2d'),f.arrTetris,f.cell);
-    // f.renderCanvas(f.eleCanvasNext.getContext('2d'),f.F2(f.f_f[f.next[0]][f.next[1]]),22);
+    //從該形狀中隨機選取一個
+    f.nextForm=_.random(f.f_f[f.next].form.length-1);
+    f.renderCanvas(f.eleCanvasNext.getContext('2d'),f.F2(f.next,f.nextForm),22);
     return f;
   }
   //由二維數組繪製成canvas
@@ -177,7 +180,10 @@ class TETRIS{
   /*
   將字母轉化為01二維數組 ('4_4_4_4' ==> [[0,0,1,0],[0,0,1,0],[0,0,1,0],[0,0,1,0]])
   */
-  F2(LETTER){
+  F2(next,nextForm){
+    var f=this;
+    var color=f.f_f[next].color;
+    var LETTER=f.f_f[next].form[nextForm];
     var arr=LETTER.split('_').map(function(v){
       var arr01=[];
 
@@ -185,14 +191,20 @@ class TETRIS{
       // 2<<0(2) 2<<1(4) 2<<2(8) 2<<3(16)
       // 4>>4(0) 4>>3(0) 4>>2(1) 4>>1(2) 4>>0(4)
       for(var bit=3;bit>=0;bit--){
+        var objCell={
+          color:color,
+          v:0
+        };
         if(v>>bit){
           //該位有值
-          arr01.unshift(1);
+          objCell={
+            color:color,
+            v:1
+          };
           //減去該位餘值繼續檢測
           v=v-(2<<(bit-1));
-        }else{
-          arr01.unshift(0);
         }
+        arr01.unshift(objCell);
       }
       return (arr01);
     });
