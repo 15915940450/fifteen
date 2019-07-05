@@ -249,11 +249,20 @@ class TETRIS{
     for(var rowLETTER=0;rowLETTER<LETTER01.length;rowLETTER++){
       for(var k=0;k<LETTER01[0].length;k++){
         //出現在視野中
-        if(row+rowLETTER>=0){
-          f.arrTetrisAppendActive[row+rowLETTER][j+k]=LETTER01[rowLETTER][k];
+        if(row+rowLETTER>=0 && row+rowLETTER<20){
+          // console.log(LETTER01[rowLETTER][k]);
+          //{color: "#fffeff", v: 1}
+          if(LETTER01[rowLETTER][k].v){
+            //當前方塊中的1值替換
+          // if(!f.arrTetrisAppendActive[row+rowLETTER][j+k].v){
+            //空的數據才被替換
+            //{color: "#2eb788", v: 0}
+            f.arrTetrisAppendActive[row+rowLETTER][j+k]=LETTER01[rowLETTER][k];
+          }
         }
       }
     }
+
 
     return f;
   }
@@ -312,10 +321,29 @@ class TETRIS{
   //處理下降
   handleDown(){
     var f=this;
+
+    var tmp=f.activePosition.row;
     //當前行加1
-    f.activePosition.row=f.activePosition.row+1;
+    f.activePosition.row=tmp+1;
+
+    //檢測是否可以繼續下降
+    var b=f.check();
+    if(!b){
+      //不可以下降，還原操作
+      f.activePosition.row=tmp;
+      return false;
+    }
+    
     // 渲染
     f.render();
+    return f;
+  }
+
+  //檢測變化後是否有重複的cell，是否出邊界
+  // arrTetris,active,activeForm,activePosition
+  check(){
+    var f=this;
+    
     return f;
   }
 
