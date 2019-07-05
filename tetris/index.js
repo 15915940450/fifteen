@@ -6,7 +6,10 @@
 */
 class TETRIS{
   constructor(){
-    this.arrTetris=[];  //20*10
+    this.arrTetris=[];
+    //arrTetris:20*10(沒有當前活動的數據，當一個方塊固定後需要更新)
+    //arrTetrisAppendActive:20*10（加上當前活動的方塊，即係展示給用戶的數據，每一幀，每一個操作都要更新）
+    this.arrTetrisAppendActive=[];
 
     /*界面設置*/
     this.eleCanvas=document.querySelector('.canvas_main');
@@ -105,6 +108,7 @@ class TETRIS{
     this.initArrTetris();
     this.render();
     // this.raf(); //動畫：每秒60幀
+    this.listen();
   }
 
   // 動畫
@@ -167,7 +171,7 @@ class TETRIS{
     var f=this;
     var row=-3;
     var activeLETTER=f.f_f[f.active].form[f.activeForm].split('_').reverse();
-    console.log(activeLETTER);
+    // console.log(activeLETTER);
     for(var i=0;i<activeLETTER.length;i++){
       if(!+activeLETTER[i]){
         row++;
@@ -184,7 +188,7 @@ class TETRIS{
   render(){
     var f=this;
     f.addActiveLETTER();
-    f.renderCanvas(f.eleCanvas.getContext('2d'),f.arrTetris,f.cell);
+    f.renderCanvas(f.eleCanvas.getContext('2d'),f.arrTetrisAppendActive,f.cell);
     //從該形狀中隨機選取一個
     var next=f.gLETTER();
     f.next=next.LETTER;
@@ -234,11 +238,14 @@ class TETRIS{
     var row=f.activePosition.row;
     var j=f.activePosition.j;
 
+    //arrTetris是相對穩定的，由arrTetris與LETTER01(active)生成arrTetrisAppendActive
+    f.arrTetrisAppendActive=_.cloneDeep(f.arrTetris);
+
     for(var rowLETTER=0;rowLETTER<LETTER01.length;rowLETTER++){
       for(var k=0;k<LETTER01[0].length;k++){
         //出現在視野中
         if(row+rowLETTER>=0){
-          f.arrTetris[row+rowLETTER][j+k]=LETTER01[rowLETTER][k];
+          f.arrTetrisAppendActive[row+rowLETTER][j+k]=LETTER01[rowLETTER][k];
         }
       }
     }
@@ -280,6 +287,22 @@ class TETRIS{
       return (arr01);
     });
     return arr;
+  }
+
+  //監聽鍵盤
+  listen(){
+    var f=this;
+    document.onkeydown =function(ev){
+      var keyCode=(ev.keyCode);
+      //32:空格（變形）
+      //37:向左
+      //39:向右
+      //40:向下
+      if(+keyCode===40){
+
+      }
+    };
+    return f;
   }
 
 } //class
