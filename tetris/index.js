@@ -248,16 +248,15 @@ class TETRIS{
 
     for(var rowLETTER=0;rowLETTER<LETTER01.length;rowLETTER++){
       for(var k=0;k<LETTER01[0].length;k++){
-        //出現在視野中
-        if(row+rowLETTER>=0 && row+rowLETTER<20){
-          // console.log(LETTER01[rowLETTER][k]);
-          //{color: "#fffeff", v: 1}
+        var rowTetris=row+rowLETTER;
+        var jTerris=j+k;
+        if(f.checkBorder(rowTetris,jTerris)){
           if(LETTER01[rowLETTER][k].v){
             //當前方塊中的1值替換
-          // if(!f.arrTetrisAppendActive[row+rowLETTER][j+k].v){
+          // if(!f.arrTetrisAppendActive[rowTetris][jTerris].v){
             //空的數據才被替換
             //{color: "#2eb788", v: 0}
-            f.arrTetrisAppendActive[row+rowLETTER][j+k]=LETTER01[rowLETTER][k];
+            f.arrTetrisAppendActive[rowTetris][jTerris]=LETTER01[rowLETTER][k];
           }
         }
       }
@@ -315,7 +314,25 @@ class TETRIS{
       if(+keyCode===40){
         f.handleDown();
       }
+      if(+keyCode===39){
+        f.handleRight();
+      }
+      if(+keyCode===37){
+        f.handleLeft();
+      }
     };
+    return f;
+  }
+  handleRight(){
+    var f=this;
+    var tmp=f.activePosition.j;
+    f.activePosition.j=f.activePosition.j+1;
+    var b=f.check();
+    if(!b){
+      f.activePosition.j=tmp;
+      return false;
+    }
+    f.render();
     return f;
   }
   //處理下降
@@ -362,20 +379,34 @@ class TETRIS{
     outer:
     for(var rowLETTER=0;rowLETTER<LETTER01.length;rowLETTER++){
       for(var k=0;k<LETTER01[0].length;k++){
-        //出現在視野中
-        if(row+rowLETTER>=0 && row+rowLETTER<20){
+        var rowTetris=row+rowLETTER;
+        var jTerris=j+k;
+        //出現在視野中(檢測，不用檢測上方)
+        if(f.checkBorder(rowTetris,jTerris,true)){
           // console.log(LETTER01[rowLETTER][k]);
-          // console.log(arrTetris[row+rowLETTER][j+k]);
+          // console.log(arrTetris[rowTetris][jTerris]);
           //{color: "#fffeff", v: 1}
-          if(+LETTER01[rowLETTER][k].v && +arrTetris[row+rowLETTER][j+k].v){
+          //1。有重疊
+          if(+LETTER01[rowLETTER][k].v && +arrTetris[rowTetris][jTerris].v){
             b=false;
             // 与有标签的语句一起使用
             break outer;
           }
+        }else{
+          //2。超出邊界
+          b=false;
+          break outer;
         }
       }
     } //outer for
 
+    return b;
+  }
+  checkBorder(rowTetris,jTerris,isCheck_notCheckTop){
+    var b=(rowTetris>=0 && rowTetris<20 && jTerris>=0 && jTerris<10);
+    if(isCheck_notCheckTop){
+      b=(rowTetris<20 && jTerris>=0 && jTerris<10);
+    }
     return b;
   }
 
