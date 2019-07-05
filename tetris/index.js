@@ -343,8 +343,40 @@ class TETRIS{
   // arrTetris,active,activeForm,activePosition
   check(){
     var f=this;
-    
-    return f;
+    var arrTetris=f.arrTetris;
+    var active=f.active;
+    var activeForm=f.activeForm;
+    var activePosition=f.activePosition;
+    // console.log(arrTetris);
+    // console.log(active);
+    // console.log(activeForm);
+    // console.log(activePosition);
+
+    var LETTER01=f.F2(active,activeForm);
+    var row=activePosition.row;
+    var j=activePosition.j;
+
+    var b=true; //要返回的值，默認true，一旦發現重合:false
+
+    // http://www.w3school.com.cn/js/pro_js_statements_break_continue.asp
+    outer:
+    for(var rowLETTER=0;rowLETTER<LETTER01.length;rowLETTER++){
+      for(var k=0;k<LETTER01[0].length;k++){
+        //出現在視野中
+        if(row+rowLETTER>=0 && row+rowLETTER<20){
+          // console.log(LETTER01[rowLETTER][k]);
+          // console.log(arrTetris[row+rowLETTER][j+k]);
+          //{color: "#fffeff", v: 1}
+          if(+LETTER01[rowLETTER][k].v && +arrTetris[row+rowLETTER][j+k].v){
+            b=false;
+            // 与有标签的语句一起使用
+            break outer;
+          }
+        }
+      }
+    } //outer for
+
+    return b;
   }
 
 } //class
