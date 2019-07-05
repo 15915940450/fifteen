@@ -144,6 +144,7 @@ class TETRIS{
           this.arrTetris[row][j]={
             color:'crimson',
             v:Math.random()>.4?0:1
+            // v:0
           };
         }else{
           this.arrTetris[row][j]={
@@ -323,6 +324,18 @@ class TETRIS{
     };
     return f;
   }
+  handleLeft(){
+    var f=this;
+    var tmp=f.activePosition.j;
+    f.activePosition.j=f.activePosition.j-1;
+    var b=f.check();
+    if(!b){
+      f.activePosition.j=tmp;
+      return false;
+    }
+    f.render();
+    return f;
+  }
   handleRight(){
     var f=this;
     var tmp=f.activePosition.j;
@@ -373,40 +386,24 @@ class TETRIS{
     var row=activePosition.row;
     var j=activePosition.j;
 
-    var b=true; //要返回的值，默認true，一旦發現重合:false
-
-    // http://www.w3school.com.cn/js/pro_js_statements_break_continue.asp
-    outer:
+    //1。有重疊
     for(var rowLETTER=0;rowLETTER<LETTER01.length;rowLETTER++){
       for(var k=0;k<LETTER01[0].length;k++){
         var rowTetris=row+rowLETTER;
         var jTerris=j+k;
-        //出現在視野中(檢測，不用檢測上方)
-        if(f.checkBorder(rowTetris,jTerris,true)){
-          // console.log(LETTER01[rowLETTER][k]);
-          // console.log(arrTetris[rowTetris][jTerris]);
-          //{color: "#fffeff", v: 1}
-          //1。有重疊
+        //出現在視野中
+        if(f.checkBorder(rowTetris,jTerris)){
           if(+LETTER01[rowLETTER][k].v && +arrTetris[rowTetris][jTerris].v){
-            b=false;
-            // 与有标签的语句一起使用
-            break outer;
+            return false;
           }
-        }else{
-          //2。超出邊界
-          b=false;
-          break outer;
         }
       }
     } //outer for
 
-    return b;
+    return true;
   }
-  checkBorder(rowTetris,jTerris,isCheck_notCheckTop){
+  checkBorder(rowTetris,jTerris){
     var b=(rowTetris>=0 && rowTetris<20 && jTerris>=0 && jTerris<10);
-    if(isCheck_notCheckTop){
-      b=(rowTetris<20 && jTerris>=0 && jTerris<10);
-    }
     return b;
   }
 
