@@ -174,7 +174,7 @@ class TETRIS{
   //計算當前活動方塊出現的行數值
   calcAppearRow(){
     var f=this;
-    var row=-3;
+    var row=-4;
     var activeLETTER=f.f_f[f.active].form[f.activeForm].split('_').reverse();
     // console.log(activeLETTER);
     for(var i=0;i<activeLETTER.length;i++){
@@ -186,6 +186,45 @@ class TETRIS{
       }
     }
     return (row);
+  }
+  // 計算當前活動方塊左右空值
+  calcLR(LETTER01){
+    var i;
+    var L=0;
+    var R=0;
+    var LETTER10=[];
+    for(i=0;i<LETTER01.length;i++){
+      LETTER10[i]=LETTER10[i] || [];
+      for(var j=0;j<LETTER01[0].length;j++){
+        LETTER10[i][j]=LETTER01[j][i];
+      }
+    }
+    var LETTER=LETTER10.map(function(v){
+      return (_.sumBy(v,function(v2){
+        return (v2.v);
+      }));
+    });
+    // console.log(LETTER);
+    for(i=0;i<LETTER.length;i++){
+      if(!LETTER[i]){
+        L++;
+      }else{
+        break;
+      }
+    }
+    for(i=LETTER.length;i>0;i--){
+      if(!LETTER[i-1]){
+        R++;
+      }else{
+        break;
+      }
+    }
+    // console.log(L);
+    // console.log(R);
+    return ({
+      L:L,
+      R:R
+    });
   }
 
 
@@ -378,13 +417,19 @@ class TETRIS{
     var activeForm=f.activeForm;
     var activePosition=f.activePosition;
     // console.log(arrTetris);
-    // console.log(active);
-    // console.log(activeForm);
-    // console.log(activePosition);
+    /*console.log(active);
+    console.log(activeForm);
+    console.log(activePosition);*/
 
     var LETTER01=f.F2(active,activeForm);
     var row=activePosition.row;
     var j=activePosition.j;
+    var LR=f.calcLR(LETTER01);
+    // var ____=f.f_f[active].form[activeForm];
+    // console.log(LETTER01);
+    // console.log(row);
+    // console.log(j);
+    // console.log(LR);
 
     //1。有重疊
     for(var rowLETTER=0;rowLETTER<LETTER01.length;rowLETTER++){
@@ -400,8 +445,20 @@ class TETRIS{
       }
     } //outer for
 
+    //2。不超出邊界
+    //下邊界
+    if(row-f.calcAppearRow()>20){
+      return false;
+    }
+    //左右邊界
+    if(j-LR.R>6 || j+LR.L<0){
+      return false;
+    }
+
+
     return true;
   }
+  // 確保arrTetris的索引
   checkBorder(rowTetris,jTerris){
     var b=(rowTetris>=0 && rowTetris<20 && jTerris>=0 && jTerris<10);
     return b;
