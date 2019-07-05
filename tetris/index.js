@@ -164,6 +164,10 @@ class TETRIS{
     f.activePosition.row=f.calcAppearRow();
     // f.activePosition.row=-2;  //0,1,2,3,4
 
+    //從該形狀中隨機選取一個
+    var next=f.gLETTER();
+    f.next=next.LETTER;
+    f.nextForm=next.form;
     return f;
   }
   //計算當前活動方塊出現的行數值
@@ -184,15 +188,16 @@ class TETRIS{
   }
 
 
-  //繪製canvas
+  //渲染：繪製canvas
   render(){
     var f=this;
+    //加上當前活動方塊：arrTetrisAppendActive
     f.addActiveLETTER();
+
+    // 渲染主區
     f.renderCanvas(f.eleCanvas.getContext('2d'),f.arrTetrisAppendActive,f.cell);
-    //從該形狀中隨機選取一個
-    var next=f.gLETTER();
-    f.next=next.LETTER;
-    f.nextForm=next.form;
+    
+    // 渲染則區（下一個）
     f.renderCanvas(f.eleCanvasNext.getContext('2d'),f.F2(f.next,f.nextForm),22);
     return f;
   }
@@ -299,9 +304,18 @@ class TETRIS{
       //39:向右
       //40:向下
       if(+keyCode===40){
-
+        f.handleDown();
       }
     };
+    return f;
+  }
+  //處理下降
+  handleDown(){
+    var f=this;
+    //當前行加1
+    f.activePosition.row=f.activePosition.row+1;
+    // 渲染
+    f.render();
     return f;
   }
 
