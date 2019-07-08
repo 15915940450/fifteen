@@ -18,6 +18,7 @@ class TETRIS{
     this.H=20;  //高度：20
     this.cell=30; //每個格子大小
     this.randomCell=false;  //隨機格子,false(0),1,2,3,,,18
+    this.pureRow=[];
 
     /*遊戲中的狀態*/
     this.active=null;  //當前方塊
@@ -107,6 +108,8 @@ class TETRIS{
 
   init(){
     this.initArrTetris();
+    //加上當前活動方塊：arrTetrisAppendActive
+    this.addActiveLETTER();
     this.render();
     // this.raf(); //動畫：每秒60幀
     this.listen();
@@ -168,6 +171,15 @@ class TETRIS{
     var next=f.gLETTER();
     f.next=next.LETTER;
     f.nextForm=next.form;
+
+    //乾淨的一行
+    for(var i=0;i<f.W;i++){
+      f.pureRow[i]={
+        color:'black',
+        v:0
+      };
+    }
+
     return f;
   }
   //計算當前活動方塊出現的行數值
@@ -230,9 +242,6 @@ class TETRIS{
   //渲染：繪製canvas
   render(){
     var f=this;
-    //加上當前活動方塊：arrTetrisAppendActive
-    f.addActiveLETTER();
-
     // 渲染主區
     f.renderCanvas(f.eleCanvas.getContext('2d'),f.arrTetrisAppendActive,f.cell);
     
@@ -379,6 +388,8 @@ class TETRIS{
       return false;
     }
 
+    //加上當前活動方塊：arrTetrisAppendActive
+    f.addActiveLETTER();
     f.render();
     return f;
   }
@@ -386,11 +397,15 @@ class TETRIS{
     var f=this;
     var tmp=f.activePosition.j;
     f.activePosition.j=f.activePosition.j-1;
+
     var b=f.check();
     if(!b){
       f.activePosition.j=tmp;
       return false;
     }
+
+    //加上當前活動方塊：arrTetrisAppendActive
+    f.addActiveLETTER();
     f.render();
     return f;
   }
@@ -398,11 +413,15 @@ class TETRIS{
     var f=this;
     var tmp=f.activePosition.j;
     f.activePosition.j=f.activePosition.j+1;
+
     var b=f.check();
     if(!b){
       f.activePosition.j=tmp;
       return false;
     }
+
+    //加上當前活動方塊：arrTetrisAppendActive
+    f.addActiveLETTER();
     f.render();
     return f;
   }
@@ -414,17 +433,24 @@ class TETRIS{
     //當前行加1
     f.activePosition.row=tmp+1;
 
-    //檢測是否可以繼續下降
+    //1.檢測是否可以繼續下降
     var b=f.check();
     if(!b){
-      //不可以下降，還原操作,開始下一個回合
-      f.activePosition.row=tmp;
+      //不可以下降，到達底部,開始下一回合
+      //2.檢測是否可以得分
+      if(f.findLine().length){
+        //有消除得分
+        f.AlexeyPazhitnovTetris();
+      }
       f.round();
-      // return false;
     }
-    
+    //可以下降，正常渲染
+    //加上當前活動方塊：arrTetrisAppendActive
+    f.addActiveLETTER();
     // 渲染
     f.render();
+    
+
     return f;
   }
 
@@ -497,6 +523,44 @@ class TETRIS{
     f.next=next.LETTER;
     f.nextForm=next.form;
     return f;
+  }
+  /*
+  俄罗斯方块的开发者是阿列克谢·帕基特诺夫，他被称为俄罗斯方块之父（Алексей Пажитнов 英文：Alexey Pazhitnov）。俄罗斯方块原名是俄语Тетрис（英语是Tetris），这个名字来源于希腊语tetra，意思是“四”，而游戏的作者最喜欢网球（tennis）。于是，他把两个词tetra和tennis合而为一，命名为Tetris，这也就是俄罗斯方块名字的由来。
+  */
+  //消除行，得分(修改 arrTetrisAppendActive arrTetris)
+  AlexeyPazhitnovTetris(){
+    var f=this;
+    // 改變 arrTetrisAppendActive
+    var arrLine=f.findLine();
+    if(arrLine.length){
+      f.arrTetrisAppendActive=f.arrTetrisAppendActive.filter(function(v,i){
+        return (!arrLine.includes(i));
+      });
+      for(var i=0;i<arrLine.length;i++){
+        f.arrTetrisAppendActive.unshift(_.cloneDeep(f.pureRow));
+      }
+    }
+    // 改變 arrTetris
+    f.arrTetris=_.cloneDeep(f.arrTetrisAppendActive);
+    // 得分，行數，level
+    // 動畫效果？
+
+    return f;
+  }
+  //查找消除哪些行
+  findLine(){
+    var f=this;
+    var arrLine=[];
+    for(var i=0;i<f.arrTetrisAppendActive.length;i++){
+      var isEvery1=f.arrTetrisAppendActive[i].every(function(v){
+        return (+v.v===1);
+      });
+      if(isEvery1){
+        arrLine.push(i);
+      }
+    }
+    
+    return arrLine;
   }
 
 } //class
