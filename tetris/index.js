@@ -360,7 +360,27 @@ class TETRIS{
       if(+keyCode===37){
         f.handleLeft();
       }
+      if(+keyCode===32){
+        f.handleForm();
+      }
     };
+    return f;
+  }
+  //處理變形
+  handleForm(){
+    var f=this;
+    var lenForm=f.f_f[f.active].form.length;
+    var tmp=f.activeForm;
+    //若果是最後一個形狀，轉到第0個，否則+1
+    f.activeForm=tmp>=lenForm-1?0:tmp+1;
+
+    var b=f.check();
+    if(!b){
+      f.activeForm=tmp;
+      return false;
+    }
+
+    f.render();
     return f;
   }
   handleLeft(){
