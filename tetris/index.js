@@ -17,8 +17,9 @@ class TETRIS{
     this.W=10;  //寬度：10
     this.H=20;  //高度：20
     this.cell=30; //每個格子大小
-    this.randomCell=false;  //隨機格子,false(0),1,2,3,,,18
+    this.randomCell=3;  //隨機格子,false(0),1,2,3,,,18
     this.pureRow=[];
+    this.lock=false; //鎖住遊戲
 
     /*遊戲中的狀態*/
     this.active=null;  //當前方塊
@@ -127,12 +128,16 @@ class TETRIS{
     var iRAF=0;
     // var t0=new Date().getTime();
     var rafCallback=function(){
-      iRAF++;
+      if(f.lock){
+        iRAF=0;
+      }else{
+        iRAF++;
+      }
       // console.log(!iRAF%48); //0
       var frame=f.rule.find(function(v){
         return (v.level===f.level);
       }).frame;
-      if(!(iRAF%frame)){
+      if(+(iRAF%frame)===1){
         f.handleDown();
       }
       /*var t=new Date().getTime()-t0;  
@@ -367,6 +372,7 @@ class TETRIS{
     var f=this;
     document.onkeydown =function(ev){
       var keyCode=(ev.keyCode);
+
       // console.log(keyCode);
       //32:空格 (暫停)
       //38:向上（變形）
@@ -374,19 +380,19 @@ class TETRIS{
       //37:向左
       //39:向右
       //40:向下
-      if(+keyCode===40){
+      if(+keyCode===40 && !f.lock){
         f.handleDown();
       }
-      if(+keyCode===39){
+      if(+keyCode===39 && !f.lock){
         f.handleRight();
       }
-      if(+keyCode===37){
+      if(+keyCode===37 && !f.lock){
         f.handleLeft();
       }
-      if(+keyCode===38){
+      if(+keyCode===38 && !f.lock){
         f.handleForm();
       }
-      if(+keyCode===32){
+      if(+keyCode===32 && !f.lock){
         f.handlePause();
       }
     };
@@ -454,6 +460,8 @@ class TETRIS{
       //不可以下降，到達底部,開始下一回合
       //2.檢測是否可以得分
       if(f.findLine().length){
+        // 動畫效果 1s？
+        f.animate1s();
         //有消除得分
         f.AlexeyPazhitnovTetris();
       }
@@ -551,9 +559,6 @@ class TETRIS{
     // 改變 arrTetrisAppendActive
     var arrLine=f.findLine();
     if(arrLine.length){
-      // 動畫效果 1s？
-      f.animate1s();
-
       f.arrTetrisAppendActive=f.arrTetrisAppendActive.filter(function(v,i){
         return (!arrLine.includes(i));
       });
@@ -571,8 +576,14 @@ class TETRIS{
 
   animate1s(){
     var f=this;
-    var arrAnimate=f.arrTetrisAppendActive;
-    console.log(arrAnimate);
+    f.lock=true;
+    var arrAnimate=_.cloneDeep(f.arrTetrisAppendActive);
+    var arrLine=f.findLine();
+    for(var i=0;i<arrLine.length;i++){
+      arrAnimate[arrLine[i]]=_.cloneDeep(f.pureRow);
+    }
+
+    f.lock=false;
     return f;
   }
   //查找消除哪些行
