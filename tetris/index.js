@@ -110,6 +110,7 @@ class TETRIS{
     this.initArrTetris();
     //加上當前活動方塊：arrTetrisAppendActive
     this.addActiveLETTER();
+    // 渲染
     this.render();
     // this.raf(); //動畫：每秒60幀
     this.listen();
@@ -388,7 +389,6 @@ class TETRIS{
       return false;
     }
 
-    //加上當前活動方塊：arrTetrisAppendActive
     f.addActiveLETTER();
     f.render();
     return f;
@@ -404,7 +404,6 @@ class TETRIS{
       return false;
     }
 
-    //加上當前活動方塊：arrTetrisAppendActive
     f.addActiveLETTER();
     f.render();
     return f;
@@ -420,7 +419,6 @@ class TETRIS{
       return false;
     }
 
-    //加上當前活動方塊：arrTetrisAppendActive
     f.addActiveLETTER();
     f.render();
     return f;
@@ -445,9 +443,7 @@ class TETRIS{
       f.round();
     }
     //可以下降，正常渲染
-    //加上當前活動方塊：arrTetrisAppendActive
     f.addActiveLETTER();
-    // 渲染
     f.render();
     
 
@@ -527,12 +523,15 @@ class TETRIS{
   /*
   俄罗斯方块的开发者是阿列克谢·帕基特诺夫，他被称为俄罗斯方块之父（Алексей Пажитнов 英文：Alexey Pazhitnov）。俄罗斯方块原名是俄语Тетрис（英语是Tetris），这个名字来源于希腊语tetra，意思是“四”，而游戏的作者最喜欢网球（tennis）。于是，他把两个词tetra和tennis合而为一，命名为Tetris，这也就是俄罗斯方块名字的由来。
   */
-  //消除行，得分(修改 arrTetrisAppendActive arrTetris)
+  //消除行，得分(修改 arrTetrisAppendActive(主要的) arrTetris)
   AlexeyPazhitnovTetris(){
     var f=this;
     // 改變 arrTetrisAppendActive
     var arrLine=f.findLine();
     if(arrLine.length){
+      // 動畫效果 1s？
+      f.animate1s();
+
       f.arrTetrisAppendActive=f.arrTetrisAppendActive.filter(function(v,i){
         return (!arrLine.includes(i));
       });
@@ -540,11 +539,18 @@ class TETRIS{
         f.arrTetrisAppendActive.unshift(_.cloneDeep(f.pureRow));
       }
     }
-    // 改變 arrTetris
-    f.arrTetris=_.cloneDeep(f.arrTetrisAppendActive);
+    // 改變 arrTetris(可有可無，因為消除得分後立即進行下一回合 round)
+    // f.arrTetris=_.cloneDeep(f.arrTetrisAppendActive);
     // 得分，行數，level
-    // 動畫效果？
+    
 
+    return f;
+  }
+
+  animate1s(){
+    var f=this;
+    var arrAnimate=f.arrTetrisAppendActive;
+    console.log(arrAnimate);
     return f;
   }
   //查找消除哪些行
