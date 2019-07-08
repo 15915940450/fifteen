@@ -32,7 +32,7 @@ class TETRIS{
     this.nextForm=null;  //下一個方塊形態索引
     this.score=0; //遊戲得分
     this.HiScore=0; //歷史最高分
-    this.level=9;  //18級
+    this.level=0;  //18級
     this.lines=0; //已消除的行數
 
 
@@ -127,12 +127,15 @@ class TETRIS{
     var f=this;
     var iRAF=0;
     // var t0=new Date().getTime();
+
     var rafCallback=function(){
       if(f.lock){
+        //鎖住，不增長
         iRAF=0;
       }else{
         iRAF++;
       }
+      // console.log(iRAF); //一直都在運行
       // console.log(!iRAF%48); //0
       var frame=f.rule.find(function(v){
         return (v.level===f.level);
@@ -192,7 +195,7 @@ class TETRIS{
     //乾淨的一行
     for(var i=0;i<f.W;i++){
       f.pureRow[i]={
-        color:'black',
+        color:'black',  //orchid
         v:0
       };
     }
@@ -461,9 +464,10 @@ class TETRIS{
       //2.檢測是否可以得分
       if(f.findLine().length){
         // 動畫效果 1s？
-        f.animate1s();
+        f.animate500ms();
         //有消除得分
         f.AlexeyPazhitnovTetris();
+        return false;
       }
       f.round();
     }
@@ -573,17 +577,43 @@ class TETRIS{
 
     return f;
   }
-
-  animate1s(){
+  // 500毫秒的動畫
+  animate500ms(){
     var f=this;
+    //先鎖住
     f.lock=true;
+
     var arrAnimate=_.cloneDeep(f.arrTetrisAppendActive);
+    var arrAnimate0=_.cloneDeep(f.arrTetrisAppendActive);
+
     var arrLine=f.findLine();
     for(var i=0;i<arrLine.length;i++){
+      //消失
       arrAnimate[arrLine[i]]=_.cloneDeep(f.pureRow);
+      /*arrAnimate[arrLine[i]]=_.cloneDeep(f.pureRow).map(function(v){
+        v.color='midnightblue';
+        v.v=1;
+        return v;
+      });*/
     }
 
-    f.lock=false;
+    //立馬消失
+    f.renderCanvas(f.eleCanvas.getContext('2d'),arrAnimate,f.cell);
+    // 出現
+    window.setTimeout(function(){
+      f.renderCanvas(f.eleCanvas.getContext('2d'),arrAnimate0,f.cell);
+    },100);
+    // 消失
+    window.setTimeout(function(){
+      f.renderCanvas(f.eleCanvas.getContext('2d'),arrAnimate,f.cell);
+    },300);
+    // 出現
+    window.setTimeout(function(){
+      f.renderCanvas(f.eleCanvas.getContext('2d'),arrAnimate0,f.cell);
+      //放開鎖定
+      f.lock=false;
+    },500);
+
     return f;
   }
   //查找消除哪些行
