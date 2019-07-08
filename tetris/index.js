@@ -31,7 +31,7 @@ class TETRIS{
     this.nextForm=null;  //下一個方塊形態索引
     this.score=0; //遊戲得分
     this.HiScore=0; //歷史最高分
-    this.level=18;  //18級
+    this.level=9;  //18級
     this.lines=0; //已消除的行數
 
 
@@ -40,6 +40,11 @@ class TETRIS{
         level:0,
         removeLine:10,
         frame:48
+      },
+      {
+        level:9,
+        removeLine:100,
+        frame:6
       },
       {
         level:18,
@@ -112,28 +117,34 @@ class TETRIS{
     this.addActiveLETTER();
     // 渲染
     this.render();
-    // this.raf(); //動畫：每秒60幀
+    this.raf(); //動畫：每秒60幀
     this.listen();
   }
 
   // 動畫
-  /*raf(){
+  raf(){
     var f=this;
     var iRAF=0;
-    var t0=new Date().getTime();
+    // var t0=new Date().getTime();
     var rafCallback=function(){
       iRAF++;
-      // if(){}
-      var t=new Date().getTime()-t0;  
+      // console.log(!iRAF%48); //0
+      var frame=f.rule.find(function(v){
+        return (v.level===f.level);
+      }).frame;
+      if(!(iRAF%frame)){
+        f.handleDown();
+      }
+      /*var t=new Date().getTime()-t0;  
       if(t>1000 && t<2000){
 
         console.log('x'); //每秒60幀
-      }
+      }*/
       window.requestAnimationFrame(rafCallback);
     };
     window.requestAnimationFrame(rafCallback);
     return f;
-  }*/
+  }
 
   //初始化遊戲板數據
   initArrTetris(){
@@ -356,7 +367,10 @@ class TETRIS{
     var f=this;
     document.onkeydown =function(ev){
       var keyCode=(ev.keyCode);
-      //32:空格（變形）
+      // console.log(keyCode);
+      //32:空格 (暫停)
+      //38:向上（變形）
+
       //37:向左
       //39:向右
       //40:向下
@@ -369,8 +383,11 @@ class TETRIS{
       if(+keyCode===37){
         f.handleLeft();
       }
-      if(+keyCode===32){
+      if(+keyCode===38){
         f.handleForm();
+      }
+      if(+keyCode===32){
+        f.handlePause();
       }
     };
     return f;
@@ -447,6 +464,11 @@ class TETRIS{
     f.render();
     
 
+    return f;
+  }
+  handlePause(){
+    var f=this;
+    
     return f;
   }
 
