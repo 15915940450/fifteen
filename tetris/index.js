@@ -17,6 +17,7 @@ class TETRIS{
     this.W=10;  //寬度：10
     this.H=20;  //高度：20
     this.cell=30; //每個格子大小
+    this.randomCell=false;  //隨機格子,false(0),1,2,3,,,18
 
     /*遊戲中的狀態*/
     this.active=null;  //當前方塊
@@ -139,12 +140,10 @@ class TETRIS{
         this.arrTetris[row]=[];
       }
       for(var j=0;j<f.W;j++){
-        if(row>=12){
-          //最後8行(13,20)
+        if(row>=f.H-f.randomCell){
           this.arrTetris[row][j]={
             color:'crimson',
             v:Math.random()>.4?0:1
-            // v:0
           };
         }else{
           this.arrTetris[row][j]={
@@ -174,7 +173,7 @@ class TETRIS{
   //計算當前活動方塊出現的行數值
   calcAppearRow(){
     var f=this;
-    var row=-4;
+    var row=-3;
     var activeLETTER=f.f_f[f.active].form[f.activeForm].split('_').reverse();
     // console.log(activeLETTER);
     for(var i=0;i<activeLETTER.length;i++){
@@ -407,7 +406,7 @@ class TETRIS{
     f.render();
     return f;
   }
-  //處理下降
+  //處理下降(定時器自動下降)
   handleDown(){
     var f=this;
 
@@ -418,9 +417,10 @@ class TETRIS{
     //檢測是否可以繼續下降
     var b=f.check();
     if(!b){
-      //不可以下降，還原操作
+      //不可以下降，還原操作,開始下一個回合
       f.activePosition.row=tmp;
-      return false;
+      f.round();
+      // return false;
     }
     
     // 渲染
@@ -467,7 +467,7 @@ class TETRIS{
 
     //2。不超出邊界
     //下邊界
-    if(row-f.calcAppearRow()>20){
+    if(row-f.calcAppearRow()>=20){
       return false;
     }
     //左右邊界
@@ -482,6 +482,21 @@ class TETRIS{
   checkBorder(rowTetris,jTerris){
     var b=(rowTetris>=0 && rowTetris<20 && jTerris>=0 && jTerris<10);
     return b;
+  }
+  //下一回合
+  round(){
+    var f=this;
+    f.arrTetris=_.cloneDeep(f.arrTetrisAppendActive);
+    f.active=f.next;
+    f.activeForm=f.nextForm;
+    f.activePosition={
+      row:f.calcAppearRow(),
+      j:3
+    };
+    var next=f.gLETTER();
+    f.next=next.LETTER;
+    f.nextForm=next.form;
+    return f;
   }
 
 } //class
