@@ -395,7 +395,7 @@ class TETRIS{
       if(+keyCode===38 && !f.lock){
         f.handleForm();
       }
-      if(+keyCode===32 && !f.lock){
+      if(+keyCode===32){
         f.handlePause();
       }
     };
@@ -480,7 +480,14 @@ class TETRIS{
   }
   handlePause(){
     var f=this;
-    
+    var el=document.querySelector('.pause');
+    if(f.lock){
+      el.className='pause hidden';
+    }else{
+      //遊戲暫停
+      el.className='pause';
+    }
+    f.lock=!f.lock;
     return f;
   }
 
