@@ -18,7 +18,6 @@ class TETRIS{
     this.H=20;  //高度：20
     this.cell=30; //每個格子大小
     this.randomCell=3;  //隨機格子,false(0),1,2,3,,,18
-    this.pureRow=[];
     this.lock=false; //鎖住遊戲
 
     /*遊戲中的狀態*/
@@ -30,6 +29,11 @@ class TETRIS{
     };  //下一個方塊
     this.next=null;  //下一個方塊
     this.nextForm=null;  //下一個方塊形態索引
+
+    this.pureRow=[];
+
+    this.elsStatus=document.querySelectorAll('.status h4');
+
     this.score=0; //遊戲得分
     this.HiScore=0; //歷史最高分
     this.level=0;  //18級
@@ -38,17 +42,17 @@ class TETRIS{
 
     this.rule=[
       {
-        level:0,
+        level:[0],
         removeLine:10,
         frame:48
       },
       {
-        level:9,
+        level:[9],
         removeLine:100,
         frame:6
       },
       {
-        level:18,
+        level:[18],
         removeLine:130,
         frame:3
       },
@@ -61,18 +65,22 @@ class TETRIS{
 
     this.tetrisScore=[
       {
+        lines:1,
         name:'single',
         value:40
       },
       {
+        lines:2,
         name:'double',
         value:100
       },
       {
+        lines:3,
         name:'triple',
         value:300
       },
       {
+        lines:4,
         name:'tetris',
         value:1200
       }
@@ -114,13 +122,78 @@ class TETRIS{
 
   init(){
     this.initArrTetris();
+    this.initActive();
+    this.initNext();
+    this.initPureRow();
+    this.further();
     //加上當前活動方塊：arrTetrisAppendActive
     this.addActiveLETTER();
     // 渲染
     this.render();
     this.raf(); //動畫：每秒60幀
     this.listen();
+
+
+    //右側文字:分數，level，行數
+    this.htmlStatus();
+
   }
+  //改造數據(rule)
+  further(){
+    var f=this;
+    var i=0,j=0;
+    var tmp=[];
+    var nowLine=0;
+    for(i=0;i<f.rule.length;i++){
+      for(j=0;j<f.rule[i].level.length;j++){
+        // console.log(i+':'+j);
+        nowLine+=f.rule[i].removeLine;
+        tmp.push({
+          level:f.rule[i].level[j],
+          frame:f.rule[i].frame,
+          nowLineLT:nowLine
+        });
+      }
+
+    }
+
+    f.rule=tmp;
+
+    return f;
+  }
+  //乾淨的一行
+  initPureRow(){
+    var f=this;
+    for(var i=0;i<f.W;i++){
+      f.pureRow[i]={
+        color:'black',  //orchid
+        v:0
+      };
+    }
+    return f;
+  }
+  initNext(){
+    var f=this;
+    var next=f.gLETTER();
+    f.next=next.LETTER;
+    f.nextForm=next.form;
+    return f;
+  }
+  initActive(){
+    var f=this;
+    //第一個當前活動的方塊
+    var active=f.gLETTER();
+    // f.active='I';
+    // f.activeForm=0;
+
+    f.active=active.LETTER;
+    f.activeForm=active.form;
+    
+    f.activePosition.row=f.calcAppearRow();
+    // f.activePosition.row=-2;  //0,1,2,3,4
+    return f;
+  }
+
 
   // 動畫
   raf(){
@@ -176,30 +249,6 @@ class TETRIS{
         }
       }
     }
-    //第一個當前活動的方塊
-    var active=f.gLETTER();
-    // f.active='I';
-    // f.activeForm=0;
-
-    f.active=active.LETTER;
-    f.activeForm=active.form;
-    
-    f.activePosition.row=f.calcAppearRow();
-    // f.activePosition.row=-2;  //0,1,2,3,4
-
-    //從該形狀中隨機選取一個
-    var next=f.gLETTER();
-    f.next=next.LETTER;
-    f.nextForm=next.form;
-
-    //乾淨的一行
-    for(var i=0;i<f.W;i++){
-      f.pureRow[i]={
-        color:'black',  //orchid
-        v:0
-      };
-    }
-
     return f;
   }
   //計算當前活動方塊出現的行數值
@@ -499,7 +548,7 @@ class TETRIS{
       //遊戲暫停
       el.className='pause';
     }
-    
+
     f.lock=!f.lock;
     return f;
   }
@@ -593,9 +642,24 @@ class TETRIS{
     // 改變 arrTetris(可有可無，因為消除得分後立即進行下一回合 round)
     // f.arrTetris=_.cloneDeep(f.arrTetrisAppendActive);
     // 得分，行數，level
-    
+    f.lines+=arrLine.length;
+    f.level=f.inspectLevel();
+    f.htmlStatus();
 
     return f;
+  }
+  //檢查級數
+  inspectLevel(){
+    var f=this;
+    var level=0;
+    for(var i=0;i<f.rule.length;i++){
+      if(f.lines<f.rule[i].nowLineLT){
+        level=f.rule[i].level;
+        break;
+      }
+    }
+
+    return level;
   }
   // 500毫秒的動畫
   animate500ms(){
@@ -662,6 +726,14 @@ class TETRIS{
       }
     }
     return b;
+  }
+  //得分等等界面
+  htmlStatus(){
+    var f=this;
+    f.elsStatus[0].innerHTML=this.score;
+    f.elsStatus[1].innerHTML=this.level;
+    f.elsStatus[2].innerHTML=this.lines;
+    return f;
   }
 
 } //class
