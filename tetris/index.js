@@ -126,6 +126,7 @@ class TETRIS{
     this.initNext();
     this.initPureRow();
     this.further();
+    this.portrait();
     //加上當前活動方塊：arrTetrisAppendActive
     this.addActiveLETTER();
     // 渲染
@@ -740,6 +741,18 @@ class TETRIS{
     f.elsStatus[2].innerHTML=this.lines;
     return f;
   }
+  //判斷豎屏（肖像）（風景）
+  portrait(){
+    var f=this;
+    var CW=document.documentElement.clientWidth || document.body.clientWidth;
+    var CH=document.documentElement.clientHeight || document.body.clientHeight;
+    if(CW<CH){
+      document.querySelector('.canvas_main').style.width='59vw';
+    }
+    return f;
+  }
+
+
 
 } //class
 
