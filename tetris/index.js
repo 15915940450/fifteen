@@ -469,6 +469,18 @@ class TETRIS{
         f.AlexeyPazhitnovTetris();
         return false;
       }
+      // 3.檢測遊戲是否結束
+      if(f.checkGameOver()){
+        //遊戲結束，鎖住
+        f.lock=true;
+
+        var el=document.querySelector('.pause');
+        var elP=el.querySelector('p');
+        el.className='pause';
+        elP.innerHTML='GAME OVER';
+
+        return false;
+      }
       f.round();
     }
     //可以下降，正常渲染
@@ -487,6 +499,7 @@ class TETRIS{
       //遊戲暫停
       el.className='pause';
     }
+    
     f.lock=!f.lock;
     return f;
   }
@@ -637,6 +650,18 @@ class TETRIS{
     }
     
     return arrLine;
+  }
+  // 檢測遊戲結束(arrTetrisAppendActive 第0行 第3-6列的值是否有1)
+  checkGameOver(){
+    var b=false;
+    var arr0=this.arrTetrisAppendActive[0];
+    for(var i=3;i<=6;i++){
+      if(+arr0[i].v){
+        b=true;
+        break;
+      }
+    }
+    return b;
   }
 
 } //class
