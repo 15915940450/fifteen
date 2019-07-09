@@ -631,19 +631,24 @@ class TETRIS{
     var f=this;
     // 改變 arrTetrisAppendActive
     var arrLine=f.findLine();
-    if(arrLine.length){
+    var len=arrLine.length;
+    if(len){
       f.arrTetrisAppendActive=f.arrTetrisAppendActive.filter(function(v,i){
         return (!arrLine.includes(i));
       });
-      for(var i=0;i<arrLine.length;i++){
+      for(var i=0;i<len;i++){
         f.arrTetrisAppendActive.unshift(_.cloneDeep(f.pureRow));
       }
     }
     // 改變 arrTetris(可有可無，因為消除得分後立即進行下一回合 round)
     // f.arrTetris=_.cloneDeep(f.arrTetrisAppendActive);
     // 得分，行數，level
-    f.lines+=arrLine.length;
+    f.lines+=len;
     f.level=f.inspectLevel();
+    var score=+f.tetrisScore.find(function(v){
+      return (+v.lines===len);
+    }).value;
+    f.score+=score;
     f.htmlStatus();
 
     return f;
