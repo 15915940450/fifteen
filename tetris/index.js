@@ -16,7 +16,7 @@ class TETRIS{
     this.eleCanvasNext=document.querySelector('.canvas_next');
     this.W=10;  //寬度：10
     this.H=20;  //高度：20
-    this.cell=30; //每個格子大小
+    this.cell=40; //每個格子大小
     this.randomRow=_.random(18);  //隨機格子,false(0),1,2,3,,,18
     this.lock=false; //鎖住遊戲
 
@@ -39,6 +39,44 @@ class TETRIS{
     this.level=0;  //18級
     this.lines=0; //已消除的行數
 
+    /*
+    https://en.wikipedia.org/wiki/Classic_Tetris_World_Championship
+    Classic Tetris World Championship
+    The Classic Tetris World Championship (CTWC) is a video game competition series, hosted by the Portland Retro Gaming Expo. 
+    經典俄羅斯方塊世界錦標賽 規則：
+    */
+    this.rule=[];  //級數規則
+
+    this.tetrisScore=[];  //消除行數得分
+
+    //定義方塊形狀(4*4)(IJLOSTZ)(four times four)
+    this.f_f={};
+
+  }
+
+  init(){
+    this.initRule();
+    this.initArrTetris();
+    this.initActive();
+    this.initNext();
+    this.initPureRow(); //乾淨的一行
+    this.further();
+    this.portrait();
+    //加上當前活動方塊：arrTetrisAppendActive
+    this.addActiveLETTER();
+    // 渲染
+    this.render();
+    this.raf(); //動畫：每秒60幀
+    this.listen();
+
+
+    //右側文字:分數，level，行數
+    this.htmlStatus();
+
+  }
+
+  //初始化規則
+  initRule(){
     /*
     https://en.wikipedia.org/wiki/Classic_Tetris_World_Championship
     Classic Tetris World Championship
@@ -182,27 +220,6 @@ class TETRIS{
         form:['0_3_6_0','4_6_2_0']
       }
     };
-
-  }
-
-  init(){
-    this.initArrTetris();
-    this.initActive();
-    this.initNext();
-    this.initPureRow(); //乾淨的一行
-    this.further();
-    this.portrait();
-    //加上當前活動方塊：arrTetrisAppendActive
-    this.addActiveLETTER();
-    // 渲染
-    this.render();
-    this.raf(); //動畫：每秒60幀
-    this.listen();
-
-
-    //右側文字:分數，level，行數
-    this.htmlStatus();
-
   }
   //初始化遊戲板數據
   initArrTetris(){
@@ -285,11 +302,17 @@ class TETRIS{
   //判斷豎屏（肖像）（風景）
   portrait(){
     var f=this;
-    var CW=document.documentElement.clientWidth || document.body.clientWidth;
-    var CH=document.documentElement.clientHeight || document.body.clientHeight;
-    if(CW<CH){
+    // var CW=document.documentElement.clientWidth || document.body.clientWidth;
+    // var CH=document.documentElement.clientHeight || document.body.clientHeight;
+    /*if(CW<CH){
       document.querySelector('.canvas_main').style.width='59vw';
-    }
+      document.querySelector('.pause').style.width='59vw';
+      document.querySelector('.pause').style.height='118vw';
+    }*/
+    document.querySelector('.canvas_main').width=f.cell*f.W;
+    document.querySelector('.canvas_main').height=f.cell*f.H;
+    document.querySelector('.pause').style.width=f.cell*f.W+4+'px';
+    document.querySelector('.pause').style.height=f.cell*f.H+4+'px';
     return f;
   }
   //arrTetrisAppendActive=arrTetris+LETTER01;
