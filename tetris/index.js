@@ -39,7 +39,12 @@ class TETRIS{
     this.level=0;  //18級
     this.lines=0; //已消除的行數
 
-
+    /*
+    https://en.wikipedia.org/wiki/Classic_Tetris_World_Championship
+    Classic Tetris World Championship
+    The Classic Tetris World Championship (CTWC) is a video game competition series, hosted by the Portland Retro Gaming Expo. 
+    經典俄羅斯方塊世界錦標賽 規則：
+    */
     this.rule=[
       {
         level:[0],
@@ -47,9 +52,69 @@ class TETRIS{
         frame:48
       },
       {
+        level:[1],
+        removeLine:20,
+        frame:43
+      },
+      {
+        level:[2],
+        removeLine:30,
+        frame:38
+      },
+      {
+        level:[3],
+        removeLine:40,
+        frame:33
+      },
+      {
+        level:[4],
+        removeLine:50,
+        frame:28
+      },
+      {
+        level:[5],
+        removeLine:60,
+        frame:23
+      },
+      {
+        level:[6],
+        removeLine:70,
+        frame:18
+      },
+      {
+        level:[7],
+        removeLine:80,
+        frame:13
+      },
+      {
+        level:[8],
+        removeLine:90,
+        frame:8
+      },
+      {
         level:[9],
         removeLine:100,
         frame:6
+      },
+      {
+        level:[10,11,12],
+        removeLine:100,
+        frame:5
+      },
+      {
+        level:[13,14,15],
+        removeLine:100,
+        frame:4
+      },
+      {
+        level:[16],
+        removeLine:110,
+        frame:3
+      },
+      {
+        level:[17],
+        removeLine:120,
+        frame:3
       },
       {
         level:[18],
