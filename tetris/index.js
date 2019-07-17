@@ -32,19 +32,12 @@ class TETRIS{
 
     this.pureRow=[];
 
-    this.elsStatus=document.querySelectorAll('.status h4');
 
     this.score=0; //遊戲得分
     this.HiScore=0; //歷史最高分
     this.level=0;  //18級
     this.lines=0; //已消除的行數
 
-    /*
-    https://en.wikipedia.org/wiki/Classic_Tetris_World_Championship
-    Classic Tetris World Championship
-    The Classic Tetris World Championship (CTWC) is a video game competition series, hosted by the Portland Retro Gaming Expo. 
-    經典俄羅斯方塊世界錦標賽 規則：
-    */
     this.rule=[];  //級數規則
 
     this.tetrisScore=[];  //消除行數得分
@@ -357,18 +350,19 @@ class TETRIS{
   render(){
     var f=this;
     // 渲染主區
-    f.renderCanvas(f.eleCanvas,f.arrTetrisAppendActive);
+    f.renderCanvas(f.arrTetrisAppendActive);
     
     // 渲染則區（下一個）
-    f.renderCanvas(f.eleCanvasNext,f.F2(f.next,f.nextForm),22);
+    f.renderCanvas(f.F2(f.next,f.nextForm),22,f.eleCanvasNext);
     return f;
   }
   //由二維數組繪製成canvas
-  renderCanvas(el,arr,perW){
+  renderCanvas(arr,perW,el){
     var f=this;
+    perW=perW || f.cell;
+    el=el || f.eleCanvas;
     var arrBCC=[1,4];
     var ctx=el.getContext('2d');
-    perW=perW || f.cell;
     ctx.clearRect(0,0,1e4,1e4);
     ctx.beginPath();
     for(var row=0;row<arr.length;row++){
@@ -691,18 +685,18 @@ class TETRIS{
     }
 
     //立馬消失
-    f.renderCanvas(f.eleCanvas,arrAnimate);
+    f.renderCanvas(arrAnimate);
     // 出現
     window.setTimeout(function(){
-      f.renderCanvas(f.eleCanvas,arrAnimate0);
+      f.renderCanvas(arrAnimate0);
     },100);
     // 消失
     window.setTimeout(function(){
-      f.renderCanvas(f.eleCanvas,arrAnimate);
+      f.renderCanvas(arrAnimate);
     },300);
     // 出現
     window.setTimeout(function(){
-      f.renderCanvas(f.eleCanvas,arrAnimate0);
+      f.renderCanvas(arrAnimate0);
       //放開鎖定
       f.lock=false;
     },500);
@@ -739,9 +733,10 @@ class TETRIS{
   //得分等等界面
   htmlStatus(){
     var f=this;
-    f.elsStatus[0].innerHTML=this.score;
-    f.elsStatus[1].innerHTML=this.level;
-    f.elsStatus[2].innerHTML=this.lines;
+    var elsStatus=document.querySelectorAll('.status h4');
+    elsStatus[0].innerHTML=this.score;
+    elsStatus[1].innerHTML=this.level;
+    elsStatus[2].innerHTML=this.lines;
     return f;
   }
 
