@@ -421,7 +421,7 @@ class TETRIS{
   listen(){
     var f=this;
     document.onkeydown =function(ev){
-      var keyCode=(ev.keyCode);
+      var keyCode=+(ev.keyCode);
 
       // console.log(keyCode);
       //32:空格 (暫停)
@@ -430,16 +430,23 @@ class TETRIS{
       //37:向左
       //39:向右
       //40:向下
-      if(+keyCode===40 && !f.lock){
+
+      //81:向左(q)
+      //69:向右(e)
+      //87:向下(w)
+      //13:變形enter
+
+      // if(+keyCode===40 && !f.lock){
+      if(!f.lock && [40,87].includes(keyCode)){
         f.handleDown();
       }
-      if(+keyCode===39 && !f.lock){
+      if(!f.lock && [39,69].includes(keyCode)){
         f.handleRight();
       }
-      if(+keyCode===37 && !f.lock){
+      if(!f.lock && [37,81].includes(keyCode)){
         f.handleLeft();
       }
-      if(+keyCode===38 && !f.lock){
+      if(!f.lock && [38,13].includes(keyCode)){
         f.handleForm();
       }
       if(+keyCode===32){
