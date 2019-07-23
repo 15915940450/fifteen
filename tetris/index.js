@@ -16,7 +16,7 @@ class TETRIS{
     this.eleCanvasNext=document.querySelector('.canvas_next');
     this.W=10;  //寬度：10
     this.H=20;  //高度：20
-    this.cell=40; //每個格子大小
+    this.cell=30; //每個格子大小
     this.randomRow=_.random(18);  //隨機格子,false(0),1,2,3,,,18
     this.lock=false; //鎖住遊戲
 
@@ -44,7 +44,7 @@ class TETRIS{
 
     //定義方塊形狀(4*4)(IJLOSTZ)(four times four)
     this.f_f={};
-
+    this.generation=2;
   }
 
   init(){
@@ -182,12 +182,13 @@ class TETRIS{
       }
     ];  //消除行數得分
 
-    //定義方塊形狀(4*4)(IJLOSTZ)(four times four)
+    //定義方塊形狀(4*4)(IJLOSTZ)(four times four)(1,2,4,8)(順時針)
     this.f_f={
       I:{
         color:'#fffeff',
         form:['4_4_4_4','0_15_0_0']
-      },
+      }
+      ,
       J:{
         color:'#ca4679',
         form:['4_4_6_0','0_1_7_0','6_2_2_0','0_7_4_0']
@@ -213,6 +214,38 @@ class TETRIS{
         form:['0_3_6_0','4_6_2_0']
       }
     };
+    if(this.generation===2){
+      // 二代俄羅斯方塊("tuvwxzs)
+      this.f_f.t={
+        color:'tan',
+        form:['7_2_2_0','4_7_4_0','2_2_7_0','1_7_1_0']
+      };
+      this.f_f.u={
+        color:'tan',
+        form:['5_7_0_0','6_2_6_0','0_7_5_0','3_2_3_0']
+      };
+      this.f_f.v={
+        color:'tan',
+        form:['1_1_7_0','7_1_1_0','7_4_4_0','4_4_7_0']
+      };
+      this.f_f.w={
+        color:'tan',
+        form:['1_3_6_0','6_3_1_0','3_6_4_0','4_6_3_0']
+      };
+      this.f_f.x={
+        color:'tan',
+        form:['2_7_2_0']
+      };
+      this.f_f.z={
+        color:'tan',
+        form:['4_7_1_0','3_2_6_0']
+      };
+      this.f_f.s={
+        color:'tan',
+        form:['1_7_4_0','6_2_3_0']
+      };
+    }
+    // "IJLOSTZtuvwxzs"
   }
   //初始化遊戲板數據
   initArrTetris(){
@@ -806,7 +839,8 @@ class TETRIS{
   //隨機生成字母
   gLETTER(){
     var f=this;
-    var LETTER=_.sample('IJLOSTZ'.split(''));
+    var f_fKEY=Object.keys(f.f_f);
+    var LETTER=_.sample(f_fKEY);
     var form=_.random(f.f_f[LETTER].form.length-1);
     return ({
       LETTER:LETTER,
