@@ -44,7 +44,7 @@ class TETRIS{
 
     //定義方塊形狀(4*4)(IJLOSTZ)(four times four)
     this.f_f={};
-    this.generation=2;
+    this.generation=1;
   }
 
   init(){
@@ -246,6 +246,21 @@ class TETRIS{
       };
     }
     // "IJLOSTZtuvwxzs"
+    /*
+    計算每個方塊的最左和最優可移動的j
+    */
+    var f=this;
+    Object.keys(f.f_f).forEach(function(k){
+      f.f_f[k].form=f.f_f[k].form.map(function(v2,i2){
+        var LR=f.calcLR(f.F2(k,i2));
+        return ({
+          _1248:v2,
+          minJ:0-LR.L,
+          maxJ:10-4+LR.R
+        });
+      });
+    });
+
   }
   //初始化遊戲板數據
   initArrTetris(){
@@ -450,7 +465,9 @@ class TETRIS{
   }
 
 
-  //監聽鍵盤
+  /*===================================================
+  監聽鍵盤onkeydown
+  */
   listen(){
     var f=this;
     document.onkeydown =function(ev){
@@ -607,7 +624,7 @@ class TETRIS{
     var LETTER01=f.F2(active,activeForm);
     var row=activePosition.row;
     var j=activePosition.j;
-    var LR=f.calcLR(LETTER01);
+    var LR=f.f_f[active].form[activeForm];
     // var ____=f.f_f[active].form[activeForm];
     // console.log(LETTER01);
     // console.log(row);
@@ -634,7 +651,7 @@ class TETRIS{
       return false;
     }
     //左右邊界
-    if(j-LR.R>6 || j+LR.L<0){
+    if(j>LR.maxJ || j<LR.minJ){
       return false;
     }
 
@@ -785,7 +802,7 @@ class TETRIS{
   calcAppearRow(){
     var f=this;
     var row=-3;
-    var activeLETTER=f.f_f[f.active].form[f.activeForm].split('_').reverse();
+    var activeLETTER=f.f_f[f.active].form[f.activeForm]._1248.split('_').reverse();
     // console.log(activeLETTER);
     for(var i=0;i<activeLETTER.length;i++){
       if(!+activeLETTER[i]){
@@ -797,7 +814,7 @@ class TETRIS{
     }
     return (row);
   }
-  // 計算當前活動方塊左右空值
+  // 計算方塊左右空值
   calcLR(LETTER01){
     var i;
     var L=0;
@@ -858,6 +875,10 @@ class TETRIS{
     var f=this;
     var color=f.f_f[next].color;
     var LETTER=f.f_f[next].form[nextForm];
+    if(typeof(LETTER)==='object'){
+      //如果數據已經優化
+      LETTER=LETTER._1248;
+    }
     var arr=LETTER.split('_').map(function(v){
       var arr01=[];
 
@@ -885,6 +906,11 @@ class TETRIS{
     return arr;
   } //method F2
   
+
+  /*
+  AI:Pierre Dellacherie算法：（只考虑当前方块）(見pierre_dellacherie.js)
+  (https://github.com/bingghost/SimpleTetris)
+  */
 
 
 
