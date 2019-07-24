@@ -17,7 +17,7 @@ class TETRIS{
     this.W=10;  //寬度：10
     this.H=20;  //高度：20
     this.cell=30; //每個格子大小
-    this.randomRow=_.random(15);  //隨機格子,false(0),1,2,3,,,15
+    this.randomRow=_.random(0);  //隨機格子,false(0),1,2,3,,,15
     this.lock=false; //鎖住遊戲
 
     /*遊戲中的狀態*/

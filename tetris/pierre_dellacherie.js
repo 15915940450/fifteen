@@ -24,13 +24,7 @@ class PD{
           row:row,
           j:j,
           LETTER:active,
-          form:formIndex,
-          arr:obj.addActiveLETTER({
-            row:row,
-            j:j,
-            LETTER:active,
-            form:formIndex
-          })
+          form:formIndex
         });
       }
       
@@ -38,6 +32,27 @@ class PD{
     console.log(f.arr3fixed);
     return f;
 
+  }
+  addLETTER(param){
+    var LETTER01=obj.F2(param.LETTER,param.form);
+    var row=param.row;
+    // console.log(row);
+    var j=param.j;
+
+    var arrTetrisAppendFixed=_.cloneDeep(obj.arrTetris);
+
+    for(var rowLETTER=0;rowLETTER<LETTER01.length;rowLETTER++){
+      for(var k=0;k<LETTER01[0].length;k++){
+        var rowTetris=row+rowLETTER;
+        var jTerris=j+k;
+        if(obj.checkBorder(rowTetris,jTerris)){
+          if(LETTER01[rowLETTER][k].v){
+            arrTetrisAppendFixed[rowTetris][jTerris]=LETTER01[rowLETTER][k];
+          }
+        }
+      }
+    }
+    return arrTetrisAppendFixed;
   }
   //計算方塊在j列下最多可下落的row
   calcD(LETTER,formIndex,j){
@@ -48,11 +63,11 @@ class PD{
     for(var i=0;i<20;i++){
       b=obj.check(LETTER,formIndex,{row:(i-up),j:j});
       if(!b){
-        row=i-1;
+        row=i;
         break;
       }
     }
-    return (row);
+    return (row-1);
   }
 }
 
