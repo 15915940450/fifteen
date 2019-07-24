@@ -17,7 +17,7 @@ class TETRIS{
     this.W=10;  //寬度：10
     this.H=20;  //高度：20
     this.cell=30; //每個格子大小
-    this.randomRow=_.random(18);  //隨機格子,false(0),1,2,3,,,18
+    this.randomRow=_.random(15);  //隨機格子,false(0),1,2,3,,,15
     this.lock=false; //鎖住遊戲
 
     /*遊戲中的狀態*/
@@ -247,14 +247,17 @@ class TETRIS{
     }
     // "IJLOSTZtuvwxzs"
     /*
-    計算每個方塊的最左和最優可移動的j
+    計算每個方塊的最左和最優可移動的j(優化FORM)
     */
     var f=this;
     Object.keys(f.f_f).forEach(function(k){
       f.f_f[k].form=f.f_f[k].form.map(function(v2,i2){
         var LR=f.calcLR(f.F2(k,i2));
+        var UD=f.calcUD(k,i2);
         return ({
           _1248:v2,
+          up:UD.up,
+          down:UD.down,
           minJ:0-LR.L,
           maxJ:10-4+LR.R
         });
@@ -296,8 +299,7 @@ class TETRIS{
     f.active=active.LETTER;
     f.activeForm=active.form;
     
-    f.activePosition.row=f.calcAppearRow();
-    // f.activePosition.row=-2;  //0,1,2,3,4
+    f.activePosition.row=-1-f.f_f[f.active].form[f.activeForm].up;
     return f;
   }
   initNext(){
@@ -647,7 +649,8 @@ class TETRIS{
 
     //2。不超出邊界
     //下邊界
-    if(row-f.calcAppearRow()>=20){
+    //(17,1)(18,2)(16,0)
+    if(row-f.f_f[f.active].form[f.activeForm].down>20-4){
       return false;
     }
     //左右邊界
@@ -666,7 +669,7 @@ class TETRIS{
     f.active=f.next;
     f.activeForm=f.nextForm;
     f.activePosition={
-      row:f.calcAppearRow(),
+      row:0-f.f_f[f.active].form[f.activeForm].up,
       j:3
     };
     var next=f.gLETTER();
@@ -798,21 +801,33 @@ class TETRIS{
   }
 
   
-  //計算當前活動方塊出現的行數值
-  calcAppearRow(){
-    var f=this;
-    var row=-3;
-    var activeLETTER=f.f_f[f.active].form[f.activeForm]._1248.split('_').reverse();
+  //計算方塊上下行數空值
+  calcUD(LETTER,form){
+    var f=this,i;
+    var up=0;
+    var down=0;
+    var activeLETTER=f.f_f[LETTER].form[form].split('_');
     // console.log(activeLETTER);
-    for(var i=0;i<activeLETTER.length;i++){
+    for(i=0;i<activeLETTER.length;i++){
       if(!+activeLETTER[i]){
-        row++;
+        up++;
       }else{
         //跳出
         break;
       }
     }
-    return (row);
+    for(i=activeLETTER.length-1;i>=0;i--){
+      if(!+activeLETTER[i]){
+        down++;
+      }else{
+        //跳出
+        break;
+      }
+    }
+    return ({
+      up:up,
+      down:down
+    });
   }
   // 計算方塊左右空值
   calcLR(LETTER01){
