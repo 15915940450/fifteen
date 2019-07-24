@@ -7,23 +7,53 @@ class PD{
   }
 
   init(){
-    // console.log(obj);
-    // console.log(obj.active);
-    // this.calcLRD(obj.active);
+    // this.calcD(obj.active,obj.activeForm,obj.activePosition.j);
+    this.calc3();
   }
-  /*calcLRD(active){
+  calc3(){
     var f=this;
-    var LETTER01=obj.F2(active,obj.activeForm);
-    var LR=obj.calcLR(LETTER01);
-    var minJ=-LR.L;
-    var maxJ=LR.R+6;
-    console.log(minJ);
-    return ({
-      minJ:minJ,
-      maxJ:maxJ,
-      maxR:0
-    });
-  }*/
+    //初始化
+    this.arr3fixed=[];
+    var active=obj.active;  //"j"
+    var form=obj.f_f[active].form;
+    // 當前字母的所有變形，方塊可移動的最左到最右
+    for(var formIndex=0;formIndex<form.length;formIndex++){
+      for(var j=form[formIndex].minJ;j<=form[formIndex].maxJ;j++){
+        var row=f.calcD(active,formIndex,j);
+        f.arr3fixed.push({
+          row:row,
+          j:j,
+          LETTER:active,
+          form:formIndex,
+          arr:obj.addActiveLETTER({
+            row:row,
+            j:j,
+            LETTER:active,
+            form:formIndex
+          })
+        });
+      }
+      
+    }
+    console.log(f.arr3fixed);
+    return f;
+
+  }
+  //計算方塊在j列下最多可下落的row
+  calcD(LETTER,formIndex,j){
+    var row=0;
+    var up=obj.f_f[LETTER].form[formIndex].up;
+    var b=true;
+
+    for(var i=0;i<20;i++){
+      b=obj.check(LETTER,formIndex,{row:(i-up),j:j});
+      if(!b){
+        row=i-1;
+        break;
+      }
+    }
+    return (row);
+  }
 }
 
 var dellacherie=new PD();

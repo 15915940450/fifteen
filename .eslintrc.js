@@ -10,6 +10,7 @@ module.exports = {
       "X2JS":true,
       "Vue":true,
       "api":true,
+      "obj":true,
       "_":true
     },
     "extends": "eslint:recommended",

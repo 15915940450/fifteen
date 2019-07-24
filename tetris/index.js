@@ -59,7 +59,7 @@ class TETRIS{
     this.addActiveLETTER();
     // 渲染
     this.render();
-    this.raf(); //動畫：每秒60幀
+    // this.raf(); //動畫：每秒60幀
     this.listen();
 
 
@@ -612,26 +612,17 @@ class TETRIS{
 
   //檢測變化後是否有重複的cell，是否出邊界
   // arrTetris,active,activeForm,activePosition
-  check(){
+  check(active,activeForm,activePosition){
     var f=this;
     var arrTetris=f.arrTetris;
-    var active=f.active;
-    var activeForm=f.activeForm;
-    var activePosition=f.activePosition;
-    // console.log(arrTetris);
-    /*console.log(active);
-    console.log(activeForm);
-    console.log(activePosition);*/
+    active=active || f.active;
+    activeForm=activeForm ||f.activeForm;
+    activePosition=activePosition || f.activePosition;
 
     var LETTER01=f.F2(active,activeForm);
     var row=activePosition.row;
     var j=activePosition.j;
     var LR=f.f_f[active].form[activeForm];
-    // var ____=f.f_f[active].form[activeForm];
-    // console.log(LETTER01);
-    // console.log(row);
-    // console.log(j);
-    // console.log(LR);
 
     //1。有重疊
     for(var rowLETTER=0;rowLETTER<LETTER01.length;rowLETTER++){
