@@ -929,4 +929,3 @@ class TETRIS{
 
 var obj=new TETRIS();
 obj.init();
-

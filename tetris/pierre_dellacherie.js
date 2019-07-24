@@ -57,11 +57,11 @@ class PD{
   //計算方塊在j列下最多可下落的row
   calcD(LETTER,formIndex,j){
     var row=0;
-    var up=obj.f_f[LETTER].form[formIndex].up;
+    var UD=obj.f_f[LETTER].form[formIndex];
     var b=true;
 
-    for(var i=0;i<20;i++){
-      b=obj.check(LETTER,formIndex,{row:(i-up),j:j});
+    for(var i=0-UD.up;i<=20;i++){
+      b=obj.check(LETTER,formIndex,{row:i,j:j});
       if(!b){
         row=i;
         break;
