@@ -24,7 +24,13 @@ class PD{
           row:row,
           j:j,
           LETTER:active,
-          form:formIndex
+          form:formIndex,
+          arr:f.addLETTER({
+            row:row,
+            j:j,
+            LETTER:active,
+            form:formIndex
+          })
         });
       }
       
@@ -36,7 +42,6 @@ class PD{
   addLETTER(param){
     var LETTER01=obj.F2(param.LETTER,param.form);
     var row=param.row;
-    // console.log(row);
     var j=param.j;
 
     var arrTetrisAppendFixed=_.cloneDeep(obj.arrTetris);
