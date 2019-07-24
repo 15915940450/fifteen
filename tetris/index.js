@@ -616,7 +616,11 @@ class TETRIS{
     var f=this;
     var arrTetris=f.arrTetris;
     active=active || f.active;
-    activeForm=activeForm ||f.activeForm;
+    // activeForm=activeForm ||f.activeForm;
+    if(activeForm===undefined){
+      //注意此處有可能傳入0
+      activeForm=f.activeForm;
+    }
     activePosition=activePosition || f.activePosition;
 
     var LETTER01=f.F2(active,activeForm);
@@ -641,7 +645,7 @@ class TETRIS{
     //2。不超出邊界
     //下邊界
     //(17,1)(18,2)(16,0)
-    if(row-f.f_f[f.active].form[f.activeForm].down>20-4){
+    if(row-f.f_f[active].form[activeForm].down>20-4){
       return false;
     }
     //左右邊界
@@ -652,6 +656,7 @@ class TETRIS{
 
     return true;
   }
+
   
   //下一回合
   round(){
@@ -924,3 +929,4 @@ class TETRIS{
 
 var obj=new TETRIS();
 obj.init();
+
