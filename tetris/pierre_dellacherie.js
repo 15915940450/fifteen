@@ -147,8 +147,26 @@ class PD{
     // console.log(H);
     return (H);
   }
+  /*
+    Rows eliminated:消行层数与当前方块贡献出的方格数乘积
+  */
+  RowsEliminated(arrFixed){
+    var arrLine=obj.findLine(arrFixed);
+    var numLine=arrLine.length;
+    var numFixed=0;
+    arrLine.forEach(function(v){
+      arrFixed[v].forEach(function(v2){
+        if(v2.color==='midnightblue'){
+          numFixed++;
+        }
+      });
+    });
+    // console.log(numFixed);
+
+    return (numFixed*numLine);
+  }
 }
 
 var dellacherie=new PD();
 dellacherie.init();
-dellacherie.LandingHeight(dellacherie.arr3fixed[0].arr);
+dellacherie.RowsEliminated(dellacherie.arr3fixed[0].arr);
