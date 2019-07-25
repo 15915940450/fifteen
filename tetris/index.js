@@ -17,7 +17,7 @@ class TETRIS{
     this.W=10;  //寬度：10
     this.H=20;  //高度：20
     this.cell=30; //每個格子大小
-    this.randomRow=_.random(0);  //隨機格子,false(0),1,2,3,,,15
+    this.randomRow=_.random(15);  //隨機格子,false(0),1,2,3,,,15
     this.lock=false; //鎖住遊戲
 
     /*遊戲中的狀態*/
@@ -610,52 +610,7 @@ class TETRIS{
     return f;
   }
 
-  //檢測變化後是否有重複的cell，是否出邊界
-  // arrTetris,active,activeForm,activePosition
-  check(active,activeForm,activePosition){
-    var f=this;
-    var arrTetris=f.arrTetris;
-    active=active || f.active;
-    // activeForm=activeForm ||f.activeForm;
-    if(activeForm===undefined){
-      //注意此處有可能傳入0
-      activeForm=f.activeForm;
-    }
-    activePosition=activePosition || f.activePosition;
-
-    var LETTER01=f.F2(active,activeForm);
-    var row=activePosition.row;
-    var j=activePosition.j;
-    var LR=f.f_f[active].form[activeForm];
-
-    //1。有重疊
-    for(var rowLETTER=0;rowLETTER<LETTER01.length;rowLETTER++){
-      for(var k=0;k<LETTER01[0].length;k++){
-        var rowTetris=row+rowLETTER;
-        var jTerris=j+k;
-        //出現在視野中
-        if(f.checkBorder(rowTetris,jTerris)){
-          if(+LETTER01[rowLETTER][k].v && +arrTetris[rowTetris][jTerris].v){
-            return false;
-          }
-        }
-      }
-    } //outer for
-
-    //2。不超出邊界
-    //下邊界
-    //(17,1)(18,2)(16,0)
-    if(row-f.f_f[active].form[activeForm].down>20-4){
-      return false;
-    }
-    //左右邊界
-    if(j>LR.maxJ || j<LR.minJ){
-      return false;
-    }
-
-
-    return true;
-  }
+  
 
   
   //下一回合
@@ -922,6 +877,69 @@ class TETRIS{
   AI:Pierre Dellacherie算法：（只考虑当前方块）(見pierre_dellacherie.js)
   (https://github.com/bingghost/SimpleTetris)
   */
+  // arrTetris, active,activeForm,activePosition(row,j)
+  // 傳入方塊的信息
+  check(info){
+    var f=this;
+    var arrTetris=f.arrTetris;
+    var active,activeForm,activePosition;
+
+    if(info){
+      //傳入了參數
+      active=info.active;
+      activeForm=info.activeForm;
+      activePosition={
+        // {row: 9, j: 1}
+        row:info.row,
+        j:info.j
+      };
+    }else{
+      active=f.active;
+      activeForm=f.activeForm;
+      activePosition=f.activePosition;
+    }
+
+    /*active=active || f.active;
+    // activeForm=activeForm ||f.activeForm;
+    if(activeForm===undefined){
+      //注意此處有可能傳入0
+      activeForm=f.activeForm;
+    }
+    activePosition=activePosition || f.activePosition;*/
+
+    var LETTER01=f.F2(active,activeForm);
+    var row=activePosition.row;
+    var j=activePosition.j;
+    var LR=f.f_f[active].form[activeForm];
+
+    //1。有重疊
+    for(var rowLETTER=0;rowLETTER<LETTER01.length;rowLETTER++){
+      for(var k=0;k<LETTER01[0].length;k++){
+        var rowTetris=row+rowLETTER;
+        var jTerris=j+k;
+        //出現在視野中
+        if(f.checkBorder(rowTetris,jTerris)){
+          if(+LETTER01[rowLETTER][k].v && +arrTetris[rowTetris][jTerris].v){
+            return false;
+          }
+        }
+      }
+    } //outer for
+
+    //2。不超出邊界
+    //下邊界
+    //(17,1)(18,2)(16,0)
+    if(row-f.f_f[active].form[activeForm].down>20-4){
+      return false;
+    }
+    //左右邊界
+    if(j>LR.maxJ || j<LR.minJ){
+      return false;
+    }
+
+
+    return true;
+  } //check:檢測變化後是否有重複的cell，是否出邊界
 
 
 

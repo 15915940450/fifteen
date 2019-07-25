@@ -52,6 +52,7 @@ class PD{
         var jTerris=j+k;
         if(obj.checkBorder(rowTetris,jTerris)){
           if(LETTER01[rowLETTER][k].v){
+            LETTER01[rowLETTER][k].color='floralwhite';
             arrTetrisAppendFixed[rowTetris][jTerris]=LETTER01[rowLETTER][k];
           }
         }
@@ -66,7 +67,12 @@ class PD{
     var b=true;
 
     for(var i=0-UD.up;i<=20;i++){
-      b=obj.check(LETTER,formIndex,{row:i,j:j});
+      b=obj.check({
+        active:LETTER,
+        activeForm:formIndex,
+        row:i,
+        j:j
+      });
       if(!b){
         row=i;
         break;
