@@ -277,7 +277,7 @@ class TETRIS{
         if(row>=f.H-f.randomRow){
           this.arrTetris[row][j]={
             color:'crimson',
-            v:Math.random()>.9?0:1
+            v:Math.random()>.3?0:1
           };
         }else{
           this.arrTetris[row][j]={
@@ -783,18 +783,35 @@ class TETRIS{
       down:down
     });
   }
+  /*
+    翻轉數組:[[1,2,3,4],[5,6,7,8],[0,0,0,0]]
+    ==>[[1,5,0],[2,6,0],[3,7,0],[4,8,0]]
+  */
+  ijji(arr){
+    var arrResult=[];
+    var row=arr.length;
+    var col=arr[0].length;
+    for(var i_col=0;i_col<col;i_col++){
+      arrResult[i_col]=arrResult[i_col] || [];
+      for(var j_row=0;j_row<row;j_row++){
+        arrResult[i_col][j_row]=arr[j_row][i_col];
+      }
+    }
+    return arrResult;
+  }
   // 計算方塊左右空值
   calcLR(LETTER01){
     var i;
     var L=0;
     var R=0;
-    var LETTER10=[];
-    for(i=0;i<LETTER01.length;i++){
+
+    var LETTER10=this.ijji(LETTER01);
+    /*for(i=0;i<LETTER01.length;i++){
       LETTER10[i]=LETTER10[i] || [];
       for(var j=0;j<LETTER01[0].length;j++){
         LETTER10[i][j]=LETTER01[j][i];
       }
-    }
+    }*/
     var LETTER=LETTER10.map(function(v){
       return (_.sumBy(v,function(v2){
         return (v2.v);

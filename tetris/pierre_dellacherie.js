@@ -165,8 +165,40 @@ class PD{
 
     return (numFixed*numLine);
   }
+
+  /*
+    Row Transitions:行变换从一定程度上反映出一行的平整程度，越平整值越小
+    Column Transitions:列变换从一定程度上反映出一列中空洞的集中程度，空洞越集中值越小
+  */
+  RCTransitions(arrFixed,isC){
+    var f=this;
+    var arrEliminated=f.calcARReliminated(arrFixed);
+    if(isC){
+      arrEliminated=obj.ijji(arrEliminated);
+    }
+    var arrT=arrEliminated.map(function(v){
+      var t=0;
+      //游戏池边界算作有方块
+      var obj_1={color: 'white', v: 1};
+      v.push(obj_1);
+      v.unshift(obj_1);
+      for(var i=0;i<v.length-1;i++){
+        if(+v[i].v!==+v[i+1].v){
+          t++;
+        }
+      }
+      return t;
+    });
+    // console.log(arrT);
+    return _.sum(arrT);
+  }
+
+
+
+
+
 }
 
 var dellacherie=new PD();
 dellacherie.init();
-dellacherie.RowsEliminated(dellacherie.arr3fixed[0].arr);
+dellacherie.RCTransitions(dellacherie.arr3fixed[0].arr,true);
