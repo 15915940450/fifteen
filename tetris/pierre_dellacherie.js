@@ -37,7 +37,7 @@ class PD{
       }
       
     }
-    console.log(f.arr3fixed);
+    // console.log(f.arr3fixed);
     return f;
 
   }
@@ -192,6 +192,89 @@ class PD{
     // console.log(arrT);
     return _.sum(arrT);
   }
+  /*
+    Holes:A hole is an empty cell that has at least one filled cell above it in the same column.
+  */
+  Holes(arrFixed){
+    var f=this;
+    var arrEliminated=f.calcARReliminated(arrFixed);
+    var arrIJJI=obj.ijji(arrEliminated);
+    // console.log(arrIJJI);
+    var arrH=arrIJJI.map(function(v){
+      var H=0,i,max1=20;
+      for(i=0;i<v.length;i++){
+        if(+v[i].v){
+          max1=i; //最高的1值索引
+          break;
+        }
+      }
+
+      for(i=v.length-1;i>0;i--){
+        if(!+v[i].v && i>max1){
+          //該值為0，該索引大於max1
+          H++;
+        }
+      }
+
+      return H;
+    });
+
+    // console.log(arrH);
+
+
+    return _.sum(arrH);
+  }
+  /*
+    Well:两边皆有方块的空列。该指标为所有井的深度连加到1再求总和 注意一列中可能有多个井
+  */
+  Well(arrFixed){
+    var f=this;
+    var arrEliminated=f.calcARReliminated(arrFixed);
+    var arrIJJI=obj.ijji(arrEliminated);
+    
+    var arrWell=arrIJJI.map(function(v,index){
+      var arrW=[];
+      for(var i=0;i<v.length;i++){
+        //非首尾列
+        var b1=(index<=8 && index>=1 && !+v[i].v && +arrIJJI[index-1][i].v && +arrIJJI[index+1][i].v);
+        var b2=(index===0 && !+v[i].v && +arrIJJI[index+1][i].v);
+        var b3=(index===9 && !+v[i].v && +arrIJJI[index-1][i].v);
+        if(b1 || b2 || b3){
+          arrW.push('WELL');
+        }else{
+          arrW.push(0);
+        }
+      }
+      return arrW.reverse();
+    });
+    arrWell=arrWell.map(function(v){
+      var arrResult=[];
+      var arrWellNum=0;
+      for(var i=0;i<v.length-1;i++){
+        if(v[i]==='WELL'){
+          arrWellNum++;
+          if(!v[i+1]){
+            arrResult.push(f.sumNumTo1(arrWellNum));
+            arrWellNum=0;
+          }
+        }
+      }
+      return (arrResult);
+    });
+    arrWell=arrWell.map(function(v){
+      return (_.sum(v));
+    });
+
+    return arrWell;
+  }
+  //數字num一直加到1
+  sumNumTo1(num){
+    var result=0;
+    for(var i=num;i>0;i--){
+      result+=i;
+    }
+    return (result);
+  }
 
 
 
@@ -201,4 +284,5 @@ class PD{
 
 var dellacherie=new PD();
 dellacherie.init();
-dellacherie.RCTransitions(dellacherie.arr3fixed[0].arr,true);
+dellacherie.Well(dellacherie.arr3fixed[0].arr);
+// console.log(dellacherie.sumNumTo1(5));

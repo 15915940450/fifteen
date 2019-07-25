@@ -277,7 +277,7 @@ class TETRIS{
         if(row>=f.H-f.randomRow){
           this.arrTetris[row][j]={
             color:'crimson',
-            v:Math.random()>.3?0:1
+            v:Math.random()>.4?0:1
           };
         }else{
           this.arrTetris[row][j]={
