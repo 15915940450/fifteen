@@ -25,7 +25,7 @@ class TETRIS{
     this.activeForm=null;  //當前方塊形態索引
     this.activePosition={ //當前方塊的位置
       row:null,
-      j:3  //列
+      j:3  //列(3,4,5,6)(0_base)
     };  //下一個方塊
     this.next=null;  //下一個方塊
     this.nextForm=null;  //下一個方塊形態索引
@@ -715,11 +715,14 @@ class TETRIS{
     return f;
   }
   //查找消除哪些行
-  findLine(){
+  findLine(arrFixed){
     var f=this;
+
+    arrFixed=arrFixed || f.arrTetrisAppendActive;
+
     var arrLine=[];
-    for(var i=0;i<f.arrTetrisAppendActive.length;i++){
-      var isEvery1=f.arrTetrisAppendActive[i].every(function(v){
+    for(var i=0;i<arrFixed.length;i++){
+      var isEvery1=arrFixed[i].every(function(v){
         return (+v.v===1);
       });
       if(isEvery1){

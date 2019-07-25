@@ -10,7 +10,7 @@ class PD{
     // this.calcD(obj.active,obj.activeForm,obj.activePosition.j);
     this.calc3();
     //可視化所有落腳點
-    this.raf();
+    // this.raf();
   }
   calc3(){
     var f=this;
@@ -107,7 +107,48 @@ class PD{
     obj.renderCanvas(f.arr3fixed[rad].arr);
     return f;
   }
+  //固定的數據消除行衍生的數據
+  calcARReliminated(arrFixed){
+    var arrEliminated=_.cloneDeep(arrFixed);
+    var arrLine=obj.findLine(arrFixed);
+    var len=arrLine.length;
+    if(len){
+      arrEliminated=arrFixed.filter(function(v,i){
+        return (!arrLine.includes(i));
+      });
+      for(var i=0;i<len;i++){
+        arrEliminated.unshift(_.cloneDeep(obj.pureRow));
+      }
+    }
+    return arrEliminated;
+  }
+
+
+  /*
+    Landing Height:3,4,5,6列最高點所在的row索引
+  */
+  LandingHeight(arrFixed){
+    var f=this;
+    var H=-1;
+    //1.消除行
+    var arrEliminated=f.calcARReliminated(arrFixed);
+    
+    forRow:
+    for(var i=0;i<arrEliminated.length;i++){
+      for(var j=3;j<=6;j++){
+        // console.log(i,j,arrEliminated[i][j].v);
+        if(arrEliminated[i][j].v){
+          H=i;
+          break forRow;
+        }
+      }
+    }
+
+    // console.log(H);
+    return (H);
+  }
 }
 
 var dellacherie=new PD();
 dellacherie.init();
+dellacherie.LandingHeight(dellacherie.arr3fixed[0].arr);
