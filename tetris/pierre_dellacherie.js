@@ -4,13 +4,39 @@ Pierre Dellacherie
 class PD{
   constructor(){
     this.arr3fixed=[]; //計算所有當前方塊下落固定後的數據（消除行之前）（三維數組）
+    this.C=[
+      {
+        name:'Landing Height',
+        value:-4.500158825082766
+      },
+      {
+        name:'Rows eliminated',
+        value:3.4181268101392694
+      },
+      {
+        name:'Row Transitions',
+        value:-3.2178882868487753
+      },
+      {
+        name:'Column Transitions',
+        value:-9.348695305445199
+      },
+      {
+        name:'Number of Holes',
+        value:-7.899265427351652
+      },
+      {
+        name:'Well Sums',
+        value:-3.3855972247263626
+      }
+    ];
   }
 
   init(){
     // this.calcD(obj.active,obj.activeForm,obj.activePosition.j);
     this.calc3();
     //可視化所有落腳點
-    // this.raf();
+    this.raf();
   }
   calc3(){
     var f=this;
@@ -27,19 +53,38 @@ class PD{
           j:j,
           LETTER:active,
           form:formIndex,
-          arr:f.addLETTER({
+          AI:f.calcAI({
             row:row,
             j:j,
             LETTER:active,
             form:formIndex
           })
+          /*,
+          arr:f.addLETTER({
+            row:row,
+            j:j,
+            LETTER:active,
+            form:formIndex
+          })*/
         });
       }
       
     }
-    // console.log(f.arr3fixed);
+    console.log(f.arr3fixed);
     return f;
 
+  }
+  calcAI(param){
+    var f=this;
+    var arrFixed=f.addLETTER(param);
+    var AI=f.LandingHeight(arrFixed)*f.C[0].value+
+           f.RowsEliminated(arrFixed)*f.C[1].value+
+           f.RCTransitions(arrFixed)*f.C[2].value+
+           f.RCTransitions(arrFixed,true)*f.C[3].value+
+           f.Holes(arrFixed)*f.C[4].value+
+           f.Well(arrFixed)*f.C[5].value;
+    
+    return AI;
   }
   addLETTER(param){
     var LETTER01=obj.F2(param.LETTER,param.form);
@@ -104,7 +149,14 @@ class PD{
   }
   drawFixed(rad){
     var f=this;
-    obj.renderCanvas(f.arr3fixed[rad].arr);
+    // obj.renderCanvas(f.arr3fixed[rad].arr);
+    obj.renderCanvas(f.addLETTER({
+      row:f.arr3fixed[rad].row,
+      j:f.arr3fixed[rad].j,
+      LETTER:f.arr3fixed[rad].LETTER,
+      form:f.arr3fixed[rad].form
+    }));
+    console.log(f.arr3fixed[rad].AI);
     return f;
   }
   //固定的數據消除行衍生的數據
@@ -130,7 +182,7 @@ class PD{
   LandingHeight(arrFixed){
     var f=this;
     var H=-1;
-    //1.消除行
+    //消除行
     var arrEliminated=f.calcARReliminated(arrFixed);
     
     forRow:
@@ -145,7 +197,7 @@ class PD{
     }
 
     // console.log(H);
-    return (H);
+    return (20-H);
   }
   /*
     Rows eliminated:消行层数与当前方块贡献出的方格数乘积
@@ -265,7 +317,7 @@ class PD{
       return (_.sum(v));
     });
 
-    return arrWell;
+    return _.sum(arrWell);
   }
   //數字num一直加到1
   sumNumTo1(num){
@@ -284,5 +336,3 @@ class PD{
 
 var dellacherie=new PD();
 dellacherie.init();
-dellacherie.Well(dellacherie.arr3fixed[0].arr);
-// console.log(dellacherie.sumNumTo1(5));
