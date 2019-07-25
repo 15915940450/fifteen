@@ -9,6 +9,8 @@ class PD{
   init(){
     // this.calcD(obj.active,obj.activeForm,obj.activePosition.j);
     this.calc3();
+    //可視化所有落腳點
+    this.raf();
   }
   calc3(){
     var f=this;
@@ -52,7 +54,7 @@ class PD{
         var jTerris=j+k;
         if(obj.checkBorder(rowTetris,jTerris)){
           if(LETTER01[rowLETTER][k].v){
-            LETTER01[rowLETTER][k].color='floralwhite';
+            LETTER01[rowLETTER][k].color='midnightblue';
             arrTetrisAppendFixed[rowTetris][jTerris]=LETTER01[rowLETTER][k];
           }
         }
@@ -79,6 +81,31 @@ class PD{
       }
     }
     return (row-1);
+  }
+
+  //落腳點動畫
+  raf(){
+    var f=this;
+    var rad=0;
+    var frame=20;
+    var rafCallback=function(){
+      //also time
+      rad++;
+      var index=(rad/frame)>>0;
+      if(rad<1e4){
+        if(+(rad%frame)===1 && index<f.arr3fixed.length){
+          f.drawFixed(index);
+        }
+        window.requestAnimationFrame(rafCallback);
+      }
+    };
+    window.requestAnimationFrame(rafCallback);
+    return f;
+  }
+  drawFixed(rad){
+    var f=this;
+    obj.renderCanvas(f.arr3fixed[rad].arr);
+    return f;
   }
 }
 
