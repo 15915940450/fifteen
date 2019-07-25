@@ -36,7 +36,7 @@ class TETRIS{
     this.score=0; //遊戲得分
     this.HiScore=0; //歷史最高分
     this.level=0;  //18級
-    this.lines=0; //已消除的行數
+    this.lines=900; //已消除的行數
 
     this.rule=[];  //級數規則
 
@@ -59,7 +59,7 @@ class TETRIS{
     this.addActiveLETTER();
     // 渲染
     this.render();
-    // this.raf(); //動畫：每秒60幀
+    this.raf(); //動畫：每秒60幀
     this.listen();
 
 
@@ -626,6 +626,15 @@ class TETRIS{
     var next=f.gLETTER();
     f.next=next.LETTER;
     f.nextForm=next.form;
+
+    var hint=dellacherie.init();
+    console.log(hint);
+    dellacherie.drawFixed(hint.index);
+
+    f.activeForm=hint.form;
+    f.activePosition.j=hint.j;
+
+    // this.lock=true;
     return f;
   }
   /*

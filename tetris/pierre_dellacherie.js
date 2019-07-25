@@ -36,7 +36,25 @@ class PD{
     // this.calcD(obj.active,obj.activeForm,obj.activePosition.j);
     this.calc3();
     //可視化所有落腳點
-    this.raf();
+    var theone=this.hint();
+    return (theone);
+    // this.raf();
+  }
+  //獲取最高分
+  hint(){
+    var f=this;
+    var initN=-1e9;
+    var result;
+    var len=f.arr3fixed.length;
+    for(var i=0;i<len;i++){
+      if(f.arr3fixed[i].AI>initN){
+        initN=f.arr3fixed[i].AI;
+        result=f.arr3fixed[i];
+        result.index=i;
+      }
+    }
+    
+    return result;
   }
   calc3(){
     var f=this;
@@ -150,13 +168,14 @@ class PD{
   drawFixed(rad){
     var f=this;
     // obj.renderCanvas(f.arr3fixed[rad].arr);
+    var el=document.querySelector('.canvas_ai');
     obj.renderCanvas(f.addLETTER({
       row:f.arr3fixed[rad].row,
       j:f.arr3fixed[rad].j,
       LETTER:f.arr3fixed[rad].LETTER,
       form:f.arr3fixed[rad].form
-    }));
-    console.log(f.arr3fixed[rad].AI);
+    }),30,el);
+    // console.log(f.arr3fixed[rad].AI);
     return f;
   }
   //固定的數據消除行衍生的數據
@@ -187,7 +206,7 @@ class PD{
     
     forRow:
     for(var i=0;i<arrEliminated.length;i++){
-      for(var j=3;j<=6;j++){
+      for(var j=0;j<10;j++){
         // console.log(i,j,arrEliminated[i][j].v);
         if(arrEliminated[i][j].v){
           H=i;
@@ -335,4 +354,4 @@ class PD{
 }
 
 var dellacherie=new PD();
-dellacherie.init();
+// dellacherie.init();
