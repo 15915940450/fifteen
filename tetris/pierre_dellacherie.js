@@ -199,24 +199,20 @@ class PD{
     Landing Height:3,4,5,6列最高點所在的row索引
   */
   LandingHeight(arrFixed){
-    var f=this;
     var H=-1;
-    //消除行
-    var arrEliminated=f.calcARReliminated(arrFixed);
-    
+
     forRow:
-    for(var i=0;i<arrEliminated.length;i++){
-      for(var j=0;j<10;j++){
-        // console.log(i,j,arrEliminated[i][j].v);
-        if(arrEliminated[i][j].v){
-          H=i;
+    for(var i=0;i<arrFixed.length;i++){
+      for(var j=0;j<arrFixed[0].length;j++){
+        if(arrFixed[i][j].color==='midnightblue'){
+          H=20-i;
           break forRow;
         }
       }
     }
 
     // console.log(H);
-    return (20-H);
+    return (H);
   }
   /*
     Rows eliminated:消行层数与当前方块贡献出的方格数乘积
