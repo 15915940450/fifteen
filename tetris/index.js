@@ -19,6 +19,7 @@ class TETRIS{
     this.cell=30; //每個格子大小
     this.randomRow=_.random(15);  //隨機格子,false(0),1,2,3,,,15
     this.lock=false; //鎖住遊戲
+    this.gameOver=false; //遊戲結束
 
     /*遊戲中的狀態*/
     this.active=null;  //當前方塊
@@ -36,7 +37,8 @@ class TETRIS{
     this.score=0; //遊戲得分
     this.HiScore=0; //歷史最高分
     this.level=0;  //18級
-    this.lines=1000; //已消除的行數
+    this.lines=0; //已消除的行數
+    this.frame=1; //速度：幀數
 
     this.rule=[];  //級數規則
 
@@ -299,7 +301,7 @@ class TETRIS{
     f.active=active.LETTER;
     f.activeForm=active.form;
     
-    f.activePosition.row=-1-f.f_f[f.active].form[f.activeForm].up;
+    f.activePosition.row=0-f.f_f[f.active].form[f.activeForm].up;
     return f;
   }
   initNext(){
@@ -439,10 +441,14 @@ class TETRIS{
     var f=this;
     var iRAF=0;
     // var t0=new Date().getTime();
+    //1.遊戲結束
+    if(f.gameOver){
+      return false;
+    }
 
     var rafCallback=function(){
+      //2.鎖住，不增長
       if(f.lock){
-        //鎖住，不增長
         iRAF=0;
       }else{
         iRAF++;
@@ -452,12 +458,17 @@ class TETRIS{
       var objLevel=f.rule.find(function(v){
         return (v.level===f.level);
       });
-      var frame=2;
+      f.frame=1;
       if(objLevel){
-        frame=objLevel.frame;
+        f.frame=objLevel.frame;
       }
       
-      if(+(iRAF%frame)===1){
+      //3.幀數為1需要特別對待
+      // console.log(f.frame,iRAF);
+      if(f.frame!==1 && +((iRAF+1)%f.frame)===0){
+        f.handleDown();
+      }
+      if(f.frame===1 && iRAF>0){
         f.handleDown();
       }
       /*var t=new Date().getTime()-t0;  
@@ -625,13 +636,14 @@ class TETRIS{
     f.nextForm=next.form;
 
     /*
-    AI提示: 改變當前方塊的形狀以及列
+    AI提示: 改變當前方塊的形狀以及行列
     */
     var hint=dellacherie.init();
     // console.log(hint);
     dellacherie.drawFixed(hint.index);
 
     f.activeForm=hint.form;
+    f.activePosition.row=0-f.f_f[f.active].form[f.activeForm].up;
     f.activePosition.j=hint.j;
 
     // this.lock=true;
@@ -674,7 +686,7 @@ class TETRIS{
   //檢查級數
   inspectLevel(){
     var f=this;
-    var level=0;
+    var level=29;
     for(var i=0;i<f.rule.length;i++){
       if(f.lines<f.rule[i].nowLineLT){
         level=f.rule[i].level;
@@ -971,6 +983,7 @@ class TETRIS{
     if(b){
       //遊戲結束，鎖住
       this.lock=true;
+      this.gameOver=true;
 
       var el=document.querySelector('.pause');
       var elP=el.querySelector('p');
