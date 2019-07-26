@@ -88,7 +88,7 @@ class PD{
       }
       
     }
-    console.log(f.arr3fixed);
+    // console.log(f.arr3fixed);
     return f;
 
   }

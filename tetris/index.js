@@ -35,8 +35,8 @@ class TETRIS{
 
     this.score=0; //遊戲得分
     this.HiScore=0; //歷史最高分
-    this.level=0;  //18級
-    this.lines=900; //已消除的行數
+    this.level=100;  //18級
+    this.lines=1000; //已消除的行數
 
     this.rule=[];  //級數規則
 
@@ -449,9 +449,14 @@ class TETRIS{
       }
       // console.log(iRAF); //一直都在運行
       // console.log(!iRAF%48); //0
-      var frame=f.rule.find(function(v){
+      var objLevel=f.rule.find(function(v){
         return (v.level===f.level);
-      }).frame;
+      });
+      var frame=2;
+      if(objLevel){
+        frame=objLevel.frame;
+      }
+      
       if(+(iRAF%frame)===1){
         f.handleDown();
       }
@@ -577,14 +582,6 @@ class TETRIS{
       }
       // 3.檢測遊戲是否結束
       if(f.checkGameOver()){
-        //遊戲結束，鎖住
-        f.lock=true;
-
-        var el=document.querySelector('.pause');
-        var elP=el.querySelector('p');
-        el.className='pause';
-        elP.innerHTML='GAME OVER';
-
         return false;
       }
       f.round();
@@ -628,7 +625,7 @@ class TETRIS{
     f.nextForm=next.form;
 
     var hint=dellacherie.init();
-    console.log(hint);
+    // console.log(hint);
     dellacherie.drawFixed(hint.index);
 
     f.activeForm=hint.form;
@@ -745,12 +742,25 @@ class TETRIS{
   checkGameOver(){
     var b=false;
     var arr0=this.arrTetrisAppendActive[0];
-    for(var i=3;i<=6;i++){
+    for(var i=1;i<arr0.length-1;i++){
       if(+arr0[i].v){
         b=true;
         break;
       }
     }
+
+    if(b){
+      //遊戲結束，鎖住
+      this.lock=true;
+
+      var el=document.querySelector('.pause');
+      var elP=el.querySelector('p');
+      el.className='pause';
+      elP.innerHTML='GAME OVER';
+
+      console.log(new Date());
+    }
+    
     return b;
   }
   //得分等等界面
