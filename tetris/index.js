@@ -35,7 +35,7 @@ class TETRIS{
 
     this.score=0; //遊戲得分
     this.HiScore=0; //歷史最高分
-    this.level=100;  //18級
+    this.level=0;  //18級
     this.lines=1000; //已消除的行數
 
     this.rule=[];  //級數規則
@@ -624,6 +624,9 @@ class TETRIS{
     f.next=next.LETTER;
     f.nextForm=next.form;
 
+    /*
+    AI提示: 改變當前方塊的形狀以及列
+    */
     var hint=dellacherie.init();
     // console.log(hint);
     dellacherie.drawFixed(hint.index);
@@ -653,7 +656,7 @@ class TETRIS{
     }
     // 改變 arrTetris(可有可無，因為消除得分後立即進行下一回合 round)
     // f.arrTetris=_.cloneDeep(f.arrTetrisAppendActive);
-    // 得分，行數，level
+    // 得分，行數(緣起)，level
     f.lines+=len;
     f.level=f.inspectLevel();
     var score=+f.tetrisScore.find(function(v){
@@ -738,31 +741,7 @@ class TETRIS{
     
     return arrLine;
   }
-  // 檢測遊戲結束(arrTetrisAppendActive 第0行 第3-6列的值是否有1)
-  checkGameOver(){
-    var b=false;
-    var arr0=this.arrTetrisAppendActive[0];
-    for(var i=1;i<arr0.length-1;i++){
-      if(+arr0[i].v){
-        b=true;
-        break;
-      }
-    }
-
-    if(b){
-      //遊戲結束，鎖住
-      this.lock=true;
-
-      var el=document.querySelector('.pause');
-      var elP=el.querySelector('p');
-      el.className='pause';
-      elP.innerHTML='GAME OVER';
-
-      console.log(new Date());
-    }
-    
-    return b;
-  }
+  
   //得分等等界面
   htmlStatus(){
     var f=this;
@@ -793,7 +772,6 @@ class TETRIS{
       if(!+activeLETTER[i]){
         down++;
       }else{
-        //跳出
         break;
       }
     }
@@ -803,8 +781,8 @@ class TETRIS{
     });
   }
   /*
-    翻轉數組:[[1,2,3,4],[5,6,7,8],[0,0,0,0]]
-    ==>[[1,5,0],[2,6,0],[3,7,0],[4,8,0]]
+  翻轉數組:[[1,2,3,4],[5,6,7,8],[0,0,0,0]]
+  ==>[[1,5,0],[2,6,0],[3,7,0],[4,8,0]]
   */
   ijji(arr){
     var arrResult=[];
@@ -917,7 +895,7 @@ class TETRIS{
   (https://github.com/bingghost/SimpleTetris)
   */
   // arrTetris, active,activeForm,activePosition(row,j)
-  // 傳入方塊的信息
+  // 檢查函數：傳入方塊的信息
   check(info){
     var f=this;
     var arrTetris=f.arrTetris;
@@ -979,7 +957,31 @@ class TETRIS{
 
     return true;
   } //check:檢測變化後是否有重複的cell，是否出邊界
+  // 檢測遊戲結束(arrTetrisAppendActive 第0行 第1-8列的值是否有1)
+  checkGameOver(){
+    var b=false;
+    var arr0=this.arrTetrisAppendActive[0];
+    for(var i=1;i<arr0.length-1;i++){
+      if(+arr0[i].v){
+        b=true;
+        break;
+      }
+    }
 
+    if(b){
+      //遊戲結束，鎖住
+      this.lock=true;
+
+      var el=document.querySelector('.pause');
+      var elP=el.querySelector('p');
+      el.className='pause';
+      elP.innerHTML='GAME OVER';
+
+      console.log(new Date());
+    }
+    
+    return b;
+  }
 
 
 } //class
