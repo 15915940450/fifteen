@@ -36,9 +36,9 @@ class TETRIS{
     this.pureRow=[];
 
 
+    this.level=18;  //18級(。。。。。。)
     this.score=0; //遊戲得分
     this.HiScore=0; //歷史最高分
-    this.level=0;  //18級
     this.lines=0; //已消除的行數
     this.frame=1; //速度：幀數
 
@@ -331,6 +331,15 @@ class TETRIS{
     var i=0,j=0;
     var tmp=[];
     var nowLine=0;
+
+    //只考慮18級或0級
+    f.rule=f.rule.filter(function(v){
+      return (v.level[0]>=f.level);
+    });
+
+    
+
+
     for(i=0;i<f.rule.length;i++){
       for(j=0;j<f.rule[i].level.length;j++){
         // console.log(i+':'+j);
@@ -344,7 +353,13 @@ class TETRIS{
 
     }
 
+
     f.rule=tmp;
+
+    //修正幀數
+    f.frame=f.rule.find(function(v){
+      return (v.level===f.level);
+    }).frame;
 
     return f;
   }
@@ -765,6 +780,7 @@ class TETRIS{
     elsStatus[0].innerHTML=this.score;
     elsStatus[1].innerHTML=this.level;
     elsStatus[2].innerHTML=this.lines;
+    elsStatus[3].innerHTML=this.frame;
     return f;
   }
 
