@@ -7,6 +7,7 @@
 class TETRIS{
   constructor(){
     this.dev=0; //啟用開發模式
+    this.isAI=1;
 
     this.arrTetris=[];
     //arrTetris:20*10(沒有當前活動的數據，當一個方塊固定後需要更新)
@@ -32,6 +33,11 @@ class TETRIS{
     };  //下一個方塊
     this.next=null;  //下一個方塊
     this.nextForm=null;  //下一個方塊形態索引
+
+    /*人工智能目標形狀與列*/
+    this.targetForm=null;
+    this.targetJ=null;
+    this.HIGHEST=null;
 
     this.pureRow=[];
 
@@ -590,13 +596,26 @@ class TETRIS{
     f.render();
     return f;
   }
-  //處理下降(定時器自動下降)
+  //處理下降(定時器自動下降)(人工智能則需要修正形狀，列)
   handleDown(){
     var f=this;
 
     var tmp=f.activePosition.row;
     //當前行加1
     f.activePosition.row=tmp+1;
+
+    if(f.isAI){
+      //人工智能，顯現變化效果
+      if(f.activeForm!==f.targetForm && f.targetForm!==null){
+        f.handleForm();
+      }
+      if(f.activePosition.j>f.targetJ && f.targetJ!==null){
+        f.handleLeft();
+      }
+      if(f.activePosition.j<f.targetJ && f.targetJ!==null){
+        f.handleRight();
+      }
+    }
 
     //1.檢測是否可以繼續下降
     var b=f.check();
@@ -661,9 +680,19 @@ class TETRIS{
     // console.log(hint);
     dellacherie.drawFixed(hint.index);
 
-    f.activeForm=hint.form;
     f.activePosition.row=0-f.f_f[f.active].form[f.activeForm].up;
-    f.activePosition.j=hint.j;
+    
+
+    f.targetForm=hint.form;
+    f.targetJ=hint.j;
+    // hint.row;
+
+    f.calcHIGHEST();
+    // console.log(f.HIGHEST);
+    if(f.HIGHEST>15){
+      f.activeForm=hint.form;
+      f.activePosition.j=hint.j;
+    }
 
     // this.lock=true;
     return f;
@@ -878,6 +907,21 @@ class TETRIS{
       LETTER:LETTER,
       form:form
     });
+  }
+  //計算局面的最高行
+  calcHIGHEST(){
+    var f=this;
+    // console.log(f.arrTetris);
+    var HIGHEST=f.arrTetris.findIndex(function(v){
+      return (v.some(function(v2){
+        return (+v2.v);
+      }));
+    });
+    // console.log(HIGHEST);
+    f.HIGHEST=20-HIGHEST;
+
+    // return (20-HIGHEST);
+    return f;
   }
   
 
