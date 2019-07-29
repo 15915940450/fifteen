@@ -37,8 +37,10 @@ class PD{
     this.calc3();
     //可視化所有落腳點
     var theone=this.hint();
+    if(obj.dev){
+      this.raf();
+    }
     return (theone);
-    // this.raf();
   }
   //獲取最高分
   hint(){
@@ -291,6 +293,11 @@ class PD{
 
     return _.sum(arrH);
   }
+  calcHighestHoleAndBlocksAboveHighestHole(){
+    var f=this;
+    console.log(f);
+    return f;
+  }
   /*
     Well:两边皆有方块的空列。该指标为所有井的深度连加到1再求总和 注意一列中可能有多个井
   */
@@ -350,4 +357,7 @@ class PD{
 }
 
 var dellacherie=new PD();
-// dellacherie.init();
+if(obj.dev){
+  dellacherie.init();
+  dellacherie.calcHighestHoleAndBlocksAboveHighestHole(dellacherie.arr3fixed[0].arr);
+}

@@ -6,6 +6,8 @@
 */
 class TETRIS{
   constructor(){
+    this.dev=0; //啟用開發模式
+
     this.arrTetris=[];
     //arrTetris:20*10(沒有當前活動的數據，當一個方塊固定後需要更新)
     //arrTetrisAppendActive:20*10（加上當前活動的方塊，即係展示給用戶的數據，每一幀，每一個操作都要更新）
@@ -46,7 +48,7 @@ class TETRIS{
 
     //定義方塊形狀(4*4)(IJLOSTZ)(four times four)
     this.f_f={};
-    this.generation=1;
+    this.generation=2;
   }
 
   init(){
@@ -61,7 +63,9 @@ class TETRIS{
     this.addActiveLETTER();
     // 渲染
     this.render();
-    this.raf(); //動畫：每秒60幀
+    if(!this.dev){
+      this.raf(); //動畫：每秒60幀
+    }
     this.listen();
 
 
