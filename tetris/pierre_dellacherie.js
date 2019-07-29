@@ -6,30 +6,37 @@ class PD{
     this.arr3fixed=[]; //計算所有當前方塊下落固定後的數據（消除行之前）（三維數組）
     this.C=[
       {
+        index:0,
         name:'Landing Height',
         value:-4.500158825082766
       },
       {
+        index:1,
         name:'Rows eliminated',
         value:3.4181268101392694
       },
       {
+        index:2,
         name:'Row Transitions',
         value:-3.2178882868487753
       },
       {
+        index:3,
         name:'Column Transitions',
         value:-9.348695305445199
       },
       {
+        index:4,
         name:'Number of Holes',
         value:-7.899265427351652
       },
       {
+        index:5,
         name:'Well Sums',
         value:-3.3855972247263626
       },
       {
+        index:6,
         name:'calcHighestHoleAndBlocksAboveHighestHole',
         value:-4
       }
@@ -101,15 +108,18 @@ class PD{
   calcAI(param){
     var f=this;
     var arrFixed=f.addLETTER(param);
-    // console.log(arrFixed);
+    // f.RCTransitions(arrFixed)
+    var objHighestHole=f.calcHighestHoleAndBlocksAboveHighestHole(arrFixed);
     var AI=f.RowsEliminated(arrFixed)*f.C[1].value+
            f.RCTransitions(arrFixed)*f.C[2].value+
            f.RCTransitions(arrFixed,true)*f.C[3].value+
            f.Holes(arrFixed)*f.C[4].value+
            f.Well(arrFixed)*f.C[5].value+
-           // f.calcHighestHoleAndBlocksAboveHighestHole(arrFixed)*f.C[6].value+
+           objHighestHole.fixedHighestHole*f.C[6].value+
+           objHighestHole.sumBlocksAboveHighestHole*f.C[6].value/4+
            f.LandingHeight(arrFixed)*f.C[0].value;
     
+    // console.log(arrFixed);
     return AI;
   }
   addLETTER(param){
@@ -245,7 +255,10 @@ class PD{
   Row Transitions:行变换从一定程度上反映出一行的平整程度，越平整值越小
     Column Transitions:列变换从一定程度上反映出一列中空洞的集中程度，空洞越集中值越小
   */
-  RCTransitions(arrFixed,isC){
+  RCTransitions(paramFixed,isC){
+    //因住改變數組數據
+    var arrFixed=_.cloneDeep(paramFixed);
+    // var arrFixed=paramFixed;
     if(isC){
       arrFixed=obj.ijji(arrFixed);
     }
@@ -321,7 +334,7 @@ class PD{
       }
     }
 
-    console.log(oHighestHole);
+    // console.log(oHighestHole);
     if(oHighestHole===1e2){
       return ({
         oHighestHole:0,
@@ -359,7 +372,7 @@ class PD{
       fixedHighestHole:20-fixedHighestHole,
       sumBlocksAboveHighestHole:sumBlocksAboveHighestHole
     };
-    console.log(result);
+    // console.log(result);
     return (result);
   }
   /*
