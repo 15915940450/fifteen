@@ -31,7 +31,7 @@ class PD{
       },
       {
         name:'calcHighestHoleAndBlocksAboveHighestHole',
-        value:-2
+        value:-4
       }
     ];
   }
@@ -295,7 +295,8 @@ class PD{
     return _.sum(arrH);
   }
   calcHighestHoleAndBlocksAboveHighestHole(arrFixed){
-    var i,j,lenI=arrFixed.length,lenJ=arrFixed[0].length;
+    var arrEliminated=this.calcARReliminated(arrFixed);
+    var i,j,lenI=arrEliminated.length,lenJ=arrEliminated[0].length;
     var tmpHighestHole=1e2;
     var arrHighestHole=[];
 
@@ -303,8 +304,8 @@ class PD{
     forRow:
     for(i=1;i<lenI;i++){
       for(j=0;j<lenJ;j++){
-        var c1=(+arrFixed[i][j].v===0); //該行沒有方塊
-        var c2=(+arrFixed[i-1][j].v===1); //上一行為有方塊
+        var c1=(+arrEliminated[i][j].v===0); //該行沒有方塊
+        var c2=(+arrEliminated[i-1][j].v===1); //上一行為有方塊
         if(c1 && c2){
           if(i<tmpHighestHole){
             tmpHighestHole=i;
@@ -323,7 +324,7 @@ class PD{
     }
 
     //step2:BlocksAboveHighestHole
-    var arrIJJI=obj.ijji(arrFixed);
+    var arrIJJI=obj.ijji(arrEliminated);
     arrHighestHole=arrHighestHole.map(function(v){
       var BlocksAboveHighestHole=0;
       var arrCol=arrIJJI[v.col];
