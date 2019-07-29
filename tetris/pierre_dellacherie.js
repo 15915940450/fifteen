@@ -101,12 +101,13 @@ class PD{
   calcAI(param){
     var f=this;
     var arrFixed=f.addLETTER(param);
+    // console.log(arrFixed);
     var AI=f.RowsEliminated(arrFixed)*f.C[1].value+
            f.RCTransitions(arrFixed)*f.C[2].value+
            f.RCTransitions(arrFixed,true)*f.C[3].value+
            f.Holes(arrFixed)*f.C[4].value+
            f.Well(arrFixed)*f.C[5].value+
-           f.calcHighestHoleAndBlocksAboveHighestHole(arrFixed)*f.C[6].value+
+           // f.calcHighestHoleAndBlocksAboveHighestHole(arrFixed)*f.C[6].value+
            f.LandingHeight(arrFixed)*f.C[0].value;
     
     return AI;
@@ -297,7 +298,8 @@ class PD{
   calcHighestHoleAndBlocksAboveHighestHole(arrFixed){
     var arrEliminated=this.calcARReliminated(arrFixed);
     var i,j,lenI=arrEliminated.length,lenJ=arrEliminated[0].length;
-    var tmpHighestHole=1e2;
+    var fixedHighestHole=1e2;
+    var oHighestHole=1e2;
     var arrHighestHole=[];
 
     //step1:arrHighestHole
@@ -306,39 +308,58 @@ class PD{
       for(j=0;j<lenJ;j++){
         var c1=(+arrEliminated[i][j].v===0); //該行沒有方塊
         var c2=(+arrEliminated[i-1][j].v===1); //上一行為有方塊
+        var c3=(arrEliminated[i-1][j].color!=='midnightblue'); //不是新產生的空洞
         if(c1 && c2){
-          if(i<tmpHighestHole){
-            tmpHighestHole=i;
+          if(i<fixedHighestHole){
+            fixedHighestHole=(i);
           }
-          if(i===tmpHighestHole){
-            arrHighestHole.push({
-              i:i,
-              col:j
-            });
-          }
-          if(i>tmpHighestHole){
+          if(i<oHighestHole && c3){
+            oHighestHole=i; //原有局面空洞的高度(上到下)
             break forRow;
           }
         }
       }
     }
 
+    console.log(oHighestHole);
+    if(oHighestHole===1e2){
+      return ({
+        oHighestHole:0,
+        fixedHighestHole:0,
+        sumBlocksAboveHighestHole:0
+      });
+    }
+
     //step2:BlocksAboveHighestHole
+    var arrRow=[];
+    arrEliminated[oHighestHole].forEach(function(v,i){
+      if(!+v.v){
+        arrRow.push(i);
+      }
+    });
     var arrIJJI=obj.ijji(arrEliminated);
-    arrHighestHole=arrHighestHole.map(function(v){
+    arrHighestHole=arrRow.map(function(v){
       var BlocksAboveHighestHole=0;
-      var arrCol=arrIJJI[v.col];
-      for(i=0;i<v.i;i++){
+      var arrCol=arrIJJI[v];
+      for(i=0;i<oHighestHole;i++){
         if(+arrCol[i].v){
           BlocksAboveHighestHole++;
         }
       }
-      v.BlocksAboveHighestHole=BlocksAboveHighestHole;
-      return (v);
+      return ({
+        col:v,
+        BlocksAboveHighestHole:BlocksAboveHighestHole
+      });
     });
     // console.log(arrHighestHole);
-    var result=(_.sumBy(arrHighestHole,'BlocksAboveHighestHole'));
-    // console.log(result);
+
+    var sumBlocksAboveHighestHole=(_.sumBy(arrHighestHole,'BlocksAboveHighestHole'));
+    var result={
+      oHighestHole:20-oHighestHole,
+      fixedHighestHole:20-fixedHighestHole,
+      sumBlocksAboveHighestHole:sumBlocksAboveHighestHole
+    };
+    console.log(result);
     return (result);
   }
   /*
