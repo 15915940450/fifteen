@@ -6,7 +6,7 @@
 */
 class TETRIS{
   constructor(){
-    this.dev=1; //啟用開發模式
+    this.dev=0; //啟用開發模式
 
     this.arrTetris=[];
     //arrTetris:20*10(沒有當前活動的數據，當一個方塊固定後需要更新)
@@ -48,7 +48,7 @@ class TETRIS{
 
     //定義方塊形狀(4*4)(IJLOSTZ)(four times four)
     this.f_f={};
-    this.generation=2;
+    this.generation=1;  //1，2：一代或二代
   }
 
   init(){

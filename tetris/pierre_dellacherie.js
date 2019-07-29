@@ -28,6 +28,10 @@ class PD{
       {
         name:'Well Sums',
         value:-3.3855972247263626
+      },
+      {
+        name:'calcHighestHoleAndBlocksAboveHighestHole',
+        value:-2
       }
     ];
   }
@@ -97,12 +101,13 @@ class PD{
   calcAI(param){
     var f=this;
     var arrFixed=f.addLETTER(param);
-    var AI=f.LandingHeight(arrFixed)*f.C[0].value+
-           f.RowsEliminated(arrFixed)*f.C[1].value+
+    var AI=f.RowsEliminated(arrFixed)*f.C[1].value+
            f.RCTransitions(arrFixed)*f.C[2].value+
            f.RCTransitions(arrFixed,true)*f.C[3].value+
            f.Holes(arrFixed)*f.C[4].value+
-           f.Well(arrFixed)*f.C[5].value;
+           f.Well(arrFixed)*f.C[5].value+
+           f.calcHighestHoleAndBlocksAboveHighestHole(arrFixed)*f.C[6].value+
+           f.LandingHeight(arrFixed)*f.C[0].value;
     
     return AI;
   }
@@ -290,7 +295,6 @@ class PD{
     return _.sum(arrH);
   }
   calcHighestHoleAndBlocksAboveHighestHole(arrFixed){
-    var f=this;
     var i,j,lenI=arrFixed.length,lenJ=arrFixed[0].length;
     var tmpHighestHole=1e2;
     var arrHighestHole=[];
@@ -323,16 +327,18 @@ class PD{
     arrHighestHole=arrHighestHole.map(function(v){
       var BlocksAboveHighestHole=0;
       var arrCol=arrIJJI[v.col];
-      console.log(arrCol);
       for(i=0;i<v.i;i++){
-        if(arrCol[i]){
+        if(+arrCol[i].v){
           BlocksAboveHighestHole++;
         }
       }
       v.BlocksAboveHighestHole=BlocksAboveHighestHole;
       return (v);
     });
-    return f;
+    // console.log(arrHighestHole);
+    var result=(_.sumBy(arrHighestHole,'BlocksAboveHighestHole'));
+    // console.log(result);
+    return (result);
   }
   /*
   Well:两边皆有方块的空列。该指标为所有井的深度连加到1再求总和 注意一列中可能有多个井
@@ -395,11 +401,12 @@ class PD{
 var dellacherie=new PD();
 if(obj.dev){
   dellacherie.init();
+  var objFixed=_.last(dellacherie.arr3fixed);
   var param={
-    row:dellacherie.arr3fixed[0].row,
-    j:dellacherie.arr3fixed[0].j,
-    LETTER:dellacherie.arr3fixed[0].LETTER,
-    form:dellacherie.arr3fixed[0].form
+    row:objFixed.row,
+    j:objFixed.j,
+    LETTER:objFixed.LETTER,
+    form:objFixed.form
   };
   var arrFixed=dellacherie.addLETTER(param);
   dellacherie.calcHighestHoleAndBlocksAboveHighestHole(arrFixed);
