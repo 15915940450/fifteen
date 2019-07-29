@@ -6,7 +6,7 @@
 */
 class TETRIS{
   constructor(){
-    this.dev=0; //啟用開發模式
+    this.dev=1; //啟用開發模式
 
     this.arrTetris=[];
     //arrTetris:20*10(沒有當前活動的數據，當一個方塊固定後需要更新)

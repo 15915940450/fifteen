@@ -198,7 +198,7 @@ class PD{
 
 
   /*
-    Landing Height:3,4,5,6列最高點所在的row索引
+  Landing Height: The height at which the last Tetromino has been placed.
   */
   LandingHeight(arrFixed){
     var H=-1;
@@ -217,7 +217,7 @@ class PD{
     return (H);
   }
   /*
-    Rows eliminated:消行层数与当前方块贡献出的方格数乘积
+  Rows eliminated:消行层数与当前方块贡献出的方格数乘积
   */
   RowsEliminated(arrFixed){
     var arrLine=obj.findLine(arrFixed);
@@ -236,16 +236,14 @@ class PD{
   }
 
   /*
-    Row Transitions:行变换从一定程度上反映出一行的平整程度，越平整值越小
+  Row Transitions:行变换从一定程度上反映出一行的平整程度，越平整值越小
     Column Transitions:列变换从一定程度上反映出一列中空洞的集中程度，空洞越集中值越小
   */
   RCTransitions(arrFixed,isC){
-    var f=this;
-    var arrEliminated=f.calcARReliminated(arrFixed);
     if(isC){
-      arrEliminated=obj.ijji(arrEliminated);
+      arrFixed=obj.ijji(arrFixed);
     }
-    var arrT=arrEliminated.map(function(v){
+    var arrT=arrFixed.map(function(v){
       var t=0;
       //游戏池边界算作有方块
       var obj_1={color: 'white', v: 1};
@@ -262,12 +260,10 @@ class PD{
     return _.sum(arrT);
   }
   /*
-    Holes:A hole is an empty cell that has at least one filled cell above it in the same column.
+  Holes:A hole is an empty cell that has at least one filled cell above it in the same column.
   */
   Holes(arrFixed){
-    var f=this;
-    var arrEliminated=f.calcARReliminated(arrFixed);
-    var arrIJJI=obj.ijji(arrEliminated);
+    var arrIJJI=obj.ijji(arrFixed);
     // console.log(arrIJJI);
     var arrH=arrIJJI.map(function(v){
       var H=0,i,max1=20;
@@ -293,13 +289,53 @@ class PD{
 
     return _.sum(arrH);
   }
-  calcHighestHoleAndBlocksAboveHighestHole(){
+  calcHighestHoleAndBlocksAboveHighestHole(arrFixed){
     var f=this;
-    console.log(f);
+    var i,j,lenI=arrFixed.length,lenJ=arrFixed[0].length;
+    var tmpHighestHole=1e2;
+    var arrHighestHole=[];
+
+    //step1:arrHighestHole
+    forRow:
+    for(i=1;i<lenI;i++){
+      for(j=0;j<lenJ;j++){
+        var c1=(+arrFixed[i][j].v===0); //該行沒有方塊
+        var c2=(+arrFixed[i-1][j].v===1); //上一行為有方塊
+        if(c1 && c2){
+          if(i<tmpHighestHole){
+            tmpHighestHole=i;
+          }
+          if(i===tmpHighestHole){
+            arrHighestHole.push({
+              i:i,
+              col:j
+            });
+          }
+          if(i>tmpHighestHole){
+            break forRow;
+          }
+        }
+      }
+    }
+
+    //step2:BlocksAboveHighestHole
+    var arrIJJI=obj.ijji(arrFixed);
+    arrHighestHole=arrHighestHole.map(function(v){
+      var BlocksAboveHighestHole=0;
+      var arrCol=arrIJJI[v.col];
+      console.log(arrCol);
+      for(i=0;i<v.i;i++){
+        if(arrCol[i]){
+          BlocksAboveHighestHole++;
+        }
+      }
+      v.BlocksAboveHighestHole=BlocksAboveHighestHole;
+      return (v);
+    });
     return f;
   }
   /*
-    Well:两边皆有方块的空列。该指标为所有井的深度连加到1再求总和 注意一列中可能有多个井
+  Well:两边皆有方块的空列。该指标为所有井的深度连加到1再求总和 注意一列中可能有多个井
   */
   Well(arrFixed){
     var f=this;
@@ -359,5 +395,12 @@ class PD{
 var dellacherie=new PD();
 if(obj.dev){
   dellacherie.init();
-  dellacherie.calcHighestHoleAndBlocksAboveHighestHole(dellacherie.arr3fixed[0].arr);
+  var param={
+    row:dellacherie.arr3fixed[0].row,
+    j:dellacherie.arr3fixed[0].j,
+    LETTER:dellacherie.arr3fixed[0].LETTER,
+    form:dellacherie.arr3fixed[0].form
+  };
+  var arrFixed=dellacherie.addLETTER(param);
+  dellacherie.calcHighestHoleAndBlocksAboveHighestHole(arrFixed);
 }
