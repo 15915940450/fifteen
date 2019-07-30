@@ -689,7 +689,7 @@ class TETRIS{
 
     f.calcHIGHEST();
     // console.log(f.HIGHEST);
-    if(f.HIGHEST>15){
+    if(f.HIGHEST>13){
       f.activeForm=hint.form;
       f.activePosition.j=hint.j;
     }

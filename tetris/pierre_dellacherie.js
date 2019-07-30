@@ -13,7 +13,7 @@ class PD{
       {
         index:1,
         name:'Rows eliminated',
-        value:3.4181268101392694
+        value:0.718281828
       },
       {
         index:2,
@@ -38,7 +38,7 @@ class PD{
       {
         index:6,
         name:'calcHighestHoleAndBlocksAboveHighestHole',
-        value:-4
+        value:-8
       }
     ];
   }
@@ -109,8 +109,9 @@ class PD{
     var f=this;
     var arrFixed=f.addLETTER(param);
     // f.RCTransitions(arrFixed)
+    // console.log(obj.HIGHEST);
     var objHighestHole=f.calcHighestHoleAndBlocksAboveHighestHole(arrFixed);
-    var AI=f.RowsEliminated(arrFixed)*f.C[1].value+
+    var AI=f.RowsEliminated(arrFixed)*f.C[1].value*(obj.HIGHEST-9)+
            f.RCTransitions(arrFixed)*f.C[2].value+
            f.RCTransitions(arrFixed,true)*f.C[3].value+
            f.Holes(arrFixed)*f.C[4].value+
