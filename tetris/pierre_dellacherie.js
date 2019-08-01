@@ -70,6 +70,9 @@ export default class PD{
     
     return result;
   }
+  /*
+  計算所有情況,生成arr3fixed
+  */
   calc3(){
     var f=this;
     //初始化
@@ -80,25 +83,31 @@ export default class PD{
     for(var formIndex=0;formIndex<form.length;formIndex++){
       for(var j=form[formIndex].minJ;j<=form[formIndex].maxJ;j++){
         var row=f.calcD(active,formIndex,j);
-        f.arr3fixed.push({
+
+        var arr0=f.addLETTER({
           row:row,
           j:j,
           LETTER:active,
-          form:formIndex,
-          AI:f.calcAI({
-            row:row,
-            j:j,
-            LETTER:active,
-            form:formIndex
-          })
-          /*,
-          arr:f.addLETTER({
-            row:row,
-            j:j,
-            LETTER:active,
-            form:formIndex
-          })*/
+          form:formIndex
         });
+        //排除gameover的情況
+        if(!f.obj.checkGameOver(arr0[0])){
+          f.arr3fixed.push({
+            row:row,
+            j:j,
+            LETTER:active,
+            form:formIndex,
+            // arr:arr0,
+            AI:f.calcAI({
+              row:row,
+              j:j,
+              LETTER:active,
+              form:formIndex
+            })
+          });
+        }
+
+        
       }
       
     }

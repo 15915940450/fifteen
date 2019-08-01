@@ -26,7 +26,7 @@ class TETRIS{
     this.W=10;  //寬度：10
     this.H=20;  //高度：20
     this.cell=30; //每個格子大小
-    this.randomRow=_.random(15);  //隨機格子,false(0),1,2,3,,,15
+    this.randomRow=_.random(18);  //隨機格子,false(0),1,2,3,,,15
     this.lock=false; //鎖住遊戲
     this.gameOver=false; //遊戲結束
 
@@ -86,12 +86,12 @@ class TETRIS{
     this.devPD();
   }
 
-  //測試算法動畫
+  //測試算法函數
   devPD(){
     var f=this;
     if(f.dev){
       dellacherie.init();
-      var objFixed=_.last(dellacherie.arr3fixed);
+      /*var objFixed=_.last(dellacherie.arr3fixed);
       var param={
         row:objFixed.row,
         j:objFixed.j,
@@ -99,7 +99,7 @@ class TETRIS{
         form:objFixed.form
       };
       var arrFixed=dellacherie.addLETTER(param);
-      dellacherie.calcHighestHoleAndBlocksAboveHighestHole(arrFixed);
+      dellacherie.calcHighestHoleAndBlocksAboveHighestHole(arrFixed);*/
     }
     return f;
   }
@@ -323,8 +323,11 @@ class TETRIS{
         }
       }
     }
-    
-    // this.arrTetris=demoArrTetris;
+
+    //開發使用固定局面
+    if(this.dev){
+      this.arrTetris=demoArrTetris;
+    }
     return f;
   }
   initActive(){
@@ -657,6 +660,7 @@ class TETRIS{
       }
       // 3.檢測遊戲是否結束
       if(f.checkGameOver()){
+        // console.log(b);
         return false;
       }
       f.round();
@@ -704,23 +708,30 @@ class TETRIS{
     */
     var hint=dellacherie.init();
     // console.log(hint);
-    dellacherie.drawFixed(hint.index);
-
-    f.activePosition.row=0-f.f_f[f.active].form[f.activeForm].up;
-    
-
-    f.targetForm=hint.form;
-    f.targetJ=hint.j;
     // hint.row;
+    if(hint){
+      dellacherie.drawFixed(hint.index);
 
-    f.calcHIGHEST();
-    // console.log(f.HIGHEST);
-    if(f.HIGHEST>13){
-      f.activeForm=hint.form;
-      f.activePosition.j=hint.j;
+      f.activePosition.row=0-f.f_f[f.active].form[f.activeForm].up;
+      
+
+      f.targetForm=hint.form;
+      f.targetJ=hint.j;
+      
+
+      f.calcHIGHEST();
+      // console.log(f.HIGHEST);
+      if(f.HIGHEST>13){
+        f.activeForm=hint.form;
+        f.activePosition.j=hint.j;
+      }
+
+      // this.lock=true;
+    }else{
+      //沒有提示：遊戲結束，鎖住
+      f.htmlOver();
     }
-
-    // this.lock=true;
+    
     return f;
   }
   /*
@@ -1060,9 +1071,9 @@ class TETRIS{
     return true;
   } //check:檢測變化後是否有重複的cell，是否出邊界
   // 檢測遊戲結束(arrTetrisAppendActive 第0行 第1-8列的值是否有1)
-  checkGameOver(){
+  checkGameOver(arr0){
     var b=false;
-    var arr0=this.arrTetrisAppendActive[0];
+    arr0=arr0 || this.arrTetrisAppendActive[0];
     for(var i=1;i<arr0.length-1;i++){
       if(+arr0[i].v){
         b=true;
@@ -1070,20 +1081,25 @@ class TETRIS{
       }
     }
 
-    if(b){
-      //遊戲結束，鎖住
-      this.lock=true;
-      this.gameOver=true;
-
-      var el=document.querySelector('.pause');
-      var elP=el.querySelector('p');
-      el.className='pause';
-      elP.innerHTML='GAME OVER';
-
-      console.log(new Date());
+    if(b && !arr0){
+      this.htmlOver();
     }
     
     return b;
+  }
+  htmlOver(){
+    var f=this;
+    //遊戲結束，鎖住
+    this.lock=true;
+    this.gameOver=true;
+
+    var el=document.querySelector('.pause');
+    var elP=el.querySelector('p');
+    el.className='pause';
+    elP.innerHTML='GAME OVER';
+
+    console.log(new Date());
+    return f;
   }
 
 
@@ -1095,6 +1111,7 @@ var dellacherie=new PD(obj);
 
 
 obj.init();
+
 
 
 window.kkk=obj;
