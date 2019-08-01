@@ -8,6 +8,7 @@
 //導入算法類
 import PD from './pierre_dellacherie.js';
 
+import demoArrTetris from './demoarrtetris.js';
 
 class TETRIS{
   constructor(){
@@ -322,6 +323,8 @@ class TETRIS{
         }
       }
     }
+    
+    // this.arrTetris=demoArrTetris;
     return f;
   }
   initActive(){
@@ -1092,3 +1095,7 @@ var dellacherie=new PD(obj);
 
 
 obj.init();
+
+
+window.kkk=obj;
+window.lll=dellacherie;
