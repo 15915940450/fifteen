@@ -1,8 +1,9 @@
 /*
 Pierre Dellacherie
 */
-class PD{
-  constructor(){
+
+export default class PD{
+  constructor(obj){
     this.arr3fixed=[]; //計算所有當前方塊下落固定後的數據（消除行之前）（三維數組）
     this.C=[
       {
@@ -41,14 +42,14 @@ class PD{
         value:-8
       }
     ];
+    this.obj=obj;
   }
 
   init(){
-    // this.calcD(obj.active,obj.activeForm,obj.activePosition.j);
     this.calc3();
     //可視化所有落腳點
     var theone=this.hint();
-    if(obj.dev){
+    if(this.obj.dev){
       this.raf();
     }
     return (theone);
@@ -73,8 +74,8 @@ class PD{
     var f=this;
     //初始化
     this.arr3fixed=[];
-    var active=obj.active;  //"j"
-    var form=obj.f_f[active].form;
+    var active=this.obj.active;  //"j"
+    var form=this.obj.f_f[active].form;
     // 當前字母的所有變形，方塊可移動的最左到最右
     for(var formIndex=0;formIndex<form.length;formIndex++){
       for(var j=form[formIndex].minJ;j<=form[formIndex].maxJ;j++){
@@ -109,9 +110,8 @@ class PD{
     var f=this;
     var arrFixed=f.addLETTER(param);
     // f.RCTransitions(arrFixed)
-    // console.log(obj.HIGHEST);
     var objHighestHole=f.calcHighestHoleAndBlocksAboveHighestHole(arrFixed);
-    var AI=f.RowsEliminated(arrFixed)*f.C[1].value*(obj.HIGHEST-9)+
+    var AI=f.RowsEliminated(arrFixed)*f.C[1].value*(this.obj.HIGHEST-9)+
            f.RCTransitions(arrFixed)*f.C[2].value+
            f.RCTransitions(arrFixed,true)*f.C[3].value+
            f.Holes(arrFixed)*f.C[4].value+
@@ -124,17 +124,17 @@ class PD{
     return AI;
   }
   addLETTER(param){
-    var LETTER01=obj.F2(param.LETTER,param.form);
+    var LETTER01=this.obj.F2(param.LETTER,param.form);
     var row=param.row;
     var j=param.j;
 
-    var arrTetrisAppendFixed=_.cloneDeep(obj.arrTetris);
+    var arrTetrisAppendFixed=_.cloneDeep(this.obj.arrTetris);
 
     for(var rowLETTER=0;rowLETTER<LETTER01.length;rowLETTER++){
       for(var k=0;k<LETTER01[0].length;k++){
         var rowTetris=row+rowLETTER;
         var jTerris=j+k;
-        if(obj.checkBorder(rowTetris,jTerris)){
+        if(this.obj.checkBorder(rowTetris,jTerris)){
           if(LETTER01[rowLETTER][k].v){
             LETTER01[rowLETTER][k].color='midnightblue';
             arrTetrisAppendFixed[rowTetris][jTerris]=LETTER01[rowLETTER][k];
@@ -147,11 +147,11 @@ class PD{
   //計算方塊在j列下最多可下落的row
   calcD(LETTER,formIndex,j){
     var row=0;
-    var UD=obj.f_f[LETTER].form[formIndex];
+    var UD=this.obj.f_f[LETTER].form[formIndex];
     var b=true;
 
     for(var i=0-UD.up;i<=20;i++){
-      b=obj.check({
+      b=this.obj.check({
         active:LETTER,
         activeForm:formIndex,
         row:i,
@@ -186,9 +186,8 @@ class PD{
   }
   drawFixed(rad){
     var f=this;
-    // obj.renderCanvas(f.arr3fixed[rad].arr);
     var el=document.querySelector('.canvas_ai');
-    obj.renderCanvas(f.addLETTER({
+    this.obj.renderCanvas(f.addLETTER({
       row:f.arr3fixed[rad].row,
       j:f.arr3fixed[rad].j,
       LETTER:f.arr3fixed[rad].LETTER,
@@ -200,14 +199,14 @@ class PD{
   //固定的數據消除行衍生的數據
   calcARReliminated(arrFixed){
     var arrEliminated=_.cloneDeep(arrFixed);
-    var arrLine=obj.findLine(arrFixed);
+    var arrLine=this.obj.findLine(arrFixed);
     var len=arrLine.length;
     if(len){
       arrEliminated=arrFixed.filter(function(v,i){
         return (!arrLine.includes(i));
       });
       for(var i=0;i<len;i++){
-        arrEliminated.unshift(_.cloneDeep(obj.pureRow));
+        arrEliminated.unshift(_.cloneDeep(this.obj.pureRow));
       }
     }
     return arrEliminated;
@@ -237,7 +236,7 @@ class PD{
   Rows eliminated:消行层数与当前方块贡献出的方格数乘积
   */
   RowsEliminated(arrFixed){
-    var arrLine=obj.findLine(arrFixed);
+    var arrLine=this.obj.findLine(arrFixed);
     var numLine=arrLine.length;
     var numFixed=0;
     arrLine.forEach(function(v){
@@ -261,7 +260,7 @@ class PD{
     var arrFixed=_.cloneDeep(paramFixed);
     // var arrFixed=paramFixed;
     if(isC){
-      arrFixed=obj.ijji(arrFixed);
+      arrFixed=this.obj.ijji(arrFixed);
     }
     var arrT=arrFixed.map(function(v){
       var t=0;
@@ -283,7 +282,7 @@ class PD{
   Holes:A hole is an empty cell that has at least one filled cell above it in the same column.
   */
   Holes(arrFixed){
-    var arrIJJI=obj.ijji(arrFixed);
+    var arrIJJI=this.obj.ijji(arrFixed);
     // console.log(arrIJJI);
     var arrH=arrIJJI.map(function(v){
       var H=0,i,max1=20;
@@ -351,7 +350,7 @@ class PD{
         arrRow.push(i);
       }
     });
-    var arrIJJI=obj.ijji(arrEliminated);
+    var arrIJJI=this.obj.ijji(arrEliminated);
     arrHighestHole=arrRow.map(function(v){
       var BlocksAboveHighestHole=0;
       var arrCol=arrIJJI[v];
@@ -382,7 +381,7 @@ class PD{
   Well(arrFixed){
     var f=this;
     var arrEliminated=f.calcARReliminated(arrFixed);
-    var arrIJJI=obj.ijji(arrEliminated);
+    var arrIJJI=this.obj.ijji(arrEliminated);
     
     var arrWell=arrIJJI.map(function(v,index){
       var arrW=[];
@@ -432,18 +431,5 @@ class PD{
 
 
 
-}
+} //class PD
 
-var dellacherie=new PD();
-if(obj.dev){
-  dellacherie.init();
-  var objFixed=_.last(dellacherie.arr3fixed);
-  var param={
-    row:objFixed.row,
-    j:objFixed.j,
-    LETTER:objFixed.LETTER,
-    form:objFixed.form
-  };
-  var arrFixed=dellacherie.addLETTER(param);
-  dellacherie.calcHighestHoleAndBlocksAboveHighestHole(arrFixed);
-}

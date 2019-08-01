@@ -4,6 +4,11 @@
 *12-3-6-9
 *Artificial Intelligence
 */
+
+//導入算法類
+import PD from './pierre_dellacherie.js';
+
+
 class TETRIS{
   constructor(){
     this.dev=0; //啟用開發模式
@@ -77,7 +82,25 @@ class TETRIS{
 
     //右側文字:分數，level，行數
     this.htmlStatus();
+    this.devPD();
+  }
 
+  //測試算法動畫
+  devPD(){
+    var f=this;
+    if(f.dev){
+      dellacherie.init();
+      var objFixed=_.last(dellacherie.arr3fixed);
+      var param={
+        row:objFixed.row,
+        j:objFixed.j,
+        LETTER:objFixed.LETTER,
+        form:objFixed.form
+      };
+      var arrFixed=dellacherie.addLETTER(param);
+      dellacherie.calcHighestHoleAndBlocksAboveHighestHole(arrFixed);
+    }
+    return f;
   }
 
   //初始化規則
@@ -1064,4 +1087,8 @@ class TETRIS{
 } //class
 
 var obj=new TETRIS();
+var dellacherie=new PD(obj);
+
+
+
 obj.init();

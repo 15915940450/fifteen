@@ -13,6 +13,7 @@ module.exports = {
       "obj":true,
       "_":true
     },
+    "parserOptions":{"sourceType":"module"},
     "extends": "eslint:recommended",
     "rules": {
       "indent": ["error", 2],
