@@ -105,6 +105,17 @@ export default class PD{
               form:formIndex
             })
           });
+        }else{
+          // console.log(JSON.stringify(arr0[0]));
+          //[{"color":"black","v":0},{"color":"black","v":0},{"color":"black","v":0},{"color":"black","v":0},{"color":"black","v":0},{"color":"black","v":0},{"color":"black","v":0},{"color":"black","v":0},{"color":"black","v":0},{"color":"midnightblue","v":1}]
+          /*var str01=arr0[0].map(function(v){
+            var x=v.v;
+            if(v.color==='midnightblue'){
+              x=''+v.v;
+            }
+            return (x);
+          });
+          console.log(str01);*/
         }
 
         

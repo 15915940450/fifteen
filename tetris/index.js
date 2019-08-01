@@ -26,7 +26,7 @@ class TETRIS{
     this.W=10;  //寬度：10
     this.H=20;  //高度：20
     this.cell=30; //每個格子大小
-    this.randomRow=_.random(18);  //隨機格子,false(0),1,2,3,,,15
+    this.randomRow=_.random(15);  //隨機格子,false(0),1,2,3,,,15(挑戰：已固定15行)
     this.lock=false; //鎖住遊戲
     this.gameOver=false; //遊戲結束
 
@@ -310,7 +310,8 @@ class TETRIS{
         this.arrTetris[row]=[];
       }
       for(var j=0;j<f.W;j++){
-        if(row>=f.H-f.randomRow){
+        if(row>=f.H-15){
+        // if(row>=f.H-f.randomRow){
           this.arrTetris[row][j]={
             color:'crimson',
             v:Math.random()>.4?0:1
@@ -660,7 +661,7 @@ class TETRIS{
       }
       // 3.檢測遊戲是否結束
       if(f.checkGameOver()){
-        // console.log(b);
+        f.htmlOver();
         return false;
       }
       f.round();
@@ -1074,15 +1075,11 @@ class TETRIS{
   checkGameOver(arr0){
     var b=false;
     arr0=arr0 || this.arrTetrisAppendActive[0];
-    for(var i=1;i<arr0.length-1;i++){
+    for(var i=0;i<arr0.length;i++){
       if(+arr0[i].v){
         b=true;
         break;
       }
-    }
-
-    if(b && !arr0){
-      this.htmlOver();
     }
     
     return b;
