@@ -5,6 +5,9 @@ class Basic{
     this.n=-1;  //raf多少次
     this.interval=10; //每幀的間隔
     this.currentStep=-1; //當前。。。
+
+    this.CW=document.documentElement.clientWidth || document.body.clientWidth;
+    this.CH4=document.documentElement.clientHeight || document.body.clientHeight;
   }
 
   init(){
