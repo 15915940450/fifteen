@@ -40,6 +40,11 @@ class Basic{
           f.doINeveryframe();
         }
         window.requestAnimationFrame(rafCallback);
+      }else{
+        console.log(f.arrStep);
+        /*
+        [{"step":0,"hhmmss":"0:0:0"},{"step":3927,"hhmmss":"1:5:27"},{"step":7854,"hhmmss":"2:10:54"},{"step":11781,"hhmmss":"3:16:21"},{"step":15708,"hhmmss":"4:21:48"},{"step":19636,"hhmmss":"5:27:16"},{"step":23563,"hhmmss":"6:32:43"},{"step":27490,"hhmmss":"7:38:10"},{"step":31418,"hhmmss":"8:43:38"},{"step":35345,"hhmmss":"9:49:5"},{"step":39272,"hhmmss":"10:54:32"},{"step":43199,"hhmmss":"11:59:59"},{"step":47127,"hhmmss":"13:5:27"},{"step":51054,"hhmmss":"14:10:54"},{"step":54981,"hhmmss":"15:16:21"},{"step":58908,"hhmmss":"16:21:48"},{"step":62836,"hhmmss":"17:27:16"},{"step":66763,"hhmmss":"18:32:43"},{"step":70690,"hhmmss":"19:38:10"},{"step":74618,"hhmmss":"20:43:38"},{"step":78545,"hhmmss":"21:49:5"},{"step":82472,"hhmmss":"22:54:32"},{"step":86399,"hhmmss":"23:59:59"}]
+        */
       }
     };
     window.requestAnimationFrame(rafCallback);
