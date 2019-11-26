@@ -34,9 +34,19 @@ class Levy{
     ctx.strokeStyle='blanchedalmond';
     ctx.beginPath();
     ctx.moveTo(es6This.currentPoint.x,es6This.currentPoint.y);
+    es6This.signStart(ctx,es6This.currentPoint);
     es6This.timer();
 
     return es6This;
+  }
+  //标志开始点
+  signStart(ctx,currentPoint){
+    var f=this;
+    ctx.arc(currentPoint.x,currentPoint.y,30,0,Math.PI*2,true);
+    ctx.fillStyle='white';
+    ctx.fill();
+
+    return f;
   }
   timer(){
     var es6This=this;
@@ -65,11 +75,22 @@ class Levy{
       randomX=es6This.random(-130,130);
       randomY=es6This.random(-130,130);
     }
+    var x=es6This.currentPoint.x+randomX;
+    var y=es6This.currentPoint.y+randomY;
+    if(x<0 || x>es6This.CW || y<0 || y>es6This.CH-4){
+      //超出屏幕界限
+      // console.log(x,y);
+      obj=es6This.generateNext();
+      return obj;
+    }else{
+      return ({
+        x:x,
+        y:y
+      });
+    }
 
-    return ({
-      x:es6This.currentPoint.x+randomX,
-      y:es6This.currentPoint.y+randomY
-    });
+
+    
   }
 
 
