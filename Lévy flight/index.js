@@ -6,57 +6,72 @@ class Levy{
     this.CW=document.documentElement.clientWidth || document.body.clientWidth;
     this.CH=document.documentElement.clientHeight || document.body.clientHeight;
 
-    this.currentPoint=null;
+    this.currentPoint=null; //当前点
+    this.startPoint=null; //开始点(原点)
   }
 
+  //生成A(包含)到B(包含)的整数
   random(inclusiveA,inclusiveB){
     var x=Math.random()*(inclusiveB+1-inclusiveA)>>0;
     return (x+inclusiveA);
   }
   //初始化
   init(){
-    var es6This=this;
-    es6This.eleCanvas.width=es6This.CW;
-    es6This.eleCanvas.height=es6This.CH-4;
-    return es6This;
+    var f=this;
+    f.eleCanvas.width=f.CW;
+    f.eleCanvas.height=f.CH-4;
+    return f;
   }
 
   draw(){
-    var es6This=this;
-    var ctx=es6This.ctx;
+    var f=this;
+    var ctx=f.ctx;
     ctx.translate(0.5,0.5);
 
-    es6This.currentPoint={
-      x:es6This.CW/2,
-      y:es6This.CH/2
+    f.currentPoint={
+      x:f.CW/2,
+      y:f.CH/2
     };
 
     ctx.strokeStyle='blanchedalmond';
     ctx.beginPath();
-    ctx.moveTo(es6This.currentPoint.x,es6This.currentPoint.y);
-    es6This.signStart(ctx,es6This.currentPoint);
-    es6This.timer();
+    ctx.moveTo(f.currentPoint.x,f.currentPoint.y);
+    f.signStart(ctx,f.currentPoint);
+    f.timer();
 
-    return es6This;
+    return f;
   }
   //标志开始点
   signStart(ctx,currentPoint){
     var f=this;
+    f.startPoint={
+      x:currentPoint.x,
+      y:currentPoint.y
+    };
     ctx.arc(currentPoint.x,currentPoint.y,30,0,Math.PI*2,true);
-    ctx.fillStyle='white';
+    ctx.fillStyle='crimson';
     ctx.fill();
 
     return f;
   }
   timer(){
-    var es6This=this;
-    var ctx=es6This.ctx;
+    var f=this;
+    var ctx=f.ctx;
     var rafCallback=function(){
-      var nextPoint=es6This.generateNext();
+      var nextPoint=f.generateNext();
+
+
       ctx.lineTo(nextPoint.x,nextPoint.y);
       ctx.stroke();
 
-      es6This.currentPoint={
+      //如果回到原点
+      if(nextPoint.x===f.startPoint.x && nextPoint.y===f.startPoint.y){
+        var time=new Date();
+        alert('已经回到原点('+time+')');
+        return true;
+      }
+
+      f.currentPoint={
         x:nextPoint.x,
         y:nextPoint.y
       };
@@ -64,23 +79,23 @@ class Levy{
       window.requestAnimationFrame(rafCallback);
     };
     window.requestAnimationFrame(rafCallback);
-    return es6This;
+    return f;
   }
   generateNext(){
-    var es6This=this;
-    var randomX=es6This.random(-5,5);
-    var randomY=es6This.random(-5,5);
+    var f=this;
+    var randomX=f.random(-5,5);
+    var randomY=f.random(-5,5);
 
     if(Math.random()<0.05){
-      randomX=es6This.random(-130,130);
-      randomY=es6This.random(-130,130);
+      randomX=f.random(-130,130);
+      randomY=f.random(-130,130);
     }
-    var x=es6This.currentPoint.x+randomX;
-    var y=es6This.currentPoint.y+randomY;
-    if(x<0 || x>es6This.CW || y<0 || y>es6This.CH-4){
+    var x=f.currentPoint.x+randomX;
+    var y=f.currentPoint.y+randomY;
+    if(x<0 || x>f.CW || y<0 || y>f.CH-4){
       //超出屏幕界限
       // console.log(x,y);
-      obj=es6This.generateNext();
+      obj=f.generateNext();
       return obj;
     }else{
       return ({
