@@ -8,6 +8,7 @@ class Levy{
 
     this.currentPoint=null; //当前点
     this.startPoint=null; //开始点(原点)
+    this.timerN=0;
   }
 
   //生成A(包含)到B(包含)的整数
@@ -56,6 +57,7 @@ class Levy{
   }
   timer(){
     var f=this;
+    f.timerN++;
     var ctx=f.ctx;
     var rafCallback=function(){
       var nextPoint=f.generateNext();
@@ -64,13 +66,14 @@ class Levy{
       ctx.lineTo(nextPoint.x,nextPoint.y);
       ctx.stroke();
 
-      //如果回到原点
-      if(nextPoint.x===f.startPoint.x && nextPoint.y===f.startPoint.y){
+      //如果回到原点(轨迹经过原点)
+      if(f.back2o(f.startPoint,f.currentPoint,nextPoint)){
         var time=new Date();
         alert('已经回到原点('+time+')');
         return true;
       }
 
+      //赋值于当前点
       f.currentPoint={
         x:nextPoint.x,
         y:nextPoint.y
@@ -80,6 +83,40 @@ class Levy{
     };
     window.requestAnimationFrame(rafCallback);
     return f;
+  }
+  //判断点p(x,y)在直线p0(x0,y0)p1(x1,y1)上
+  back2o(p,p0,p1){
+    var f=this;
+    var x=p.x;
+    var x0=p0.x;
+    var x1=p1.x;
+    var y=p.y;
+    var y0=p0.y;
+    var y1=p1.y;
+    
+    //3.最终判断确在直线上还是延伸线上
+    if((x<x0 && x<x1) || (x>x0 && x>x1)){
+      return false;
+    }
+
+    //2.x1!=x0
+    // 要y==(y1-y0)*(x-x0)/(x1-x0)+y0;
+    if(x1!==x0 && y!==(y1-y0)*(x-x0)/(x1-x0)+y0){
+      return false;
+    }
+
+    
+
+    //1.x1=x0
+    // 要y==y0
+    if(x1===x0 && y!==y0){
+      return false;
+    }
+    if(f.timerN<=1){
+      return false;
+    }
+    console.log(f.timerN,p,p0,p1);
+    return true;
   }
   generateNext(){
     var f=this;
