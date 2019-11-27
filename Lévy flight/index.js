@@ -57,9 +57,10 @@ class Levy{
   }
   timer(){
     var f=this;
-    f.timerN++;
+    
     var ctx=f.ctx;
     var rafCallback=function(){
+      f.timerN++;
       var nextPoint=f.generateNext();
 
 
@@ -67,7 +68,8 @@ class Levy{
       ctx.stroke();
 
       //如果回到原点(轨迹经过原点)
-      if(f.back2o(f.startPoint,f.currentPoint,nextPoint)){
+      var isPass=f.back2o(f.startPoint,f.currentPoint,nextPoint);
+      if(isPass){
         var time=new Date();
         alert('已经回到原点('+time+')');
         return true;
@@ -94,25 +96,34 @@ class Levy{
     var y0=p0.y;
     var y1=p1.y;
     
-    //3.最终判断确在直线上还是延伸线上
-    if((x<x0 && x<x1) || (x>x0 && x>x1)){
-      return false;
-    }
-
-    //2.x1!=x0
-    // 要y==(y1-y0)*(x-x0)/(x1-x0)+y0;
-    if(x1!==x0 && y!==(y1-y0)*(x-x0)/(x1-x0)+y0){
-      return false;
-    }
-
     
-
     //1.x1=x0
     // 要y==y0
     if(x1===x0 && y!==y0){
       return false;
     }
-    if(f.timerN<=1){
+
+    //2.x1!=x0
+    // 要y==(y1-y0)*(x-x0)/(x1-x0)+y0;
+    var yTemp=((y1-y0)*(x-x0)/(x1-x0)+y0);
+    if(x1!==x0 && Math.abs(y-yTemp)>1){
+      return false;
+    }
+    // console.log(x0,x1,y0,y1,x,y,yTemp);
+
+    //3.最终判断是否在延伸线上
+    if((x<x0-1 && x<x1-1) || (x>x0+1 && x>x1+1)){
+      return false;
+    }
+
+    
+
+    
+
+
+
+
+    if(f.timerN<=1e2){
       return false;
     }
     console.log(f.timerN,p,p0,p1);
@@ -124,15 +135,15 @@ class Levy{
     var randomY=f.random(-5,5);
 
     if(Math.random()<0.05){
-      randomX=f.random(-130,130);
-      randomY=f.random(-130,130);
+      randomX=f.random(-88,88);
+      randomY=f.random(-88,88);
     }
     var x=f.currentPoint.x+randomX;
     var y=f.currentPoint.y+randomY;
     if(x<0 || x>f.CW || y<0 || y>f.CH-4){
       //超出屏幕界限
       // console.log(x,y);
-      obj=f.generateNext();
+      var obj=f.generateNext();
       return obj;
     }else{
       return ({
