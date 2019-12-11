@@ -1,5 +1,3 @@
-// 132,5028,7563
-// 159,9206,8574
 class Basic{
   constructor(){
     this.n=-1;  //raf多少次
@@ -8,6 +6,11 @@ class Basic{
 
     this.CW=document.documentElement.clientWidth || document.body.clientWidth;
     this.CH4=document.documentElement.clientHeight || document.body.clientHeight;
+  }
+
+  //判断动画是否 持续 进行
+  ciZuk(){
+    return (this.n<1e1*this.interval);
   }
 
   init(){
@@ -25,15 +28,15 @@ class Basic{
     var f=this;
     var rafCallback=function(){
       f.n++;
-      //動畫終止條件
-      if(f.n<1e1*f.interval){
+      //動畫进行中
+      if(f.ciZuk()){
         if(!(f.n%f.interval)){
-          //若n加了10, currentStep加了1
-          f.currentStep=f.n/f.interval;
+          //一帧一步
+          f.currentStep++;
           f.doINeveryframe();
         }
         window.requestAnimationFrame(rafCallback);
-      }
+      } //end if
     };
     window.requestAnimationFrame(rafCallback);
     return f;
