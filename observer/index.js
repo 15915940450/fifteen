@@ -1,68 +1,45 @@
-/*
-* js注釋：
-观察者模式(Observer)--发布-订阅模式(Publish/Subscribe):通常被用来实现事件处理系统
-观察者设计模式定义了对象间的一种一对多的组合关系，以便一个对象的状态发生变化时，所有依赖于它的对象都得到通知并自动刷新。
-该模式必须包含两个角色：观察者和被观察对象。观察者和被观察对象之间存在“观察”的逻辑关联，当被观察对象发生改变的时候，观察者就会观察到这样的变化，并且做出相应的响应。
-*/
-
-class PubSub{
-  constructor(){
-    this.handlers={}; //時間處理映射表
+//要被订阅的主题
+class Subject {
+  constructor() {
+    this.state = 0;
+    this.observers = [];
   }
-
-  //訂閲（事件類型+處理）
-  subscribe(eventType,handler){
-    var es6This=this;
-    if(!(eventType in es6This.handlers)){
-      es6This.handlers[eventType]=[];
-    }
-    es6This.handlers[eventType].push(handler);
-
-    return es6This;
+  getState() {
+    return this.state;
   }
-  //發佈(事件類型+消息)
-  publish(eventType){
-    var es6This=this;
-    var handlerArgs=Array.from(arguments).slice(1);
-    // var handlerArgs=Array.prototype.slice.call(arguments,1);
-    var arrEventHandler=es6This.handlers[eventType]; //通知訂閲者
-    for(var i=0;i<arrEventHandler.length;i++){
-      arrEventHandler[i].apply(es6This,handlerArgs);
-    }
-    return es6This;
+  setState(state) {
+    this.state = state;
+    this.notifyAllObservers();
   }
-  //退訂（事件類型+處理）
-  unsubscribe(eventType,handler){
-    var es6This=this;
-    if(es6This.handlers[eventType]){
-      es6This.handlers[eventType]=es6This.handlers[eventType].filter(function(v){
-        return (v!==handler);
-      });
-    }
-    return es6This;
+  attach(observer) {
+    this.observers.push(observer);
   }
+  notifyAllObservers() {
+    this.observers.forEach(observer=> {
+      observer.update();
+    });
+  }
+}
+//观察者
+class Observer {
+  constructor(name,subject) {
+    this.name = name;
+    this.subject  = subject;
+    this.subject.attach(this);
+  }
+  update() {
+    console.log(`${this.name} is updata, subject state is ${this.subject.state}`);
+  }
+}
+
+const s1 = new Subject();
+const o1  = new Observer('o1', s1);
+s1.setState(1);
+console.log('=======================================');
+const o2 = new Observer('o2', s1);
+const o3 = new Observer('o2', s1);
+s1.setState(2);
 
 
 
-} //class
-
-var obj=new PubSub();
-
-var xxx=function(){
-  console.log('訂閲1xxx');
-};
-var yyy=function(a,b,c,d){
-  console.log('訂閲2yyy'+' '+a+' '+b+c+d);
-};
-
-//訂閲事件A，處理函數分別為xxx和yyy
-obj.subscribe('A',xxx);
-obj.subscribe('A',yyy);
-
-//發佈事件A，消息為'aaa','bbb','ddd'
-obj.publish('A','aaa','bbb','ddd');
-
-//取消訂閲事件A的xxx處理（yyy依然生效）
-obj.unsubscribe('A',xxx);
-
-obj.publish('A','2');
+console.log(o1,o2,o3);
