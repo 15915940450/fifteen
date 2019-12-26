@@ -1,5 +1,8 @@
 /*
 https://baike.baidu.com/item/农历/67925
+
+https://magnetw.app
+https://github.com/wvv8oo/lunar
 */
 class Basic{
   constructor(){
@@ -162,6 +165,24 @@ class Basic{
 var obj=new Basic();
 // obj.init();
 // obj.solve();
-obj.lunar();
-
+// obj.lunar();
+/*
+用的时候记得归零时分秒
+*/
+var str1=window.chineseLunar.solarToLunar(new Date('Thu Nov 25 2019 0:0:0 GMT+0800 (香港標準時間)'),'TAYMD');
+var str2=window.chineseLunar.solarToLunar(new Date('Thu Nov 26 2019 0:0:0 GMT+0800 (香港標準時間)'),'TAYMD');
+var str3=window.chineseLunar.solarToLunar(new Date('Thu Nov 27 2019 0:0:0 GMT+0800 (香港標準時間)'),'TAYMD');
+console.log(str1);  //{"leap":false,"year":2019,"month":12,"day":2,"leapMonth":0}
+console.log(str2);  //{"leap":false,"year":2019,"month":12,"day":2,"leapMonth":0}
+console.log(str3);  //{"leap":false,"year":2019,"month":12,"day":2,"leapMonth":0}
+/*
+T返回传统的天干地支年份
+A返回生肖属相
+Y返回中文的年，如二〇一二
+y返回英文数字的年，如2012
+m返回中文的月份，如五
+M返回传统的月份，如腊月和正月
+d返回传统的天名称，如初四、十八、卅
+D返回传统的天名称，但是如果是初一的话，会返回这个月的月份名称，例如四月初一返回的是四月而非初一
+*/
 
