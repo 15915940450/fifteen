@@ -1,10 +1,7 @@
 /*
 https://baike.baidu.com/item/农历/67925
-
-https://magnetw.app
-https://github.com/wvv8oo/lunar
 */
-class Basic{
+class Lunar{
   constructor(){
     this.n=-1;  //raf多少次
     this.interval=10; //每幀的間隔
@@ -162,20 +159,17 @@ class Basic{
 
 } //class
 
-var obj=new Basic();
+// var obj=new Lunar();
 // obj.init();
 // obj.solve();
 // obj.lunar();
+
+
+
 /*
-用的时候记得归零时分秒
-*/
-var str1=window.chineseLunar.solarToLunar(new Date('Thu Nov 25 2019 0:0:0 GMT+0800 (香港標準時間)'),'TAYMD');
-var str2=window.chineseLunar.solarToLunar(new Date('Thu Nov 26 2019 0:0:0 GMT+0800 (香港標準時間)'),'TAYMD');
-var str3=window.chineseLunar.solarToLunar(new Date('Thu Nov 27 2019 0:0:0 GMT+0800 (香港標準時間)'),'TAYMD');
-console.log(str1);  //{"leap":false,"year":2019,"month":12,"day":2,"leapMonth":0}
-console.log(str2);  //{"leap":false,"year":2019,"month":12,"day":2,"leapMonth":0}
-console.log(str3);  //{"leap":false,"year":2019,"month":12,"day":2,"leapMonth":0}
-/*
+==========================================================
+https://github.com/wvv8oo/lunar(用的时候记得归零时分秒)
+
 T返回传统的天干地支年份
 A返回生肖属相
 Y返回中文的年，如二〇一二
@@ -185,4 +179,45 @@ M返回传统的月份，如腊月和正月
 d返回传统的天名称，如初四、十八、卅
 D返回传统的天名称，但是如果是初一的话，会返回这个月的月份名称，例如四月初一返回的是四月而非初一
 */
+var today=new Date();
+var arrSolar=[
+  {
+    'name':'艾雪',
+    'birthday':'2013-07-26',
+    'ymd':[2013,6,26]
+  },
+  {
+    'name':'艾琪',
+    'birthday':'2017-01-15',
+    'ymd':[2017,0,15]
+  },
+  {
+    'name':'HM',
+    'birthday':'1989-09-01',
+    'ymd':[1989,8,1]
+  },
+  {
+    'name':'Hokcung',
+    'birthday':'1986-07-14',
+    'ymd':[1986,6,14]
+  },
+  {
+    'name':'今日',
+    'birthday':today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate(),
+    'ymd':[today.getFullYear(),today.getMonth(),today.getDate()]
+  }
+];
 
+var elFooter=document.querySelector('footer');
+var strLunar=arrSolar.map(function(v){
+  var lunar=window.chineseLunar.solarToLunar(new Date(v.ymd[0],v.ymd[1],v.ymd[2]),'TAYMD');
+  return (`<span>
+      ${v.name}: 
+      ${lunar}
+    </span>`);
+}).join('');
+elFooter.innerHTML=strLunar;
+
+/*
+艾雪: 癸巳年蛇二〇一三年六月十九 艾琪: 丙申年猴二〇一六年腊月十八 HM: 己巳年蛇一九八九年八月初二 Hokcung: 丙寅年虎一九八六年六月初八 今日: 己亥年猪二〇一九年腊月初三
+*/

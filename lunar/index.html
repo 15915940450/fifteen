@@ -7,12 +7,100 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
 <meta name="author" content="Thilina Fong" />
 <meta name="description" content="" />
+<style>
+  #container{
+    width: 700px;
+    margin: 20px auto;
+    font-family: 'Microsoft Jhenghei';
+  }
+  footer span{
+    font-size: 12px;
+    margin-right:20px;
+    border-bottom: 1px solid black;
+  }
+</style>
 </head>
 <body>
 
 <div id="container">
-  algorithm4
-  <p id="pDate"></p>
+  <h1>
+    農曆
+    <small>
+      （中國傳統曆法）
+    </small>
+  </h1>
+  <p>
+    陰陽曆,lunisolar calendar,Chinese Calendar,agricultural calendar
+  </p>
+  <div>
+    <h3>24 Solar Terms</h3>
+    <p>
+      二十四節氣，2016年，聯合國教科文組織保護非物質文化遺產委員會，正式將中國二十四節氣列入聯合國教科文組織人類非物質文化遺產代表作名錄。
+    </p>
+    <ul>
+      
+      <li title="立春之後，大地開始解凍，冰面開始熔化，蟲類開始甦醒，東亞南支西風急流已開始減弱，隆冬氣候已快要結束。 但是天氣還沒有暖和起來。">The Beginning of Spring (立春)： Spring begins</li>
+      <li>Rain Water (雨水)： It begins to rain</li>
+      <li title="驚蟄(zat6,zik6)代表的寓意就是天氣回暖，春雷始鳴。驚蟄節氣後大概就不那麼冷了。">The Waking of Insects (惊蛰)： Hibernating animals come to sense</li>
+      <li>The Spring Equinox (春分)： Day and night are equally long</li>
+      <li>Pure Brightness (清明)： It is warm and bright</li>
+      <li>Grain Rain (谷雨)： Rainfall is helpful to grain</li>
+      <br />
+      <li>The Beginning of Summer (立夏)： Summer begins</li>
+      <li>Lesser Fullness of Grain (小满)： Kernels plump</li>
+      <li>Grain in Beard (芒种)： Wheat grows ripe</li>
+      <li>The Summer Solstice (夏至)： It has the longest daytime and the shortest night of the year</li>
+      <li>Lesser Heat (小暑)： Torridity comes</li>
+      <li>Greater Heat (大暑)： The hottest moment of a year</li>
+      <br />
+      <li>The Beginning of Autumn (立秋)： Autumn begins</li>
+      <li>The End of Heat (处暑)： Heat hides</li>
+      <li>White Dew (白露)： Dew curdles</li>
+      <li>The Autumn Equinox (秋分)： The mid of autumn</li>
+      <li>Cold Dew (寒露)： Dew is very cold</li>
+      <li>Frost's Descent (霜降)： Frost descends</li>
+      <br />
+      <li>The Beginning of Winter (立冬)： Winter begins</li>
+      <li>Lesser Snow (小雪)： it begins to snow</li>
+      <li>Greater Snow (大雪)： It snows heavily</li>
+      <li>The Winter Solstice (冬至)： The shortest daytime and the longest night of a year</li>
+      <li title="進入小寒，年味漸濃，人們開始忙着寫春聯、剪窗花，趕集買年畫、彩燈、鞭炮等，陸續為春節做準備。 廣州人有小寒早上吃糯米飯的習俗。">Lesser Cold (小寒)： It is rather cold(小寒勝大寒，常見不稀罕。)</li>
+      <li>Greater Cold (大寒)： The coldest moment of a year</li>
+    </ul>
+
+  </div>
+  <p>
+    【甲】 gaap3        
+    【乙】 jyut6       
+    【丙】 bing2        
+    【丁】 ding1        
+    【戊】 mou6         
+    【己】 gei2         
+    【庚】 gang1        
+    【辛】 san1         
+    【壬】 jam4         
+    【癸】 gwai3        
+
+    <br />
+    【子】 zi2        
+    【丑】 cau2         
+    【寅】 jan4         
+    【卯】 maau5        
+    【辰】 san4         
+    【巳】 zi6        
+    【午】 ng5        
+    【未】 mei6         
+    【申】 san1         
+    【酉】 jau5         
+    【戌】 seot1        
+    【亥】 hoi6         
+
+
+  </p>
+
+  <footer>
+    js生成农历生日
+  </footer>
 </div>  <!--container-->
 <script src="../lodash.ili.js" charset="utf-8"></script>
 <script src="./chinese-lunar.js"></script>
