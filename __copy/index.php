@@ -27,9 +27,9 @@
 <div id="container">
   <!-- mc:middle center -->
   <div class="mc">
-    algorithm4
+    algorithm4.
     <img src="../chrome-logo.svg" alt="chrome" />
-    algorithm4algorithm4 algorithm4 algorithm4 algorithm4 algorithm4 algorithm4
+    algorithm4.algorithm4. algorithm4. algorithm4. algorithm4. algorithm4. algorithm4.
   </div>
 </div>  <!--container-->
 <script src="../lodash.ili.js" charset="utf-8"></script>
