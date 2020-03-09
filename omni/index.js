@@ -78,3 +78,28 @@ new Vue({
     // this.ajaxXML();
   }
 });
+
+var rad=0;
+var arrLoading=[
+  '-',
+  '\\',
+  '|',
+  '/',
+];
+var el=document.querySelector('.simple_loading');
+var rafCallback=function(){
+  //also time
+  rad++;
+  var rad2=rad/8;
+  if(rad%8===0){
+    // console.log(rad,rad2);
+    if(rad2===4){
+      rad=0;
+      rad2=0;
+    }
+    el.innerHTML=arrLoading[rad2];
+  }
+  window.requestAnimationFrame(rafCallback);
+};
+window.requestAnimationFrame(rafCallback);
+
