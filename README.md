@@ -1,6 +1,22 @@
 # fifteen
 
-### 采用回溯算法
+从1-9中填入9个宫格，使得每行，每列，以及两对角线和为15，例如下图为其中一解：
+
+||||
+| ---- | ---- | ---- |
+|8|1|6|
+|3|5|7|
+|4|9|2|
+
+
+<style>
+td {
+   border: 1px solid gray!important;
+}
+</style>
+
+
+#### 采用回溯算法
 
 ```
 class Fifteen{
@@ -77,7 +93,10 @@ var fifteen=new Fifteen();
 fifteen.solve();
 ```
 
-#### 數獨
+###### extra: 數獨
+
+数独终盘的生成与上面问题的解决思路类似。
+
 
 ```
 class Shudu{
