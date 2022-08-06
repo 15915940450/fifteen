@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-yue-Hant-HK">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>z2022</title>
+    <style>
+        #result {
+            /* white-space: nowrap; */
+            /* nowrap让一段文本不换行，在一行内显示 */
+
+            /* 
+            word-wrap: normal 使一个单词或URL不折行，在一行内显示。
+            word-wrap: break-word 在容器边界自动换行，会把整个长单词看成一个整体放到下一行，而不会把单词截断。
+            */
+            word-break: break-all;
+            /* word-break: break-all在行末宽度不够显示整个单词时，会把单词截断。 */
+            width: 80vw;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <ul>
+            <li>
+                1.堆排序算法(https://github.com/hustcc/JS-Sorting-Algorithm/blob/master/7.heapSort.md)
+            </li>
+            <li>
+                2.快速排序算法(https://github.com/hustcc/JS-Sorting-Algorithm/blob/master/6.quickSort.md)
+            </li>
+        </ul>
+        <section id="inputdata"></section>
+        <section id="outputresult"></section>
+    </div>
+    <script type="module" src="./sort.js"></script>
+</body>
+
+</html>
