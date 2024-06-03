@@ -1,0 +1,203 @@
+<img src="https://algs4.cs.princeton.edu/41graph/images/adjacency-lists.png" alt="">
+<br>
+<img src="https://algs4.cs.princeton.edu/41graph/images/graph-api.png" alt="">
+<br>
+<img src="https://algs4.cs.princeton.edu/42digraph/images/digraph-api.png" alt="">
+<br>
+<img src="https://algs4.cs.princeton.edu/42digraph/images/dag.png" alt="">
+<br>
+<img src="https://algs4.cs.princeton.edu/42digraph/images/topological-sort.png" alt="">
+<br>
+<img src="https://algs4.cs.princeton.edu/42digraph/images/depth-first-orders.png" alt="">
+<h3>
+  [8, 7, 2, 3, 0, 5, 1, 6, 9, 11, 10, 12, 4]
+</h3>
+<img src="https://algs4.cs.princeton.edu/41graph/images/cc-api.png" alt="">
+<br>
+connected components
+<br>
+
+
+<script>
+
+  /* *
+  * 字母解釋法
+  J Juliett
+  K Kilo
+  L Lima
+  M Mike
+  N November
+  O Oscar
+  P Papa
+  Q Quebec
+  R Romeo
+  *
+  */
+
+
+  class Digraph {
+    constructor() {
+      this.Vertex = []
+      this.V = 0
+      this.E = 0
+    }
+    // 假定不含有平行邊
+    addEdge(v, w) {
+      if (!this.Vertex[v]) {
+        this.Vertex[v] = []
+        this.V++
+      }
+      if (!this.Vertex[w]) {
+        this.Vertex[w] = []
+        this.V++
+      }
+      this.E++
+      this.Vertex[v].push(w)
+    }
+    adj(v) {
+      return (this.Vertex[v])
+    }
+
+
+  }
+
+
+  /* *
+    * 拓撲排序-深度優先搜尋
+    https://zh.wikipedia.org/zh-hk/%E6%8B%93%E6%92%B2%E6%8E%92%E5%BA%8F
+    
+      L ← 一个空的 用来存放已排序的节点的列表
+      当图中存在未永久标记的节点时：
+          选出任何未永久标记的节点n
+          visit(n)
+
+      =================================
+      function visit(节点 n)
+          如n被永久标记：
+              return
+          如n被临时标记：
+              stop   (不是定向无环图，至少有一个环)
+        
+          将n临时标记
+        
+          对于每一个以n为起点的边(n,m)：
+              visit(m)
+        
+          去掉n的临时标记
+          将n永久标记
+          在L的起始位置插入n（如L已有内容 后移它们以空出起始位置）
+    *
+    */
+  class Topological {
+    constructor(gra) {
+      this.gra = gra
+      this.isDAG = true
+    }
+    order() {
+      let L = []
+
+      let topoThis = this
+      // OPEN, CLOSE表
+      let mCloseSet = new Set()
+      let marked = new Map()
+      let onStack = new Array(this.gra.Vertex.length).fill(false)
+      let DForder=[]
+      for (let i = 0; i < this.gra.Vertex.length; i++) {
+        let n = i
+        if (mCloseSet.has(n)) {
+          continue
+        }
+        if (!this.isDAG) {
+          // console.warn('stop')
+          return false
+        }
+        visit(n)
+      }
+
+
+      
+      function visit(n) {
+        onStack[n] = true
+
+
+        // 若搜尋進行中碰到之前已經遇到的節點，或碰到葉節點，則中止演算法。
+        if (mCloseSet.has(n)) {
+          // console.warn('n被永久標記,,碰到葉節點', n)
+          onStack[n] = false
+          return
+        }
+        if (marked.get(n)) {
+          // console.warn('stop:不是定向无环图，至少有一个环,,碰到之前已經遇到的節點', n)
+          topoThis.isDAG = false
+          onStack[n] = false
+          return true
+        }
+
+        // 前序：在遞歸調用之前將頂點加入隊列(pre)
+        // DForder.push(n)
+
+        marked.set(n, true)
+        for (let i = 0; i < topoThis.gra.adj(n).length; i++) {
+          let m = topoThis.gra.adj(n)[i]
+          let bStop = visit(m)
+          if (bStop) {
+            return true
+          }
+        }
+
+        // marked.set(n,false)
+        mCloseSet.add(n)
+
+
+
+        // 後序：在遞歸調用之後將頂點加入隊列(post)
+        // DForder.push(n)
+        // 逆後序：在遞歸調用之後將頂點壓入棧(reversePost)
+        // DForder.unshift(n)
+
+        // using depth-first search. Remarkably, a reverse postorder in a DAG provides a topological order.
+        L.unshift(n)
+
+        
+
+
+        // console.log(JSON.stringify(onStack),'onStack')
+        onStack[n] = false
+      }
+
+
+
+      console.log('DForder',DForder)
+      return L
+    }
+  }
+  let gra = new Digraph()
+  // [8, 7, 2, 3, 0, 5, 1, 6, 9, 11, 10, 12, 4]
+  let data = [
+    [2, 3],
+    [0, 5],
+    [0, 1],
+    [0, 6],
+    [2, 0],
+    [11, 12],
+    [9, 11],
+    [9, 10],
+    [9, 12],
+    [3, 5],
+    [8, 7],
+    [5, 4],
+    [6, 9],
+    [6, 4],
+    // [1, 2],
+    [7, 6]]
+  for (let i = 0; i < data.length; i++) {
+    gra.addEdge.apply(gra, data[i])
+    // gra.addEdge(data[i][0], data[i][1])
+  }
+
+  console.log(gra)
+  let topological = new Topological(gra)
+  console.log(topological.order())
+
+
+</script>

@@ -1,0 +1,188 @@
+<script>
+  // 矩陣鏈乘積（英語：Matrix chain multiplication
+  /* *
+  * ABCD
+  // ABC|D
+        ((AB)C)D
+        (A(BC))D
+  // AB|CD
+        (AB)(CD)
+  // A|BCD
+        A(B(CD))
+        A((BC)D)
+
+
+  ABCDEFG
+  共有多少種乘積順序？
+  howMany(1)=1
+  howMany(2)=1
+  howMany(3)=howMany(2)+howMany(2)=2
+  howMany(4)=howMany(3)+howMany(2)*howMany(2)+howMany(3)=2+1*1+2=5
+  howMany(5)=howMany(4)+howMany(2)*howMany(3)+howMany(3)*howMany(2)+howMany(4)=5+2+2+5=12
+  howMany(6)=howMany(5)*howMany(1)+howMany(4)*howMany(2)+howMany(3)*howMany(3)+howMany(2)*howMany(4)+howMany(1)*howMany(5)
+            =12*1+5*1+2*2+1*5+1*12=38
+  howMany(7)=howMany(1)*howMany(6)+howMany(2)*howMany(5)+howMany(3)*howMany(4)+howMany(4)*howMany(3)+howMany(5)*howMany(2)+howMany(6)*howMany(1)
+            =38+12+2*5+5*2+12+38=120
+
+    A|BCDEFG
+    AB|CDEFG
+    ABC|DEFG
+    ABCD|EFG
+    ABCDE|FG
+    ABCDEF|G
+
+
+  
+  *
+  */
+
+
+  /* *
+  *  A1 A2 A3 A4 A5 A6
+  30 35 15 5  10 20 25
+  0  1  2  3  4  5  6
+  dp[1][6]
+  *
+  */
+  // 動態規劃: 由下而上||帶備忘錄的遞迴形式
+  let p = [30, 35, 15, 5, 10, 20, 25]
+  let matrixChain = (p) => {
+    // dp[0][0]
+    let dp = [[{
+      from: [[0, 0], [0, 0]],
+      multiNum: 0
+    }]]
+
+    let len = p.length
+    // dp[1][1] dp[2][2] dp[3][3] dp[4][4] dp[5][5] dp[6][6]
+    for (let i = 1; i < len; i++) {
+      dp[i] = []
+      dp[i][i] = {
+        from: [[i, i], [i, i]],
+        multiNum: 0
+      }
+    }
+
+
+    // 由下而上,先計算A1A2,A2A3,A3A4,A4A5,A5A6
+    // 繼而計算 A1A2A3,A2A3A4,A3A4A5,A4A5A6
+    for (let r = 2; r < len; r++) {
+      for (let i = 1; i < len - r + 1; i++) {
+        let j = i + r - 1
+        // console.log(i,j,'ij')
+        // 劃|
+        dp[i][j] = dp[i][j] ?? { multiNum: (1 << 30) }
+        for (let k = i; k < j; k++) {
+          let IKJdp = dp[i][k].multiNum + dp[k + 1][j].multiNum + p[i - 1] * p[k] * p[j]
+          let curr = dp[i][j].multiNum
+          if (IKJdp < curr) {
+            // 更小
+            dp[i][j].multiNum = IKJdp
+            dp[i][j].from = [[i, k], [k + 1, j]]
+          }
+          // dp[i][j]=Math.min(dp[i][j]??(1<<30),IKJdp)
+        }
+      }
+    }
+
+
+    // dp更直觀
+    // for(let i=0;i<len;i++){
+    //   for(let j=0;j<len;j++){
+    //     if(!dp[i][j]){
+    //       dp[i][j]=0
+    //     }
+    //   }
+    // }
+    // console.log(dp)
+
+    return {
+      dp,
+      A1An: dp[1][len - 1]
+    }
+  }
+
+
+  let chain = matrixChain(p)
+  // 括號
+  let addBracket = (chain, p) => {
+    console.log(chain, p)
+    let arrBra = []
+    // 深度優先搜尋
+    let dfs = (dp, from) => {
+      arrBra.push(from)
+
+      // 針對from檢測終止
+      // if(from[1][1]-from[0][0]<=2){
+      //   console.warn('終止',JSON.stringify(from))
+      //   return
+      // }
+      let children = from
+      for (let child of children) {
+        // 針對child檢測終止
+        if (child[1] - child[0] <= 1) {
+          console.warn('略過', child)
+          continue
+        }
+        from = dp[child[0]][child[1]].from
+        dfs(dp, from)
+      }
+    }
+    dfs(chain.dp, chain.A1An.from)
+    console.log(arrBra, 'arrBra')
+    let num = p.length - 1
+    let strM = ''
+    for (let i = 1; i <= num; i++) {
+      strM += `M${i}`
+    }
+    arrBra.forEach(bra => {
+      bra.forEach(v => {
+        if (v[1] - v[0]) {
+          // 左
+          let char0 = `M${v[0]}`
+          // 只有当 pattern 参数是一个 RegExp 对象时，$n 和 $<Name> 才可用。
+          strM = strM.replace(char0, '($&')
+          // 右
+          let char1 = `M${v[1]}`
+          strM = strM.replace(char1, '$&)')
+        }
+
+      })
+
+    })
+    console.log(strM)
+  }
+
+  addBracket(chain, p)
+
+  // console.log(chain)
+  console.log('mul 15125 =>[3,1,5]((A1(A2A3))((A4A5)A6))')
+
+
+
+  /* *
+  * 偽代碼：
+ 
+ Matrix-Chain-Order(int p[])
+ {
+     n = p.length - 1;
+     for (i = 1; i <= n; i++) 
+        m[i,i] = 0;
+ 
+     for (l=2; l<=n; l++) { // l is chain length
+         for (i=1; i<=n-l+1; i++) {
+             j = i+l-1;
+             m[i,j] = MAXINT;
+             for (k=i; k<=j-1; k++) {
+                 q = m[i,k] + m[k+1,j] + p[i-1]*p[k]*p[j];//Matrix Ai has the dimension  p[i-1] x p[i].
+                 if (q < m[i,j]) {
+                     m[i,j] = q;
+                     s[i,j] = k;
+                 }
+             }
+         }
+     }
+ }
+  *
+  */
+</script>
