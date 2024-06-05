@@ -1,0 +1,254 @@
+<script>
+  /* *
+  * 
+  Shortest paths in general edge-weighted digraphs.
+  Bellman-Ford algorithm
+  
+  |wiki偽代碼
+procedure BellmanFord(list vertices, list edges, vertex source)
+   // 读入边和节点的列表 
+   // 初始化图 distance为∞，predecessor为空
+   for each vertex v in vertices:
+       if v is source then distance[v] := 0
+       else distance[v] := infinity
+       predecessor[v] := null
+   // 对所有节点
+   for i from 1 to size(vertices)-1:
+        //检查每条边
+       for each edge (u, v) with weight w in edges:
+           if distance[u] + w < distance[v]:
+               distance[v] := distance[u] + w
+               predecessor[v] := u
+
+   // 检查是否有负权重的回路
+   for each edge (u, v) with weight w in edges:
+       if distance[u] + w < distance[v]:
+           error "图包含负权重的回路"
+  *
+  */
+
+
+
+  class DirectedEdge {
+    constructor(v, w, weight) {
+      this._from = v
+      this._to = w
+      this._weight = weight
+    }
+
+    weight() {
+      return this._weight
+    }
+    from() {
+      return this._from
+    }
+    to() {
+      return this._to
+    }
+    toString(symV, symW) {
+      return (`${symV}-${symW}`)
+    }
+  }
+
+  class EdgeWeightedDigraph {
+    constructor(IN = []) {
+      this.vSet = new Set()
+      this.eSet = new Set()
+      this._adj = new Array()
+      IN.forEach((r) => {
+        let edge = new DirectedEdge(r[0], r[1], r[2])
+        this.addEdge(edge)
+      })
+    }
+    V() {
+      return this.vSet.size
+    }
+    E() {
+      return this.eSet.size
+    }
+    addEdge(edge) {
+      let from = edge.from();
+      let to = edge.to();
+      if (!this._adj[from]) {
+        this._adj[from] = []
+      }
+      this._adj[from].push(edge)
+      this.vSet.add(from)
+      this.vSet.add(to)
+      this.eSet.add(edge)
+    }
+    adj(v) {
+      return this._adj[v]
+    }
+    edges() {
+      return this.eSet
+    }
+  }
+
+
+  class SP {
+    constructor(gra, s) {
+      this.gra = gra
+      this.s = s
+
+      this._edgeTo = []
+      this._distTo = []
+      this.symbol = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+      // this.symbol = ['1', '2', '3', '4', '5', '6', '7']
+    }
+    BellmanFord() {
+      // 初始化
+      for (let i = 0; i < this.gra.V(); i++) {
+        this._distTo[i] = Infinity
+      }
+      this._distTo[this.s] = 0
+
+      // V()-1輪relax
+      for (let pass = 1; pass < this.gra.V(); pass++) {
+        // 每一輪relax所有邊，任意順序
+        // console.log(JSON.stringify(Array.from(this.gra.edges()).map(edge=>edge.toString(this.symbol[edge.from()],this.symbol[edge.to()]))))
+        let arrShuffle = Array.from(this.gra.edges()).toSorted((a, b) => (Math.random() - .4))
+        console.log(JSON.stringify(Array.from(arrShuffle).map(edge => edge.toString(this.symbol[edge.from()], this.symbol[edge.to()]))))
+        for (let edge of arrShuffle) {
+          // for (let edge of this.gra.edges()) {
+          this.relaxE(edge)
+        }
+        console.log('distTo[]:' + JSON.stringify(this._distTo), `第${pass}/${this.gra.V() - 1}輪`, JSON.parse(JSON.stringify(this._edgeTo)))
+      }
+
+      console.log('V()-1輪結果:', JSON.stringify(this._distTo), '[0,1,3,5,0,3]' === JSON.stringify(this._distTo))
+
+      // 檢查是否有負權重的迴路
+      console.log('頂點數目：', this.gra.V(), '在V()輪中進行負權重迴路檢測')
+      for (let edge of this.gra.edges()) {
+        let hasNegativeCycle = this.relaxE(edge, true)
+        if (hasNegativeCycle) {
+          return true
+        }
+      }
+
+      return false
+    }
+    // 邊的鬆弛
+    relaxE(e, isCheck) {
+      let v = e.from()
+      let w = e.to()
+      if (this.distTo(w) > this.distTo(v) + e.weight()) {
+        if (isCheck) {
+          console.error('圖包含負權重的迴路,發現於', e.toString(this.symbol[v], this.symbol[w]))
+          return true
+        }
+        this._distTo[w] = this.distTo(v) + e.weight()
+        this._edgeTo[w] = e
+      }
+    }
+    // 頂點的鬆弛
+    relaxV(v) { }
+
+
+    // distance from s to v, Infinity if no path
+    distTo(v) {
+      return this._distTo[v]
+    }
+    hasPathTo(v) { }
+    // path from s to v, null if none
+    pathTo(v) { }
+    hasNegativeCycle() {
+      return this.BellmanFord()
+    }
+    // a negative cycle, null if no negative cycles
+    negativeCycle() {
+      // Trace
+    }
+  }
+
+
+
+  let dataIN = [
+    [4, 5, 35],
+    [5, 4, 35],
+    [4, 7, 37],
+    [5, 7, 28],
+    [7, 5, 28],
+    [5, 1, 32],
+    [0, 4, 38],
+    [0, 2, 26],
+    [7, 3, 39],
+    [1, 3, 29],
+    [2, 7, 34],
+    [6, 2, -120],
+    [3, 6, 52],
+    [6, 0, -140],
+    [6, 4, -125],
+  ]
+  dataIN = [
+    [4, 5, 35],  //迴路
+    [5, 4, -66],
+    [4, 7, 37],
+    [5, 7, 28],
+    [7, 5, 28],
+    [5, 1, 32],
+    [0, 4, 38],
+    [0, 2, 26],
+    [7, 3, 39],
+    [1, 3, 29],
+    [2, 7, 34],
+    [6, 2, 40],
+    [3, 6, 52],
+    [6, 0, 58],
+    [6, 4, 93],
+  ]
+
+
+
+
+  dataIN = [
+    [4, 5, 3],
+    [0, 1, 6],
+    [2, 4, 3],
+    [3, 5, -1],
+    [0, 3, 5],
+    [0, 2, 4],
+    [1, 4, -1],
+    [2, 1, -2],
+    [3, 2, -2],
+  ]
+  // dataIN=[
+  //   [1-1,2-1,4],
+  //   [1-1,3-1,5],
+  //   [3-1,2-1,7],
+  //   [2-1,4-1,7],
+  //   [4-1,3-1,-15],
+  // ]
+  let gra = new EdgeWeightedDigraph(dataIN)
+  // gra.addEdge(new DirectedEdge(4,5,0.35))
+  // console.log(gra)
+  // console.log(gra.edges())
+  let sp = new SP(gra, 0)
+  sp.BellmanFord()
+  // console.log(sp._distTo,'sp',sp)
+  // console.log(sp.hasNegativeCycle())
+  console.log(sp)
+
+
+
+  // ======================
+
+</script>
+
+
+<img src="https://algs4.cs.princeton.edu/44sp/images/arbitrage.png" alt="">
+<br>
+<img src="https://algs4.cs.princeton.edu/44sp/images/rates.png" alt="">
+<br>
+
+<img src="https://static.javatpoint.com/tutorial/daa/images/bellman-ford-algorithm2.png" alt="">
+<h2>
+  [0,1,3,5,0,3]
+</h2>
+<br>
+<img src="https://static.javatpoint.com/tutorial/daa/images/bellman-ford-algorithm5.png" alt="">
+<h2>
+  圖包含負權重的迴路 3-2-4-3
+</h2>
+<br>
