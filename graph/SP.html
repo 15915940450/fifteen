@@ -189,6 +189,7 @@
         this.relaxE(edge)
 
         this.cost++
+        // We amortize the cost of this check by performing this check only after every Vth edge relaxation.
         if (!(this.cost % this.gra.V())) {
           this.negativeCycle()
         }
@@ -237,6 +238,11 @@
       let strNegaCycle = this.negaCycle.map(v => (this.symbol?.[v] ?? v)).join('->')
       console.log('負權重環', strNegaCycle)
     }
+    /* *
+    * Proposition. 
+    There exists a shortest path from s to v in an edge-weighted digraph if and only if there exists at least one directed path from s to v and no vertex on any directed path from s to v is on a negative cycle.
+    *
+    */
     setNegaInfinity() {
       let marked = []
       let dfs = (v) => {
