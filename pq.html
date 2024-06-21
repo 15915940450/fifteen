@@ -1,0 +1,95 @@
+<script>
+  class Heap {
+    // type:min max
+    constructor(a, type, fnCompare) {
+      // 定义排序顺序的函数。返回值应该是一个数字，其符号表示两个元素的相对顺序
+      fnCompare = fnCompare || ((r, s) => (r - s))
+
+      this.a = a.length ? a : [null]
+      this.type = type
+      this.fnCompare = fnCompare
+      this.buildHeap()
+    }
+
+    buildHeap() {
+      for (let i = (this.a.length - 1) >> 1; i; i--) {
+        this.sink(i)
+      }
+    }
+    isEmpty() {
+      return this.a.length <= 1
+    }
+
+
+    // 上浮
+    swim() {
+      let i = this.a.length - 1
+      while (i > 1) {
+        if (!this.shouldBehind(i, i >> 1)) {
+          this.swap(i, i >> 1)
+        }
+        i >>= 1
+      }
+    }
+    // 下沉
+    sink(i = 1) {
+      while (i < this.a.length) {
+        let minIndex = i * 2
+        if (this.shouldBehind(i * 2, i * 2 + 1)) {
+          minIndex = i * 2 + 1
+        }
+        if (this.shouldBehind(i, minIndex)) {
+          this.swap(i, minIndex)
+        }
+        i = minIndex
+      }
+    }
+    getTop() {
+      let el = this.a[1]
+      return el
+    }
+    delete() {
+      let el = this.a[1]
+      let elLast = this.a.pop()
+      if (this.a.length > 1) {
+        this.a[1] = elLast
+        this.sink()
+      }
+
+      return el
+    }
+    insert(el) {
+      this.a.push(el)
+      this.swim()
+    }
+
+    /* *
+    * i should behind j
+    *
+    */
+    shouldBehind(i, j) {
+      // console.log(this.a[i],this.a[j])
+      if (this.a[i] == null || this.a[j] == null) {
+        return false
+      }
+
+      if (this.type === 'min') {
+        return this.fnCompare(this.a[i], this.a[j]) > 0
+      }
+      return this.fnCompare(this.a[i], this.a[j]) < 0
+    }
+    swap(i, j) {
+      let temp = this.a[i]
+      this.a[i] = this.a[j]
+      this.a[j] = temp
+    }
+  }
+
+
+  let a = ['', 1, 5, 9, 159, 4, 0, 4, 50]
+
+  let pq = new Heap(a, 'min')
+
+
+  console.log(pq, a, ['', 1, 5, 9, 159, 4, 0, 4, 50])
+</script>
